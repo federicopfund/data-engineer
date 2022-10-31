@@ -80,4 +80,5 @@ spark.sql(createLocalTable)
 # MAGIC INSERT INTO Transformacion
 # MAGIC SELECT * FROM CategoriaTransformada;
 
+# COMMAND ----------
 #nuevo comentario
