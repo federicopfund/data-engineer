@@ -1,2 +1,4 @@
-storageaccount=1234
-storageaccountkey
+storageaccountname
+1234
+storageaccoun2
+12345
