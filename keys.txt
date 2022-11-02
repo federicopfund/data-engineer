@@ -1,0 +1,2 @@
+storageaccount=1234
+storageaccountkey
