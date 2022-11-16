@@ -15,9 +15,13 @@ app = FastAPI()
 @app.get("/productos")
 async def getProductos():
     '''Devuelve todos los productos'''
-    # Lee dataframes
-    df = pd.read_csv("Datasets locales/Producto_Unico.csv")
-    df2 = pd.read_csv('Datasets locales/Producto_Sucursales.csv')
+    # Lee dataframes y variables 
+    datalake_account_access_key = 'tUkrsYf++bJtSl/fXv9rtVhvTxIxh+3pzuWgA41vR3LtnbCV9xefC4ImN8XVLmk5ZxphFCGfN9mY+AStxYp14A=='
+    datalake_container = 'csv'
+    datalake_account_name = 'datalake123cd4567'
+
+    df = pd.read_csv(f'abfs://{datalake_container}@{datalake_account_name}.dfs.core.windows.net/Producto_Unico.csv',storage_options = {'account_key': datalake_account_access_key})
+    df2 = pd.read_csv(f'abfs://{datalake_container}@{datalake_account_name}.dfs.core.windows.net/Producto_Sucursales.csv',storage_options = {'account_key': datalake_account_access_key})
 
     # Crea una columna unica con sucursal y stock
     df2['Sucursal_y_Stock'] = df2.apply(lambda row: {'Cod_Sucursal' : row['Cod_Sucursal'], 'Stock' : row['Stock']}, axis=1)
@@ -33,9 +37,12 @@ async def getProductos():
 async def getProductoById(id_producto: int):
     '''Devuelve el producto que tenga cierto ID'''
     # Lee dataframes
-    df = pd.read_csv("Datasets locales/Producto_Unico.csv")
-    df2 = pd.read_csv('Datasets locales/Producto_Sucursales.csv')
+    datalake_account_access_key = 'tUkrsYf++bJtSl/fXv9rtVhvTxIxh+3pzuWgA41vR3LtnbCV9xefC4ImN8XVLmk5ZxphFCGfN9mY+AStxYp14A=='
+    datalake_container = 'csv'
+    datalake_account_name = 'datalake123cd4567'
 
+    df = pd.read_csv(f'abfs://{datalake_container}@{datalake_account_name}.dfs.core.windows.net/Producto_Unico.csv',storage_options = {'account_key': datalake_account_access_key})
+    df2 = pd.read_csv(f'abfs://{datalake_container}@{datalake_account_name}.dfs.core.windows.net/Producto_Sucursales.csv',storage_options = {'account_key': datalake_account_access_key})
     # Filtra por el producto pedido
     df = df.loc[df['Cod_Producto'] == id_producto]
     # Crea una columna unica con sucursal y stock
@@ -55,8 +62,12 @@ async def getProductoById(id_producto: int):
 async def getProductoByCategory(id_categoria: int):
     '''Devuelve los productos bajo cierta categoria'''
     # Lee dataframes
-    df = pd.read_csv("Datasets locales/Producto_Unico.csv")
-    df2 = pd.read_csv('Datasets locales/Producto_Sucursales.csv')
+    datalake_account_access_key = 'tUkrsYf++bJtSl/fXv9rtVhvTxIxh+3pzuWgA41vR3LtnbCV9xefC4ImN8XVLmk5ZxphFCGfN9mY+AStxYp14A=='
+    datalake_container = 'csv'
+    datalake_account_name = 'datalake123cd4567'
+
+    df = pd.read_csv(f'abfs://{datalake_container}@{datalake_account_name}.dfs.core.windows.net/Producto_Unico.csv',storage_options = {'account_key': datalake_account_access_key})
+    df2 = pd.read_csv(f'abfs://{datalake_container}@{datalake_account_name}.dfs.core.windows.net/Producto_Sucursales.csv',storage_options = {'account_key': datalake_account_access_key})
 
     # Filtra por la categoria pedida
     df = df.loc[df['Cod_Categoria'] == id_categoria]
@@ -77,8 +88,12 @@ async def getProductoByCategory(id_categoria: int):
 async def getProductoByCategory(id_categoria: int, id_subcategoria: int):
     '''Devuelve los productos bajo cierta categoria que corresponden a una subcategoria'''
     # Lee dataframes
-    df = pd.read_csv("Datasets locales/Producto_Unico.csv")
-    df2 = pd.read_csv('Datasets locales/Producto_Sucursales.csv')
+    datalake_account_access_key = 'tUkrsYf++bJtSl/fXv9rtVhvTxIxh+3pzuWgA41vR3LtnbCV9xefC4ImN8XVLmk5ZxphFCGfN9mY+AStxYp14A=='
+    datalake_container = 'csv'
+    datalake_account_name = 'datalake123cd4567'
+
+    df = pd.read_csv(f'abfs://{datalake_container}@{datalake_account_name}.dfs.core.windows.net/Producto_Unico.csv',storage_options = {'account_key': datalake_account_access_key})
+    df2 = pd.read_csv(f'abfs://{datalake_container}@{datalake_account_name}.dfs.core.windows.net/Producto_Sucursales.csv',storage_options = {'account_key': datalake_account_access_key})
 
     # Filtra por la subcategoria y categoria pedida
     df = df.loc[(df['Cod_Categoria'] == id_categoria) & (df['Cod_Subcategoria'] == id_subcategoria)]
@@ -99,8 +114,12 @@ async def getProductoByCategory(id_categoria: int, id_subcategoria: int):
 async def getProductoByCategory(id_subcategoria: int):
     '''Devuelve los productos bajo cierta subcategoria'''
     # Lee dataframes
-    df = pd.read_csv("Datasets locales/Producto_Unico.csv")
-    df2 = pd.read_csv('Datasets locales/Producto_Sucursales.csv')
+    datalake_account_access_key = 'tUkrsYf++bJtSl/fXv9rtVhvTxIxh+3pzuWgA41vR3LtnbCV9xefC4ImN8XVLmk5ZxphFCGfN9mY+AStxYp14A=='
+    datalake_container = 'csv'
+    datalake_account_name = 'datalake123cd4567'
+
+    df = pd.read_csv(f'abfs://{datalake_container}@{datalake_account_name}.dfs.core.windows.net/Producto_Unico.csv',storage_options = {'account_key': datalake_account_access_key})
+    df2 = pd.read_csv(f'abfs://{datalake_container}@{datalake_account_name}.dfs.core.windows.net/Producto_Sucursales.csv',storage_options = {'account_key': datalake_account_access_key})
 
     # Filtra por la subcategoria
     df = df.loc[df['Cod_Subcategoria'] == id_subcategoria]
