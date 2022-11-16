@@ -8,9 +8,13 @@ app = FastAPI()
 
 dflogic = DataframeLogic()
 
-datalake_account_access_key = 'tUkrsYf++bJtSl/fXv9rtVhvTxIxh+3pzuWgA41vR3LtnbCV9xefC4ImN8XVLmk5ZxphFCGfN9mY+AStxYp14A=='
-datalake_container = 'csv'
-datalake_account_name = 'datalake123cd4567'
+with open("config.json") as file:
+    config = json.load(file)
+
+datalake_account_access_key = config['datalake']['datalake_account_access_key']
+datalake_container = config['datalake']['datalake_container']
+datalake_account_name = config['datalake']['datalake_account_name']
+
 df_og = pd.read_csv(f'abfs://{datalake_container}@{datalake_account_name}.dfs.core.windows.net/Producto_Unico.csv',storage_options = {'account_key': datalake_account_access_key})
 df2_og = pd.read_csv(f'abfs://{datalake_container}@{datalake_account_name}.dfs.core.windows.net/Producto_Sucursales.csv',storage_options = {'account_key': datalake_account_access_key})
 
