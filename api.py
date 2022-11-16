@@ -33,7 +33,7 @@ async def getProductos():
     return {"dataframe" : json.loads(join.to_json(orient='records'))}
 
 
-@app.get("/productos/{id_producto}")
+@app.get("/producto/{id_producto}")
 async def getProductoById(id_producto: int):
     '''Devuelve el producto que tenga cierto ID'''
     # Lee dataframes
@@ -58,7 +58,7 @@ async def getProductoById(id_producto: int):
         return {"error" : f"No existe el producto con id {id_producto}"}
 
 
-@app.get("/categorias/{id_categoria}")
+@app.get("/categoria/{id_categoria}")
 async def getProductoByCategory(id_categoria: int):
     '''Devuelve los productos bajo cierta categoria'''
     # Lee dataframes
@@ -84,7 +84,7 @@ async def getProductoByCategory(id_categoria: int):
         return {"error" : f"No existe la categoria con id {id_categoria}"}
 
 
-@app.get("/categorias/{id_categoria}/subcategorias/{id_subcategoria}")
+@app.get("/categoria/{id_categoria}/subcategoria/{id_subcategoria}")
 async def getProductoByCategory(id_categoria: int, id_subcategoria: int):
     '''Devuelve los productos bajo cierta categoria que corresponden a una subcategoria'''
     # Lee dataframes
@@ -110,7 +110,7 @@ async def getProductoByCategory(id_categoria: int, id_subcategoria: int):
         return {"error" : f"La subcategoria {id_subcategoria} no pertenece a la categoria {id_categoria}"}
 
 
-@app.get("/subcategorias/{id_subcategoria}")
+@app.get("/subcategoria/{id_subcategoria}")
 async def getProductoByCategory(id_subcategoria: int):
     '''Devuelve los productos bajo cierta subcategoria'''
     # Lee dataframes
