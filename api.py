@@ -102,3 +102,16 @@ async def getProductoByCategory(id_subcategoria: int):
         return {"dataframe" : json.loads(join.to_json(orient='records'))}
     else:
         return {"error" : f"No existe subcategoria con id {id_subcategoria}"}
+
+@app.get('/test/{id_producto}')
+async def sepaDios(id_producto: int):
+    global df2_og
+    # Lee dataframes
+    df = df_og.copy()
+    df2 = df2_og.copy()
+
+    df2 = DataframeLogic.stockUpItem(1, 100, df2)
+
+    df2_og = df2
+    
+    return {"dataframe": json.loads(df2.to_json(orient='records'))}
