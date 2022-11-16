@@ -87,7 +87,7 @@ async def getProductoByCategory(id_categoria: int, id_subcategoria: int):
 
 
 @app.get("/subcategoria/{id_subcategoria}")
-async def getProductoByCategory(id_subcategoria: int):
+async def getProductoBySubcategory(id_subcategoria: int):
     '''Devuelve los productos bajo cierta subcategoria'''
     # Lee dataframes
     df = df_og.copy()
