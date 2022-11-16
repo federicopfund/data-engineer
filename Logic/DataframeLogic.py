@@ -38,6 +38,6 @@ class DataframeLogic:
 
         # Cargo stock en la tabla final
         for index, row in df2.loc[df2['Cod_Producto'] == id, 'Stock'].items():
-            df2.loc[index, 'Stock'] = stock_proporcional.loc[index, 'Stock']
+            df2.loc[index, 'Stock'] += stock_proporcional.loc[index, 'Stock']
         
         return df2
