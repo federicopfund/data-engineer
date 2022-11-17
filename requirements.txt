@@ -1,0 +1,4 @@
+fastapi[all]
+pandas
+fsspec
+adlfs
