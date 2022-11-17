@@ -2,3 +2,4 @@ fastapi[all]
 pandas
 fsspec
 adlfs
+asyncio

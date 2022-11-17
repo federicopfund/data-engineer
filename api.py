@@ -42,7 +42,7 @@ async def getProductos():
     # Devuelve dataframe filtrado
     join = dflogic.filterDataframes(df,df2)
 
-    return {"dataframe" : json.loads(join.to_json(orient='records'))}
+    return json.loads(join.to_json(orient='records'))
 
 
 @app.get("/producto/{id_producto}")
@@ -58,7 +58,7 @@ async def getProductoById(id_producto: int):
     join = dflogic.filterDataframes(df,df2)
 
     if df.shape[0] != 0:
-        return {"dataframe" : json.loads(join.to_json(orient='records'))}
+        return json.loads(join.to_json(orient='records'))
     else:
         return {"error" : f"No existe el producto con id {id_producto}"}
 
@@ -76,7 +76,7 @@ async def getProductoByCategory(id_categoria: int):
     join = dflogic.filterDataframes(df,df2)
 
     if df.shape[0] != 0:
-        return {"dataframe" : json.loads(join.to_json(orient='records'))}
+        return json.loads(join.to_json(orient='records'))
     else:
         return {"error" : f"No existe la categoria con id {id_categoria}"}
 
@@ -94,7 +94,7 @@ async def getProductoByCategory(id_categoria: int, id_subcategoria: int):
     join = dflogic.filterDataframes(df,df2)
 
     if df.shape[0] != 0:
-        return {"dataframe": json.loads(join.to_json(orient='records'))}
+        return json.loads(join.to_json(orient='records'))
     else:
         return {"error" : f"La subcategoria {id_subcategoria} no pertenece a la categoria {id_categoria}"}
 
@@ -112,7 +112,7 @@ async def getProductoBySubcategory(id_subcategoria: int):
     join = dflogic.filterDataframes(df,df2)
     
     if df.shape[0] != 0:
-        return {"dataframe" : json.loads(join.to_json(orient='records'))}
+        return json.loads(join.to_json(orient='records'))
     else:
         return {"error" : f"No existe subcategoria con id {id_subcategoria}"}
 
@@ -129,4 +129,4 @@ async def sepaDios(id_producto: int):
     #guardo en otro container para no sobreescribir el anterior
     df2.to_csv(f'abfs://{datalake_container2}@{datalake_account_name}.dfs.core.windows.net/Producto_Sucursales.csv',storage_options = {'account_key': datalake_account_access_key} ,index=False)
 
-    return {"dataframe": json.loads(df2.to_json(orient='records'))}
+    return json.loads(df2.to_json(orient='records'))
