@@ -1,0 +1,8 @@
+{
+    "datalake" : { 
+        "datalake_account_access_key" : "abcdefg==",
+        "datalake_container" : "csv",
+        "datalake_container2" : "outputcsv",
+        "datalake_account_name" : "datalakename"
+    }
+}
