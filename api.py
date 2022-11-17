@@ -13,6 +13,7 @@ with open("config.json") as file:
 
 datalake_account_access_key = config['datalake']['datalake_account_access_key']
 datalake_container = config['datalake']['datalake_container']
+datalake_container2 = config['datalake']['datalake_container2']
 datalake_account_name = config['datalake']['datalake_account_name']
 
 df_og = pd.read_csv(f'abfs://{datalake_container}@{datalake_account_name}.dfs.core.windows.net/Producto_Unico.csv',storage_options = {'account_key': datalake_account_access_key})
@@ -113,5 +114,7 @@ async def sepaDios(id_producto: int):
     df2 = DataframeLogic.stockUpItem(1, 100, df2)
 
     df2_og = df2
-    
+    #guardo en otro container para no sobreescribir el anterior
+    df2.to_csv(f'abfs://{datalake_container2}@{datalake_account_name}.dfs.core.windows.net/Producto_Sucursales.csv',storage_options = {'account_key': datalake_account_access_key} ,index=False)
+
     return {"dataframe": json.loads(df2.to_json(orient='records'))}
