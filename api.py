@@ -123,10 +123,14 @@ async def sepaDios(id_producto: int):
     df = df_og.copy()
     df2 = df2_og.copy()
 
-    df2 = DataframeLogic.stockUpItem(1, 100, df2)
+    df = df.loc[df['Cod_Producto'] == id_producto]
+    df2 = DataframeLogic.stockUpItem(id_producto, 2, df2)
+
+    # Devuelve dataframe filtrado
+    join = dflogic.filterDataframes(df,df2)
 
     df2_og = df2
     #guardo en otro container para no sobreescribir el anterior
     df2.to_csv(f'abfs://{datalake_container2}@{datalake_account_name}.dfs.core.windows.net/Producto_Sucursales.csv',storage_options = {'account_key': datalake_account_access_key} ,index=False)
 
-    return json.loads(df2.to_json(orient='records'))
+    return json.loads(join.to_json(orient='records'))

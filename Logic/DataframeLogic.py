@@ -37,15 +37,22 @@ class DataframeLogic:
         # Nuevo stock total
         sumStockNew = stock_proporcional.loc[:, 'Stock'].sum()
 
+        # Si no hay nada cargado o falla en cargar
+        if sumStockNew == 0:
+            for index, row in stock_proporcional.sort_values(by='Stock_Inicial', ascending=False)['Stock'].iloc[:(stock-sumStockNew)].items():
+                stock_proporcional.loc[stock_proporcional['Cod_Sucursal'] == index, 'Stock'] +=1
+
+        sumStockNew = stock_proporcional.loc[:, 'Stock'].sum()
+
         # Ajusto stock en la tabla
         if sumStockNew > stock:
             for index, row in stock_proporcional['Stock'].sort_values(ascending=False).iloc[:(stock-sumStockNew)].items():
                 #print(index, row)
-                stock_proporcional.loc[index, 'Stock'] -=1
+                stock_proporcional.loc[stock_proporcional['Cod_Sucursal'] == index, 'Stock'] -=1
         elif sumStockNew < stock:
             for index, row in stock_proporcional['Stock'].sort_values(ascending=False).iloc[:(stock-sumStockNew)].items():
                 #print(index, row)
-                stock_proporcional.loc[index, 'Stock'] +=1
+                stock_proporcional.loc[stock_proporcional['Cod_Sucursal'] == index, 'Stock'] +=1
 
         # Cargo stock en la tabla final
         for index, row in df2.loc[df2['Cod_Producto'] == id, 'Stock'].items():
