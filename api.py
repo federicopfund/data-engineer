@@ -34,11 +34,16 @@ df_cat = pd.read_csv(f'abfs://{datalake_container}@{datalake_account_name}.dfs.c
 df_subcat = pd.read_csv(f'abfs://{datalake_container}@{datalake_account_name}.dfs.core.windows.net/dboSubCategoria.csv',storage_options = {'account_key': datalake_account_access_key})
 
 @app.get("/productos")
-async def getProductos():
+async def getProductos(ignoreEmpty: bool = False):
     '''Devuelve todos los productos'''
     # Lee dataframes y variables 
     df = df_og.copy()
-    df2 = df2_og.copy()
+
+    # Si el query parameter ignoreEmpty es true entonces ignora las sucursales vacias
+    if ignoreEmpty:
+        df2 = df2_og[df2_og['Stock'] != 0].copy()
+    else:
+        df2 = df2_og.copy()
     
     # Devuelve dataframe filtrado
     join = dflogic.filterDataframes(df,df2)
@@ -47,11 +52,17 @@ async def getProductos():
 
 
 @app.get("/producto/{id_producto}")
-async def getProductoById(id_producto: int, response: Response):
+async def getProductoById(id_producto: int, response: Response, ignoreEmpty: bool = False):
     '''Devuelve el producto que tenga cierto ID'''
     # Lee dataframes
     df = df_og.copy()
-    df2 = df2_og.copy()
+
+    # Si el query parameter ignoreEmpty es true entonces ignora las sucursales vacias
+    if ignoreEmpty:
+        df2 = df2_og[df2_og['Stock'] != 0].copy()
+    else:
+        df2 = df2_og.copy()
+
     # Filtra por el producto pedido
     df = df.loc[df['Cod_Producto'] == id_producto]
     
@@ -122,11 +133,17 @@ async def getProductoBySubcategory(id_subcategoria: int, response: Response):
 
 
 @app.get("/categoria/{id_categoria}/subcategoria/{id_subcategoria}")
-async def getProductoByCategory(id_categoria: int, id_subcategoria: int, response: Response):
+async def getProductoByCategory(id_categoria: int, id_subcategoria: int, response: Response, ignoreEmpty: bool = False):
     '''Devuelve los productos bajo cierta categoria que corresponden a una subcategoria'''
     # Lee dataframes
     df = df_og.copy()
-    df2 = df2_og.copy()
+
+    # Si el query parameter ignoreEmpty es true entonces ignora las sucursales vacias
+    if ignoreEmpty:
+        df2 = df2_og[df2_og['Stock'] != 0].copy()
+    else:
+        df2 = df2_og.copy()
+
     # Filtra por la subcategoria y categoria pedida
     df = df.loc[(df['Cod_Categoria'] == id_categoria) & (df['Cod_Subcategoria'] == id_subcategoria)]
     
