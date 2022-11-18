@@ -1,6 +1,6 @@
 import asyncio 
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Response, status
 from fastapi.middleware.cors import CORSMiddleware
 
 import pandas as pd
@@ -46,7 +46,7 @@ async def getProductos():
 
 
 @app.get("/producto/{id_producto}")
-async def getProductoById(id_producto: int):
+async def getProductoById(id_producto: int, response: Response):
     '''Devuelve el producto que tenga cierto ID'''
     # Lee dataframes
     df = df_og.copy()
@@ -60,11 +60,12 @@ async def getProductoById(id_producto: int):
     if df.shape[0] != 0:
         return json.loads(join.to_json(orient='records'))
     else:
-        return {"error" : f"No existe el producto con id {id_producto}"}
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {"error" : f"No existe el producto con id {id_producto}."}
 
 
 @app.get("/categoria/{id_categoria}")
-async def getProductoByCategory(id_categoria: int):
+async def getProductoByCategory(id_categoria: int, response: Response):
     '''Devuelve los productos bajo cierta categoria'''
     # Lee dataframes
     df = df_og.copy()
@@ -78,11 +79,12 @@ async def getProductoByCategory(id_categoria: int):
     if df.shape[0] != 0:
         return json.loads(join.to_json(orient='records'))
     else:
-        return {"error" : f"No existe la categoria con id {id_categoria}"}
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {"error" : f"No existe la categoria con id {id_categoria}."}
 
 
 @app.get("/categoria/{id_categoria}/subcategoria/{id_subcategoria}")
-async def getProductoByCategory(id_categoria: int, id_subcategoria: int):
+async def getProductoByCategory(id_categoria: int, id_subcategoria: int, response: Response):
     '''Devuelve los productos bajo cierta categoria que corresponden a una subcategoria'''
     # Lee dataframes
     df = df_og.copy()
@@ -96,11 +98,12 @@ async def getProductoByCategory(id_categoria: int, id_subcategoria: int):
     if df.shape[0] != 0:
         return json.loads(join.to_json(orient='records'))
     else:
-        return {"error" : f"La subcategoria {id_subcategoria} no pertenece a la categoria {id_categoria}"}
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {"error" : f"La subcategoria {id_subcategoria} no pertenece a la categoria {id_categoria}, o alguna de estas dos no existe."}
 
 
 @app.get("/subcategoria/{id_subcategoria}")
-async def getProductoBySubcategory(id_subcategoria: int):
+async def getProductoBySubcategory(id_subcategoria: int, response: Response):
     '''Devuelve los productos bajo cierta subcategoria'''
     # Lee dataframes
     df = df_og.copy()
@@ -114,7 +117,8 @@ async def getProductoBySubcategory(id_subcategoria: int):
     if df.shape[0] != 0:
         return json.loads(join.to_json(orient='records'))
     else:
-        return {"error" : f"No existe subcategoria con id {id_subcategoria}"}
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {"error" : f"No existe subcategoria con id {id_subcategoria}."}
 
 @app.get('/test/{id_producto}')
 async def sepaDios(id_producto: int):
