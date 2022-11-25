@@ -165,7 +165,7 @@ async def sepaDios(id_producto: int):
     df2 = df2_og.copy()
 
     df = df.loc[df['Cod_Producto'] == id_producto]
-    df2 = DataframeLogic.stockUpItem(id_producto, 2, df2)
+    df2 = DataframeLogic.stockUpItem(id_producto, 12, df2)
 
     # Devuelve dataframe filtrado
     join = dflogic.filterDataframes(df,df2)

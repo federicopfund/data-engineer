@@ -15,15 +15,26 @@ class DataframeLogic:
 
     @staticmethod
     def stockUpItem(id, stock, df2):
+        # Agrego un producto a cada sucursal si tenemos 10 o mas de stock
+        #print(df2.loc[df2['Cod_Producto'] == id, 'Stock'].sum())
+        if stock >= 10:
+            #print(stock_proporcional, "antes")
+            df2.loc[df2['Cod_Producto'] == id, 'Stock'] += 1
+            #print(stock_proporcional, "despues")
+            # Actualizo el stock
+            stock -= 10
+        
         # Subdataframe del producto
         stock_proporcional = df2[df2['Cod_Producto'] == id]
-        
+        #print(stock_proporcional['Stock'].sum())
+
         # Si la suma del stock es distinto de cero, usar las proporciones dadas
         if (stock_proporcional.loc[:, 'Stock'].sum() != 0):
             # Stock total del producto
             sumStockOriginal = stock_proporcional.loc[:, 'Stock'].sum()
             # Reemplazo los stocks por sus proporciones
             stock_proporcional.loc[:, 'Stock'] /= sumStockOriginal
+            #print(stock_proporcional)
         # De lo contrario, usar las proporciones iniciales
         else:
             # Stock total del producto
@@ -45,8 +56,9 @@ class DataframeLogic:
         sumStockNew = stock_proporcional.loc[:, 'Stock'].sum()
 
         # Ajusto stock en la tabla
+        #print(sumStockNew)
         if sumStockNew > stock:
-            for index, row in stock_proporcional['Stock'].sort_values(ascending=False).iloc[:(stock-sumStockNew)].items():
+            for index, row in stock_proporcional['Stock'].sort_values(ascending=False).iloc[:(sumStockNew-stock)].items():
                 #print(index, row)
                 stock_proporcional.loc[stock_proporcional['Cod_Sucursal'] == index, 'Stock'] -=1
         elif sumStockNew < stock:
@@ -58,4 +70,6 @@ class DataframeLogic:
         for index, row in df2.loc[df2['Cod_Producto'] == id, 'Stock'].items():
             df2.loc[index, 'Stock'] += stock_proporcional.loc[index, 'Stock']
         
+        #print(stock_proporcional['Stock'].sum())
+        #print(df2.loc[df2['Cod_Producto'] == id, 'Stock'].sum())
         return df2
