@@ -1,0 +1,18 @@
+[
+  {
+    "Cod_Categoria": "1",
+    "Categoria": "Bicicleta"
+  },
+  {
+    "Cod_Categoria": "2",
+    "Categoria": "Componente"
+  },
+  {
+    "Cod_Categoria": "3",
+    "Categoria": "Prenda"
+  },
+  {
+    "Cod_Categoria": "4",
+    "Categoria": "Accesorio"
+  }
+]

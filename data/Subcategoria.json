@@ -1,0 +1,187 @@
+[
+  {
+    "Cod_SubCategoria": "1",
+    "SubCategoria": "Bicicleta de montaña",
+    "Cod_Categoria": "1"
+  },
+  {
+    "Cod_SubCategoria": "2",
+    "SubCategoria": "Bicicleta de carretera",
+    "Cod_Categoria": "1"
+  },
+  {
+    "Cod_SubCategoria": "3",
+    "SubCategoria": "Bicicleta de paseo",
+    "Cod_Categoria": "1"
+  },
+  {
+    "Cod_SubCategoria": "4",
+    "SubCategoria": "Barra",
+    "Cod_Categoria": "2"
+  },
+  {
+    "Cod_SubCategoria": "5",
+    "SubCategoria": "Eje de pedalier",
+    "Cod_Categoria": "2"
+  },
+  {
+    "Cod_SubCategoria": "6",
+    "SubCategoria": "Frenos",
+    "Cod_Categoria": "2"
+  },
+  {
+    "Cod_SubCategoria": "7",
+    "SubCategoria": "Cadena",
+    "Cod_Categoria": "2"
+  },
+  {
+    "Cod_SubCategoria": "8",
+    "SubCategoria": "Bielas",
+    "Cod_Categoria": "2"
+  },
+  {
+    "Cod_SubCategoria": "9",
+    "SubCategoria": "Desviador",
+    "Cod_Categoria": "2"
+  },
+  {
+    "Cod_SubCategoria": "10",
+    "SubCategoria": "Horquilla",
+    "Cod_Categoria": "2"
+  },
+  {
+    "Cod_SubCategoria": "11",
+    "SubCategoria": "Dirección",
+    "Cod_Categoria": "2"
+  },
+  {
+    "Cod_SubCategoria": "12",
+    "SubCategoria": "Cuadro de montaña",
+    "Cod_Categoria": "2"
+  },
+  {
+    "Cod_SubCategoria": "13",
+    "SubCategoria": "Pedal",
+    "Cod_Categoria": "2"
+  },
+  {
+    "Cod_SubCategoria": "14",
+    "SubCategoria": "Cuadro de carretera",
+    "Cod_Categoria": "2"
+  },
+  {
+    "Cod_SubCategoria": "15",
+    "SubCategoria": "Sillín",
+    "Cod_Categoria": "2"
+  },
+  {
+    "Cod_SubCategoria": "16",
+    "SubCategoria": "Cuadro de paseo",
+    "Cod_Categoria": "2"
+  },
+  {
+    "Cod_SubCategoria": "17",
+    "SubCategoria": "Rueda",
+    "Cod_Categoria": "2"
+  },
+  {
+    "Cod_SubCategoria": "18",
+    "SubCategoria": "Culote corto",
+    "Cod_Categoria": "3"
+  },
+  {
+    "Cod_SubCategoria": "19",
+    "SubCategoria": "Gorra",
+    "Cod_Categoria": "3"
+  },
+  {
+    "Cod_SubCategoria": "20",
+    "SubCategoria": "Guantes",
+    "Cod_Categoria": "3"
+  },
+  {
+    "Cod_SubCategoria": "21",
+    "SubCategoria": "Jersey",
+    "Cod_Categoria": "3"
+  },
+  {
+    "Cod_SubCategoria": "22",
+    "SubCategoria": "Pantalones cortos",
+    "Cod_Categoria": "3"
+  },
+  {
+    "Cod_SubCategoria": "23",
+    "SubCategoria": "Calcetines",
+    "Cod_Categoria": "3"
+  },
+  {
+    "Cod_SubCategoria": "24",
+    "SubCategoria": "Mallas",
+    "Cod_Categoria": "3"
+  },
+  {
+    "Cod_SubCategoria": "25",
+    "SubCategoria": "Camiseta",
+    "Cod_Categoria": "3"
+  },
+  {
+    "Cod_SubCategoria": "26",
+    "SubCategoria": "Portabicicletas",
+    "Cod_Categoria": "4"
+  },
+  {
+    "Cod_SubCategoria": "27",
+    "SubCategoria": "Soporte para bicicletas",
+    "Cod_Categoria": "4"
+  },
+  {
+    "Cod_SubCategoria": "28",
+    "SubCategoria": "Portabotellas y botella",
+    "Cod_Categoria": "4"
+  },
+  {
+    "Cod_SubCategoria": "29",
+    "SubCategoria": "Limpiador",
+    "Cod_Categoria": "4"
+  },
+  {
+    "Cod_SubCategoria": "30",
+    "SubCategoria": "Guardabarros",
+    "Cod_Categoria": "4"
+  },
+  {
+    "Cod_SubCategoria": "31",
+    "SubCategoria": "Casco",
+    "Cod_Categoria": "4"
+  },
+  {
+    "Cod_SubCategoria": "32",
+    "SubCategoria": "Sistema de hidratación",
+    "Cod_Categoria": "4"
+  },
+  {
+    "Cod_SubCategoria": "33",
+    "SubCategoria": "Luz",
+    "Cod_Categoria": "4"
+  },
+  {
+    "Cod_SubCategoria": "34",
+    "SubCategoria": "Candado",
+    "Cod_Categoria": "4"
+  },
+  {
+    "Cod_SubCategoria": "35",
+    "SubCategoria": "Cesta",
+    "Cod_Categoria": "4"
+  },
+  {
+    "Cod_SubCategoria": "36",
+    "SubCategoria": "Bomba",
+    "Cod_Categoria": "4"
+  },
+  {
+    "Cod_SubCategoria": "37",
+    "SubCategoria": "Cubierta y cámara",
+    "Cod_Categoria": "4"
+  }
+]
