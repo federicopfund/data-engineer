@@ -7,6 +7,8 @@ import pandas as pd
 import json
 
 from Logic.DataframeLogic import DataframeLogic
+from pydantic import BaseModel
+from typing import Union
 
 app = FastAPI()
 
@@ -157,7 +159,44 @@ async def getProductoByCategory(id_categoria: int, id_subcategoria: int, respons
         return {"error" : f"La subcategoria {id_subcategoria} no pertenece a la categoria {id_categoria}, o alguna de estas dos no existe."}
 
 
-@app.get('/test/{id_producto}')
+
+
+class Item(BaseModel):
+    user: str
+    password: str
+    id_producto: int
+    stock: int
+
+
+@app.put('/test/')
+async def create_item(item: Item):
+    if item.user == config['user1']['user'] and item.password == config['user1']['password']:
+        
+        global df2_og
+        # Lee dataframes
+        df = df_og.copy()
+        df2 = df2_og.copy()
+
+        df = df.loc[df['Cod_Producto'] == item.id_producto]
+        df2 = DataframeLogic.stockUpItem(item.id_producto, item.stock, df2)
+
+        # Devuelve dataframe filtrado
+        join = dflogic.filterDataframes(df,df2)
+
+        df2_og = df2
+        #guardo en otro container para no sobreescribir el anterior
+        df2.to_csv(f'abfs://{datalake_container2}@{datalake_account_name}.dfs.core.windows.net/Producto_Sucursales.csv',storage_options = {'account_key': datalake_account_access_key} ,index=False)
+
+        return json.loads(join.to_json(orient='records'))
+    
+    else:
+        return {"message":"El usuario o la contraseña no son validos"}
+
+        
+
+
+'''
+    @app.put('/test/{id_producto}')
 async def sepaDios(id_producto: int):
     global df2_og
     # Lee dataframes
@@ -165,7 +204,7 @@ async def sepaDios(id_producto: int):
     df2 = df2_og.copy()
 
     df = df.loc[df['Cod_Producto'] == id_producto]
-    df2 = DataframeLogic.stockUpItem(id_producto, 12, df2)
+    df2 = DataframeLogic.stockUpItem(id_producto, 100, df2)
 
     # Devuelve dataframe filtrado
     join = dflogic.filterDataframes(df,df2)
@@ -175,3 +214,4 @@ async def sepaDios(id_producto: int):
     df2.to_csv(f'abfs://{datalake_container2}@{datalake_account_name}.dfs.core.windows.net/Producto_Sucursales.csv',storage_options = {'account_key': datalake_account_access_key} ,index=False)
 
     return json.loads(join.to_json(orient='records'))
+'''
