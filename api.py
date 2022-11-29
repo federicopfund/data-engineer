@@ -8,6 +8,7 @@ import json
 
 from Logic.DataframeLogic import DataframeLogic
 from Models.RequestItemModel import Item
+from Data.DbContext import Context
 
 app = FastAPI()
 
@@ -28,6 +29,9 @@ datalake_account_access_key = config['datalake']['datalake_account_access_key']
 datalake_container = config['datalake']['datalake_container']
 datalake_container2 = config['datalake']['datalake_container2']
 datalake_account_name = config['datalake']['datalake_account_name']
+
+context = Context(config['database']['server'], config['database']['database'], config['database']['username'], 
+    config['database']['password'], config['database']['driver'])
 
 df_og = pd.read_csv(f'abfs://{datalake_container}@{datalake_account_name}.dfs.core.windows.net/Producto_Unico.csv',storage_options = {'account_key': datalake_account_access_key})
 df2_og = pd.read_csv(f'abfs://{datalake_container}@{datalake_account_name}.dfs.core.windows.net/Producto_Sucursales.csv',storage_options = {'account_key': datalake_account_access_key})
@@ -169,6 +173,14 @@ async def create_item(id: int, item: Item, response: Response):
 
         df = df.loc[df['Cod_Producto'] == id]
         df2 = DataframeLogic.stockUpItem(id, item.stock, df2)
+
+        # Actualiza los valores en la base de datos
+        with context.cursor() as cursor:
+            for index, row in df2.loc[df2['Cod_Producto'] == id].iterrows():
+                cursor.execute("""
+                    UPDATE Producto_Sucursales
+                    SET Stock = ?
+                    WHERE Cod_Producto = ? AND Cod_Sucursal = ?""", row['Stock'], id, row['Cod_Sucursal'])
 
         # Devuelve dataframe filtrado
         join = dflogic.filterDataframes(df,df2)
