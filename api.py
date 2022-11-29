@@ -178,9 +178,9 @@ async def create_item(id: int, item: Item, response: Response):
         with context.cursor() as cursor:
             for index, row in df2.loc[df2['Cod_Producto'] == id].iterrows():
                 cursor.execute("""
-                    UPDATE Producto_Sucursales
+                    UPDATE dbo.Productos_Sucursales
                     SET Stock = ?
-                    WHERE Cod_Producto = ? AND Cod_Sucursal = ?""", row['Stock'], id, row['Cod_Sucursal'])
+                    WHERE Cod_Producto = ? AND Cod_Sucursal = ?""", int(row['Stock']), id, int(row['Cod_Sucursal']))
 
         # Devuelve dataframe filtrado
         join = dflogic.filterDataframes(df,df2)
