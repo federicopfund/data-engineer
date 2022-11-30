@@ -3,3 +3,4 @@ pandas
 fsspec
 adlfs
 asyncio
+pyodbc
