@@ -172,6 +172,11 @@ async def create_item(id: int, item: Item, response: Response):
         df2 = df2_og.copy()
 
         df = df.loc[df['Cod_Producto'] == id]
+        
+        if df.shape[0] == 0:
+            response.status_code = status.HTTP_404_NOT_FOUND
+            return {"error":f"El producto con id {id} no se encuentra en la lista de productos."}
+        
         df2 = DataframeLogic.stockUpItem(id, item.stock, df2)
 
         # Actualiza los valores en la base de datos

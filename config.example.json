@@ -4,5 +4,16 @@
         "datalake_container" : "csv",
         "datalake_container2" : "outputcsv",
         "datalake_account_name" : "datalakename"
+    },
+    "user1" : { 
+        "username" : "user",
+        "password" : "password"
+    },
+    "database": {
+        "server": "<server>.database.windows.net",
+        "database": "database-name",
+        "username": "serverusername",
+        "password": "serverpassword",
+        "driver": "{ODBC Driver 17 for SQL Server}"
     }
 }
