@@ -8,6 +8,7 @@ import json
 
 from Logic.DataframeLogic import DataframeLogic
 from Models.RequestItemModel import Item
+from Models.BoughtItemModel import BoughtItem
 from Data.DbContext import Context
 
 app = FastAPI()
@@ -199,3 +200,40 @@ async def create_item(id: int, item: Item, response: Response):
     else:
         response.status_code = status.HTTP_401_UNAUTHORIZED
         return {"message":"El usuario o la contraseña no son validos"}
+
+
+@app.get('/comprar/{id}')
+async def buyItem(id: int, item: BoughtItem, response: Response):
+    global df2_og
+
+    df = df_og.copy()
+    df2 = df2_og.copy()
+
+    df = df.loc[df['Cod_Producto'] == id]
+
+    if df.shape[0] == 0:
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {"error":f"El producto con id {id} no se encuentra en la lista de productos."}
+    
+    df2 = DataframeLogic.buyProduct(id, item.Cantidad, item.Sucursal, df2)
+
+    if not df2:
+        response.status_code = status.HTTP_400_BAD_REQUEST
+        return {"error":f"No se puede comprar una cantidad mayor al stock disponible."}
+
+    with context.cursor() as cursor:
+            cursor.execute("""
+                UPDATE dbo.Productos_Sucursales
+                SET Stock = ?
+                WHERE Cod_Producto = ? AND Cod_Sucursal = ?""", 
+                df2[['Cod_Producto'] == id & df2['Cod_Sucursal'] == item.Sucursal, 'Stock'], id, item.Sucursal)
+    
+    # Devuelve dataframe filtrado
+    join = dflogic.filterDataframes(df,df2)
+
+    df2_og = df2
+    
+    #guardo en otro container para no sobreescribir el anterior
+    df2.to_csv(f'abfs://{datalake_container2}@{datalake_account_name}.dfs.core.windows.net/Producto_Sucursales.csv',storage_options = {'account_key': datalake_account_access_key} ,index=False)
+    
+    return json.loads(join.to_json(orient='records'))
