@@ -73,3 +73,14 @@ class DataframeLogic:
         #print(stock_proporcional['Stock'].sum())
         #print(df2.loc[df2['Cod_Producto'] == id, 'Stock'].sum())
         return df2
+
+    @staticmethod
+    def buyProduct(id, cantidad, sucursal, df2):
+        stock = df2.loc[df2['Cod_Producto'] == id & df2['Cod_Sucursal'] == sucursal, 'Stock']
+
+        if stock >= cantidad:
+            df2.loc[['Cod_Producto'] == id & df2['Cod_Sucursal'] == sucursal, 'Stock'] -= cantidad
+
+            return df2
+        else:
+            return None
