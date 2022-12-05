@@ -5,8 +5,8 @@ write-host "Starting script at $(Get-Date)"
 Write-Host "Your randomly-generated suffix for Azure resources is $suffix"
 
 
-$username = "federicopfund@21.edu.ar"
-$password = "fogata123_"
+$username = ""
+$password = ""
 
 Write-Host "Connect a Azure a la cuenta de $username..";
 #-------------LOGIN--------------
