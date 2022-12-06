@@ -38,8 +38,11 @@ datalake_account_name = config['datalake']['datalake_account_name']
 #context = Context(config['database']['server'], config['database']['database'], config['database']['username'], 
 #    config['database']['password'], config['database']['driver'])
 
+# Producto Unico
 df_og = pd.read_csv(f'abfs://{datalake_container}@{datalake_account_name}.dfs.core.windows.net/Producto_Unico.csv',storage_options = {'account_key': datalake_account_access_key})
+# Producto Sucursales
 df2_og = pd.read_csv(f'abfs://{datalake_container}@{datalake_account_name}.dfs.core.windows.net/Producto_Sucursales.csv',storage_options = {'account_key': datalake_account_access_key})
+df_ventas_og = pd.read_csv(f'abfs://{datalake_container}@{datalake_account_name}.dfs.core.windows.net/VentasInternet_Unico.csv',storage_options = {'account_key': datalake_account_access_key})
 df_cat = pd.read_csv(f'abfs://{datalake_container}@{datalake_account_name}.dfs.core.windows.net/dboCategoria.csv',storage_options = {'account_key': datalake_account_access_key})
 df_subcat = pd.read_csv(f'abfs://{datalake_container}@{datalake_account_name}.dfs.core.windows.net/dboSubCategoria.csv',storage_options = {'account_key': datalake_account_access_key})
 
@@ -206,7 +209,7 @@ async def create_item(id: int, item: Item, response: Response):
         return {"message":"El usuario o la contraseña no son validos"}
 
 
-@app.get('/comprar/{id}')
+@app.put('/comprar/{id}')
 async def buyItem(id: int, item: BoughtItem, response: Response):
     global df2_og
 
@@ -221,7 +224,7 @@ async def buyItem(id: int, item: BoughtItem, response: Response):
     
     df2 = DataframeLogic.buyProduct(id, item.Cantidad, item.Sucursal, df2)
 
-    if not df2:
+    if df2 is None:
         response.status_code = status.HTTP_400_BAD_REQUEST
         return {"error":f"No se puede comprar una cantidad mayor al stock disponible."}
 
@@ -252,7 +255,13 @@ async def create_item(item: ItemAdd, response: Response):
     if item.user == config['user1']['username'] and item.password == config['user1']['password']:
         prod_suc_add = df2_og.copy()
         prod_unico_add = df_og.copy()
-        prod_unico_add.loc[len(prod_unico_add)]=[1+len(prod_unico_add),"%a"%(item.name),item.subcat,item.cat]
+        print(prod_unico_add.loc[prod_unico_add['Producto'] == item.name].shape[0])
+        if prod_unico_add.loc[prod_unico_add['Producto'] == item.name].shape[0] > 0:
+            
+            response.status_code = status.HTTP_400_BAD_REQUEST
+            return {"error":f"El producto {item.name} ya se encuentra en la lista de productos."}
+
+        prod_unico_add.loc[len(prod_unico_add)]=[1+len(prod_unico_add),str(item.name),item.subcat,item.cat]
         max = prod_suc_add['Cod_Producto'].max()
         for i in range(len(item.sucursales)):
 
@@ -261,10 +270,14 @@ async def create_item(item: ItemAdd, response: Response):
         df2_og = prod_suc_add
         df_og = prod_unico_add
 
+        #Devuelve dataframe filtrado
+        join = dflogic.filterDataframes(prod_unico_add,prod_suc_add)
+
+
         prod_suc_add.to_csv(f'abfs://{datalake_container}@{datalake_account_name}.dfs.core.windows.net/Producto_Sucursales.csv',storage_options = {'account_key': datalake_account_access_key},index=False,encoding='utf-8')
         prod_unico_add.to_csv(f'abfs://{datalake_container}@{datalake_account_name}.dfs.core.windows.net/Producto_Unico.csv',storage_options = {'account_key': datalake_account_access_key},index=False,encoding='utf-8')
 
-        return {"message":f"Producto agregado con exito"}
+        return json.loads(join.to_json(orient='records'))
     else:
         response.status_code = status.HTTP_401_UNAUTHORIZED
         return {"message":"El usuario o la contraseña no son validos"}

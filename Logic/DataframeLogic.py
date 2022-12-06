@@ -76,10 +76,10 @@ class DataframeLogic:
 
     @staticmethod
     def buyProduct(id, cantidad, sucursal, df2):
-        stock = df2.loc[df2['Cod_Producto'] == id & df2['Cod_Sucursal'] == sucursal, 'Stock']
+        stock = int(df2.loc[(df2['Cod_Producto'] == id) & (df2['Cod_Sucursal'] == sucursal), 'Stock'])
 
         if stock >= cantidad:
-            df2.loc[['Cod_Producto'] == id & df2['Cod_Sucursal'] == sucursal, 'Stock'] -= cantidad
+            df2.loc[(df2['Cod_Producto'] == id) & (df2['Cod_Sucursal'] == sucursal), 'Stock'] -= cantidad
 
             return df2
         else:
