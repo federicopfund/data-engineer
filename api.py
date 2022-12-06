@@ -246,16 +246,20 @@ async def buyItem(id: int, item: BoughtItem, response: Response):
 
 @app.post('/productos/')
 async def create_item(item: ItemAdd, response: Response):
+    global df2_og
+    global df_og
+
     if item.user == config['user1']['username'] and item.password == config['user1']['password']:
         prod_suc_add = df2_og.copy()
         prod_unico_add = df_og.copy()
         prod_unico_add.loc[len(prod_unico_add)]=[1+len(prod_unico_add),"%a"%(item.name),item.subcat,item.cat]
         max = prod_suc_add['Cod_Producto'].max()
-        for i in range(10):
-            prod_suc_add.loc[len(prod_suc_add)]=[max+1,i+1,0,0,"{'Cod_Sucursal': "+str(i+1)+", 'Stock': 0}"]
+        for i in range(len(item.sucursales)):
 
-        prod_suc_add.tail()
-        prod_unico_add.tail()
+            prod_suc_add.loc[len(prod_suc_add)]=[max+1,i+1,item.sucursales[i],item.sucursales[i],{'Cod_Sucursal': (i+1), 'Stock': (item.sucursales[i])}]
+
+        df2_og = prod_suc_add
+        df_og = prod_unico_add
 
         prod_suc_add.to_csv(f'abfs://{datalake_container}@{datalake_account_name}.dfs.core.windows.net/Producto_Sucursales.csv',storage_options = {'account_key': datalake_account_access_key},index=False,encoding='utf-8')
         prod_unico_add.to_csv(f'abfs://{datalake_container}@{datalake_account_name}.dfs.core.windows.net/Producto_Unico.csv',storage_options = {'account_key': datalake_account_access_key},index=False,encoding='utf-8')

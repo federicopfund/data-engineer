@@ -1,0 +1,239 @@
+Cod_Producto,Producto,Cod_Subcategoria,Cod_Categoria
+1,"Casco deportivo: 100, rojo",31,4
+2,"Casco deportivo: 100, negro",31,4
+3,"Calcetines para bicicleta de montaña, M",23,3
+4,"Calcetines para bicicleta de montaña, G",23,3
+5,"Casco deportivo: 100, azul",31,4
+6,"Jersey con logotipo de manga larga, P",21,3
+7,"Jersey con logotipo de manga larga, M",21,3
+8,"Jersey con logotipo de manga larga, G",21,3
+9,"Jersey con logotipo de manga larga, SG",21,3
+10,"Cuadro de carretera GA: rojo, 62",14,2
+11,"Cuadro de carretera GA: rojo, 44",14,2
+12,"Cuadro de carretera GA: rojo, 48",14,2
+13,"Cuadro de carretera GA: rojo, 52",14,2
+14,"Cuadro de carretera GA: rojo, 56",14,2
+15,"Cuadro de carretera GB: negro, 58",14,2
+16,"Cuadro de carretera GB: negro, 60",14,2
+17,"Cuadro de carretera GB: negro, 62",14,2
+18,"Cuadro de carretera GB: rojo, 44",14,2
+19,"Cuadro de carretera GB: rojo, 48",14,2
+20,"Cuadro de carretera GB: rojo, 52",14,2
+21,"Cuadro de carretera GB: rojo, 58",14,2
+22,"Cuadro de carretera GB: rojo, 60",14,2
+23,"Cuadro de carretera GB: rojo, 62",14,2
+24,"Cuadro de carretera GM: rojo, 44",14,2
+25,"Cuadro de carretera GM: rojo, 48",14,2
+26,"Cuadro de carretera GM: rojo, 52",14,2
+27,"Cuadro de carretera GM: rojo, 58",14,2
+28,"Cuadro de carretera GM: rojo, 60",14,2
+29,"Cuadro de carretera GB: negro, 44",14,2
+30,"Cuadro de carretera GB: negro, 48",14,2
+31,"Cuadro de carretera GB: negro, 52",14,2
+32,"Carretera: 150, roja, 62",2,1
+33,"Carretera: 150, roja, 44",2,1
+34,"Carretera: 150, roja, 48",2,1
+35,"Carretera: 150, roja, 52",2,1
+36,"Carretera: 150, roja, 56",2,1
+37,"Carretera: 450, roja, 58",2,1
+38,"Carretera: 450, roja, 60",2,1
+39,"Carretera: 450, roja, 44",2,1
+40,"Carretera: 450, roja, 48",2,1
+41,"Carretera: 450, roja, 52",2,1
+42,"Carretera: 650, roja, 58",2,1
+43,"Carretera: 650, roja, 60",2,1
+44,"Carretera: 650, roja, 62",2,1
+45,"Carretera: 650, roja, 44",2,1
+46,"Carretera: 650, roja, 48",2,1
+47,"Carretera: 650, roja, 52",2,1
+48,"Carretera: 650, negra, 58",2,1
+49,"Carretera: 650, negra, 60",2,1
+50,"Carretera: 650, negra, 62",2,1
+51,"Carretera: 650, negra, 44",2,1
+52,"Carretera: 650, negra, 48",2,1
+53,"Carretera: 650, negra, 52",2,1
+54,"Montaña: 100, plateada, 38",1,1
+55,"Montaña: 100, plateada, 42",1,1
+56,"Montaña: 100, plateada, 44",1,1
+57,"Montaña: 100, plateada, 48",1,1
+58,"Montaña: 100, negra, 38",1,1
+59,"Montaña: 100, negra, 42",1,1
+60,"Montaña: 100, negra, 44",1,1
+61,"Montaña: 100, negra, 48",1,1
+62,"Montaña: 200, plateada, 38",1,1
+63,"Montaña: 200, plateada, 42",1,1
+64,"Montaña: 200, plateada, 46",1,1
+65,"Montaña: 200, negra, 38",1,1
+66,"Montaña: 200, negra, 42",1,1
+67,"Montaña: 200, negra, 46",1,1
+68,"Montaña: 300, negra, 38",1,1
+69,"Montaña: 300, negra, 40",1,1
+70,"Montaña: 300, negra, 44",1,1
+71,"Montaña: 300, negra, 48",1,1
+72,"Carretera: 250, roja, 44",2,1
+73,"Carretera: 250, roja, 48",2,1
+74,"Carretera: 250, roja, 52",2,1
+75,"Carretera: 250, roja, 58",2,1
+76,"Carretera: 250, negra, 44",2,1
+77,"Carretera: 250, negra, 48",2,1
+78,"Carretera: 250, negra, 52",2,1
+79,"Carretera: 250, negra, 58",2,1
+80,"Carretera: 550 para mujer, amarilla, 38",2,1
+81,"Carretera: 550 para mujer, amarilla, 40",2,1
+82,"Carretera: 550 para mujer, amarilla, 42",2,1
+83,"Carretera: 550 para mujer, amarilla, 44",2,1
+84,"Carretera: 550 para mujer, amarilla, 48",2,1
+85,Horquilla GB,10,2
+86,Horquilla GM,10,2
+87,Horquilla GA,10,2
+88,Dirección GB,11,2
+89,Dirección GM,11,2
+90,Dirección GA,11,2
+91,Manillar de carretera GB,4,2
+92,Manillar de carretera GM,4,2
+93,Manillar de carretera GA,4,2
+94,Rueda de carretera delantera GB,17,2
+95,Rueda de carretera delantera GM,17,2
+96,Rueda de carretera delantera GA,17,2
+97,Rueda de paseo delantera,17,2
+98,"Cuadro de carretera para mujer GM: amarillo, 38",14,2
+99,Rueda de carretera trasera GB,17,2
+100,Rueda de carretera trasera GM,17,2
+101,Rueda de carretera trasera GA,17,2
+102,Rueda de paseo trasera,17,2
+103,"Cuadro de carretera para mujer GM: amarillo, 40",14,2
+104,"Cuadro de carretera para mujer GM: amarillo, 42",14,2
+105,"Cuadro de carretera para mujer GM: amarillo, 44",14,2
+106,"Cuadro de carretera para mujer GM: amarillo, 48",14,2
+107,"Cuadro de carretera GA: negro, 62",14,2
+108,"Cuadro de carretera GA: negro, 44",14,2
+109,"Cuadro de carretera GA: negro, 48",14,2
+110,"Cuadro de carretera GA: negro, 52",14,2
+111,"Pantalones cortos de deporte para hombre, P",22,3
+112,"Cesta de paseo, grande",35,4
+113,Cable antirrobo,34,4
+114,Bomba de montaña,36,4
+115,Luces: doble haz,33,4
+116,Luces: resistentes al agua,33,4
+117,"Pantalones cortos de deporte para hombre, M",22,3
+118,"Pantalones cortos de deporte para hombre, G",22,3
+119,"Pantalones cortos de deporte para hombre, SG",22,3
+120,"Mallas para mujer, P",24,3
+121,"Mallas para mujer, M",24,3
+122,"Mallas para mujer, G",24,3
+123,"Guantes completos, P",20,3
+124,"Guantes completos, M",20,3
+125,"Guantes completos, G",20,3
+126,"Camiseta clásica, P",25,3
+127,"Camiseta clásica, M",25,3
+128,"Camiseta clásica, G",25,3
+129,Portabotellas de montaña,28,4
+130,Portabotellas de carretera,28,4
+131,"Calcetines para carreras, M",23,3
+132,"Calcetines para carreras, G",23,3
+133,Lavado de bicicletas: disolvente,29,4
+134,Conjunto de guardabarros: montaña,30,4
+135,Soporte multiusos para bicicletas,27,4
+136,"Jersey clásico de manga corta, P",21,3
+137,"Jersey clásico de manga corta, M",21,3
+138,"Jersey clásico de manga corta, G",21,3
+139,"Jersey clásico de manga corta, SG",21,3
+140,"Cuadro de paseo GA: amarillo, 60",16,2
+141,"Cuadro de paseo GB: amarillo, 62",16,2
+142,"Cuadro de paseo GA: amarillo, 46",16,2
+143,"Cuadro de paseo GA: amarillo, 50",16,2
+144,"Cuadro de paseo GA: amarillo, 54",16,2
+145,"Cuadro de paseo GA: azul, 46",16,2
+146,"Cuadro de paseo GA: azul, 50",16,2
+147,"Cuadro de paseo GA: azul, 54",16,2
+148,"Cuadro de paseo GA: azul, 60",16,2
+149,Desviador trasero,9,2
+150,"Cuadro de paseo GB: azul, 50",16,2
+151,"Cuadro de paseo GB: azul, 54",16,2
+152,"Cuadro de paseo GB: azul, 58",16,2
+153,"Cuadro de paseo GB: azul, 62",16,2
+154,"Cuadro de paseo GB: amarillo, 44",16,2
+155,"Cuadro de paseo GB: amarillo, 50",16,2
+156,"Cuadro de paseo GB: amarillo, 54",16,2
+157,"Cuadro de paseo GB: amarillo, 58",16,2
+158,"Cuadro de paseo GB: azul, 44",16,2
+159,Frenos traseros,6,2
+160,Sillín/asiento de carretera GB,15,2
+161,Sillín/asiento de carretera GM,15,2
+162,Sillín/asiento de carretera GA,15,2
+163,Sillín/asiento de paseo GB,15,2
+164,Sillín/asiento de paseo GM,15,2
+165,Sillín/asiento de paseo GA,15,2
+166,Cubierta para cámara de montaña,37,4
+167,Cubierta para cámara de carretera,37,4
+168,Cubierta para cámara de paseo,37,4
+169,Cubierta de montaña GB,37,4
+170,Cubierta de montaña GM,37,4
+171,Cubierta de montaña GA,37,4
+172,Cubierta de carretera GB,37,4
+173,Cubierta de carretera GM,37,4
+174,Cubierta de carretera GA,37,4
+175,Cubierta de paseo,37,4
+176,Pedal de montaña GB,13,2
+177,Pedal de montaña GM,13,2
+178,Pedal de montaña GA,13,2
+179,Pedal de carretera GB,13,2
+180,Pedal de carretera GM,13,2
+181,Pedal de carretera GA,13,2
+182,Pedal de paseo,13,2
+183,Desviador delantero,9,2
+184,Manillar de paseo GB,4,2
+185,Manillar de paseo GA,4,2
+186,Frenos delanteros,6,2
+187,Bielas GB,8,2
+188,Bielas GM,8,2
+189,Bielas GA,8,2
+190,Cadena,7,2
+191,"Paseo: 2000, azul, 60",3,1
+192,"Paseo: 1000, amarilla, 46",3,1
+193,"Paseo: 1000, amarilla, 50",3,1
+194,"Paseo: 1000, amarilla, 54",3,1
+195,"Paseo: 1000, amarilla, 60",3,1
+196,"Paseo: 3000, azul, 54",3,1
+197,"Paseo: 3000, azul, 58",3,1
+198,"Paseo: 3000, azul, 62",3,1
+199,"Paseo: 3000, amarilla, 44",3,1
+200,"Paseo: 3000, amarilla, 50",3,1
+201,"Paseo: 3000, amarilla, 54",3,1
+202,"Paseo: 3000, amarilla, 58",3,1
+203,"Paseo: 3000, amarilla, 62",3,1
+204,"Paseo: 1000, azul, 46",3,1
+205,"Paseo: 1000, azul, 50",3,1
+206,"Paseo: 1000, azul, 54",3,1
+207,"Paseo: 1000, azul, 60",3,1
+208,"Paseo: 2000, azul, 46",3,1
+209,"Paseo: 2000, azul, 50",3,1
+210,"Paseo: 2000, azul, 54",3,1
+211,"Carretera: 350 para mujer, amarilla, 40",2,1
+212,"Carretera: 350 para mujer, amarilla, 42",2,1
+213,"Carretera: 350 para mujer, amarilla, 44",2,1
+214,"Carretera: 350 para mujer, amarilla, 48",2,1
+215,"Carretera: 750, negra, 58",2,1
+216,"Paseo: 3000, azul, 44",3,1
+217,"Paseo: 3000, azul, 50",3,1
+218,"Montaña: 400 para mujer, plateada, 38",1,1
+219,"Montaña: 400 para mujer, plateada, 40",1,1
+220,"Montaña: 400 para mujer, plateada, 42",1,1
+221,"Montaña: 400 para mujer, plateada, 46",1,1
+222,"Montaña: 500, plateada, 40",1,1
+223,"Montaña: 500, plateada, 42",1,1
+224,"Montaña: 500, plateada, 44",1,1
+225,"Montaña: 500, plateada, 48",1,1
+226,"Montaña: 500, plateada, 52",1,1
+227,"Montaña: 500, negra, 40",1,1
+228,"Montaña: 500, negra, 42",1,1
+229,"Montaña: 500, negra, 44",1,1
+230,"Montaña: 500, negra, 48",1,1
+231,"Montaña: 500, negra, 52",1,1
+232,Eje de pedalier GB,5,2
+233,Eje de pedalier GM,5,2
+234,Eje de pedalier GA,5,2
+235,"Carretera: 750, negra, 44",2,1
+236,"Carretera: 750, negra, 48",2,1
+237,"Carretera: 750, negra, 52",2,1
+238,'dasdasdsadasd',2,1

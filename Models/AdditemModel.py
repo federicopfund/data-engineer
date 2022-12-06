@@ -7,3 +7,4 @@ class ItemAdd(BaseModel):
     name: str
     cat: int
     subcat: int
+    sucursales: list[int]=Field(max_items=10,min_items=10)
