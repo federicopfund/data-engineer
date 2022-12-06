@@ -224,7 +224,7 @@ async def buyItem(id: int, item: BoughtItem, response: Response):
     
     df2 = DataframeLogic.buyProduct(id, item.Cantidad, item.Sucursal, df2)
 
-    if not df2:
+    if df2 is None:
         response.status_code = status.HTTP_400_BAD_REQUEST
         return {"error":f"No se puede comprar una cantidad mayor al stock disponible."}
 
