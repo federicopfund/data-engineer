@@ -8,6 +8,8 @@ from fastapi.middleware.cors import CORSMiddleware
 
 import pandas as pd
 import json
+import datetime
+import random
 
 from Logic.DataframeLogic import DataframeLogic
 from Models.RequestItemModel import Item
@@ -42,8 +44,11 @@ datalake_account_name = config['datalake']['datalake_account_name']
 df_og = pd.read_csv(f'abfs://{datalake_container}@{datalake_account_name}.dfs.core.windows.net/Producto_Unico.csv',storage_options = {'account_key': datalake_account_access_key})
 # Producto Sucursales
 df2_og = pd.read_csv(f'abfs://{datalake_container}@{datalake_account_name}.dfs.core.windows.net/Producto_Sucursales.csv',storage_options = {'account_key': datalake_account_access_key})
+# Ventas Producto Unico
 df_ventas_og = pd.read_csv(f'abfs://{datalake_container}@{datalake_account_name}.dfs.core.windows.net/VentasInternet_Unico.csv',storage_options = {'account_key': datalake_account_access_key})
+# Categoria
 df_cat = pd.read_csv(f'abfs://{datalake_container}@{datalake_account_name}.dfs.core.windows.net/dboCategoria.csv',storage_options = {'account_key': datalake_account_access_key})
+# Subcategoria
 df_subcat = pd.read_csv(f'abfs://{datalake_container}@{datalake_account_name}.dfs.core.windows.net/dboSubCategoria.csv',storage_options = {'account_key': datalake_account_access_key})
 
 @app.get("/productos")
@@ -200,21 +205,23 @@ async def create_item(id: int, item: Item, response: Response):
 
         df2_og = df2
         #guardo en otro container para no sobreescribir el anterior
-        df2.to_csv(f'abfs://{datalake_container2}@{datalake_account_name}.dfs.core.windows.net/Producto_Sucursales.csv',storage_options = {'account_key': datalake_account_access_key} ,index=False)
+        df2.to_csv(f'abfs://{datalake_container}@{datalake_account_name}.dfs.core.windows.net/Producto_Sucursales.csv',storage_options = {'account_key': datalake_account_access_key} ,index=False)
 
         return json.loads(join.to_json(orient='records'))
     
     else:
         response.status_code = status.HTTP_401_UNAUTHORIZED
-        return {"message":"El usuario o la contraseña no son validos"}
+        return {"error":"El usuario o la contraseña no son validos"}
 
 
 @app.put('/comprar/{id}')
 async def buyItem(id: int, item: BoughtItem, response: Response):
     global df2_og
+    global df_ventas_og
 
     df = df_og.copy()
     df2 = df2_og.copy()
+    ventas = df_ventas_og.copy()
 
     df = df.loc[df['Cod_Producto'] == id]
 
@@ -238,12 +245,26 @@ async def buyItem(id: int, item: BoughtItem, response: Response):
     #Devuelve dataframe filtrado
     join = dflogic.filterDataframes(df,df2)
 
+    today = datetime.datetime.now()
+    precio_unitario = random.random()*3578.27+3.99
+    costo_unitario = precio_unitario * (ventas['CostoUnitario'] / ventas['PrecioUnitario']).agg('mean')
+
+    # Agrego el registro de venta al df de ventas con datos que me saque principalmente de la galera
+    ventas.loc[len(ventas)] = [id, ventas['Cod_Cliente'].max()+1, random.randint(1,10), 
+        f"SO{ventas['NumeroOrden'].apply(lambda x: int(x[2:])).max()+1}", item.Cantidad, 
+        precio_unitario, costo_unitario, precio_unitario * 0.08, 
+        precio_unitario * 0.025, today.strftime("%Y-%m-%d %H:%M:%S"), (today+datetime.timedelta(days=7)).strftime("%Y-%m-%d %H:%M:%S"), 
+        (today+datetime.timedelta(days=12)).strftime("%Y-%m-%d %H:%M:%S"), 1]
+
     df2_og = df2
+    df_ventas_og = ventas
     
-    #guardo en otro container para no sobreescribir el anterior
-    df2.to_csv(f'abfs://{datalake_container2}@{datalake_account_name}.dfs.core.windows.net/Producto_Sucursales.csv',storage_options = {'account_key': datalake_account_access_key} ,index=False)
+    # Comento la subida del csv de ventas porque tarda demasiado (18 segundos en mi caso)
+    #ventas.to_csv(f'abfs://{datalake_container}@{datalake_account_name}.dfs.core.windows.net/VentasInternet_Unico.csv',storage_options = {'account_key': datalake_account_access_key} ,index=False)
+    df2.to_csv(f'abfs://{datalake_container}@{datalake_account_name}.dfs.core.windows.net/Producto_Sucursales.csv',storage_options = {'account_key': datalake_account_access_key} ,index=False)
     
-    return json.loads(join.to_json(orient='records'))
+    #return json.loads(join.to_json(orient='records'))
+    return json.loads(ventas.loc[len(ventas)-1].to_json())
 
 
 
@@ -255,16 +276,16 @@ async def create_item(item: ItemAdd, response: Response):
     if item.user == config['user1']['username'] and item.password == config['user1']['password']:
         prod_suc_add = df2_og.copy()
         prod_unico_add = df_og.copy()
-        print(prod_unico_add.loc[prod_unico_add['Producto'] == item.name].shape[0])
+
+        #print(prod_unico_add.loc[prod_unico_add['Producto'] == item.name].shape[0])
         if prod_unico_add.loc[prod_unico_add['Producto'] == item.name].shape[0] > 0:
-            
             response.status_code = status.HTTP_400_BAD_REQUEST
             return {"error":f"El producto {item.name} ya se encuentra en la lista de productos."}
 
         prod_unico_add.loc[len(prod_unico_add)]=[1+len(prod_unico_add),str(item.name),item.subcat,item.cat]
         max = prod_suc_add['Cod_Producto'].max()
-        for i in range(len(item.sucursales)):
 
+        for i in range(len(item.sucursales)):
             prod_suc_add.loc[len(prod_suc_add)]=[max+1,i+1,item.sucursales[i],item.sucursales[i],{'Cod_Sucursal': (i+1), 'Stock': (item.sucursales[i])}]
 
         df2_og = prod_suc_add
@@ -273,12 +294,11 @@ async def create_item(item: ItemAdd, response: Response):
         #Devuelve dataframe filtrado
         join = dflogic.filterDataframes(prod_unico_add,prod_suc_add)
 
-
         prod_suc_add.to_csv(f'abfs://{datalake_container}@{datalake_account_name}.dfs.core.windows.net/Producto_Sucursales.csv',storage_options = {'account_key': datalake_account_access_key},index=False,encoding='utf-8')
         prod_unico_add.to_csv(f'abfs://{datalake_container}@{datalake_account_name}.dfs.core.windows.net/Producto_Unico.csv',storage_options = {'account_key': datalake_account_access_key},index=False,encoding='utf-8')
 
         return json.loads(join.to_json(orient='records'))
     else:
         response.status_code = status.HTTP_401_UNAUTHORIZED
-        return {"message":"El usuario o la contraseña no son validos"}
+        return {"error":"El usuario o la contraseña no son validos"}
     
