@@ -3,4 +3,4 @@ from typing import Union
 
 class BoughtItem(BaseModel):
     Cantidad: int = Field(gt=0)
-    Sucursal: int
+    Sucursal: int = Field(ge=1, le=10)

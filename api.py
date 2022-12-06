@@ -250,7 +250,7 @@ async def buyItem(id: int, item: BoughtItem, response: Response):
     costo_unitario = precio_unitario * (ventas['CostoUnitario'] / ventas['PrecioUnitario']).agg('mean')
 
     # Agrego el registro de venta al df de ventas con datos que me saque principalmente de la galera
-    ventas.loc[len(ventas)] = [id, ventas['Cod_Cliente'].max()+1, random.randint(1,10), 
+    ventas.loc[len(ventas)] = [id, ventas['Cod_Cliente'].max()+1, item.Sucursal, 
         f"SO{ventas['NumeroOrden'].apply(lambda x: int(x[2:])).max()+1}", item.Cantidad, 
         round(precio_unitario,2), round(costo_unitario,2), round(precio_unitario * 0.08,2), 
         round(precio_unitario * 0.025,2), today.strftime("%Y-%m-%d %H:%M:%S"), (today+datetime.timedelta(days=7)).strftime("%Y-%m-%d %H:%M:%S"), 
