@@ -232,7 +232,7 @@ async def buyItem(id: int, item: BoughtItem, response: Response):
     #             WHERE Cod_Producto = ? AND Cod_Sucursal = ?""", 
     #             df2[['Cod_Producto'] == id & df2['Cod_Sucursal'] == item.Sucursal, 'Stock'], id, item.Sucursal)
     
-    # Devuelve dataframe filtrado
+    #Devuelve dataframe filtrado
     join = dflogic.filterDataframes(df,df2)
 
     df2_og = df2
