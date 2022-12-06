@@ -1,5 +1,8 @@
 import asyncio 
 
+from pydantic import BaseModel, Field
+from typing import Union
+
 from fastapi import FastAPI, Response, status
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -9,6 +12,7 @@ import json
 from Logic.DataframeLogic import DataframeLogic
 from Models.RequestItemModel import Item
 from Models.BoughtItemModel import BoughtItem
+from Models.AdditemModel import ItemAdd
 from Data.DbContext import Context
 
 app = FastAPI()
@@ -31,8 +35,8 @@ datalake_container = config['datalake']['datalake_container']
 datalake_container2 = config['datalake']['datalake_container2']
 datalake_account_name = config['datalake']['datalake_account_name']
 
-context = Context(config['database']['server'], config['database']['database'], config['database']['username'], 
-    config['database']['password'], config['database']['driver'])
+#context = Context(config['database']['server'], config['database']['database'], config['database']['username'], 
+#    config['database']['password'], config['database']['driver'])
 
 df_og = pd.read_csv(f'abfs://{datalake_container}@{datalake_account_name}.dfs.core.windows.net/Producto_Unico.csv',storage_options = {'account_key': datalake_account_access_key})
 df2_og = pd.read_csv(f'abfs://{datalake_container}@{datalake_account_name}.dfs.core.windows.net/Producto_Sucursales.csv',storage_options = {'account_key': datalake_account_access_key})
@@ -180,13 +184,13 @@ async def create_item(id: int, item: Item, response: Response):
         
         df2 = DataframeLogic.stockUpItem(id, item.stock, df2)
 
-        # Actualiza los valores en la base de datos
-        with context.cursor() as cursor:
-            for index, row in df2.loc[df2['Cod_Producto'] == id].iterrows():
-                cursor.execute("""
-                    UPDATE dbo.Productos_Sucursales
-                    SET Stock = ?
-                    WHERE Cod_Producto = ? AND Cod_Sucursal = ?""", int(row['Stock']), id, int(row['Cod_Sucursal']))
+        # # Actualiza los valores en la base de datos
+        # with context.cursor() as cursor:
+        #     for index, row in df2.loc[df2['Cod_Producto'] == id].iterrows():
+        #         cursor.execute("""
+        #             UPDATE dbo.Productos_Sucursales
+        #             SET Stock = ?
+        #             WHERE Cod_Producto = ? AND Cod_Sucursal = ?""", int(row['Stock']), id, int(row['Cod_Sucursal']))
 
         # Devuelve dataframe filtrado
         join = dflogic.filterDataframes(df,df2)
@@ -221,12 +225,12 @@ async def buyItem(id: int, item: BoughtItem, response: Response):
         response.status_code = status.HTTP_400_BAD_REQUEST
         return {"error":f"No se puede comprar una cantidad mayor al stock disponible."}
 
-    with context.cursor() as cursor:
-            cursor.execute("""
-                UPDATE dbo.Productos_Sucursales
-                SET Stock = ?
-                WHERE Cod_Producto = ? AND Cod_Sucursal = ?""", 
-                df2[['Cod_Producto'] == id & df2['Cod_Sucursal'] == item.Sucursal, 'Stock'], id, item.Sucursal)
+    # with context.cursor() as cursor:
+    #         cursor.execute("""
+    #             UPDATE dbo.Productos_Sucursales
+    #             SET Stock = ?
+    #             WHERE Cod_Producto = ? AND Cod_Sucursal = ?""", 
+    #             df2[['Cod_Producto'] == id & df2['Cod_Sucursal'] == item.Sucursal, 'Stock'], id, item.Sucursal)
     
     # Devuelve dataframe filtrado
     join = dflogic.filterDataframes(df,df2)
@@ -237,3 +241,27 @@ async def buyItem(id: int, item: BoughtItem, response: Response):
     df2.to_csv(f'abfs://{datalake_container2}@{datalake_account_name}.dfs.core.windows.net/Producto_Sucursales.csv',storage_options = {'account_key': datalake_account_access_key} ,index=False)
     
     return json.loads(join.to_json(orient='records'))
+
+
+
+@app.post('/productos/')
+async def create_item(item: ItemAdd, response: Response):
+    if item.user == config['user1']['username'] and item.password == config['user1']['password']:
+        prod_suc_add = df2_og.copy()
+        prod_unico_add = df_og.copy()
+        prod_unico_add.loc[len(prod_unico_add)]=[1+len(prod_unico_add),"%a"%(item.name),item.subcat,item.cat]
+        max = prod_suc_add['Cod_Producto'].max()
+        for i in range(10):
+            prod_suc_add.loc[len(prod_suc_add)]=[max+1,i+1,0,0,"{'Cod_Sucursal': "+str(i+1)+", 'Stock': 0}"]
+
+        prod_suc_add.tail()
+        prod_unico_add.tail()
+
+        prod_suc_add.to_csv(f'abfs://{datalake_container}@{datalake_account_name}.dfs.core.windows.net/Producto_Sucursales.csv',storage_options = {'account_key': datalake_account_access_key},index=False,encoding='utf-8')
+        prod_unico_add.to_csv(f'abfs://{datalake_container}@{datalake_account_name}.dfs.core.windows.net/Producto_Unico.csv',storage_options = {'account_key': datalake_account_access_key},index=False,encoding='utf-8')
+
+        return {"message":f"Producto agregado con exito"}
+    else:
+        response.status_code = status.HTTP_401_UNAUTHORIZED
+        return {"message":"El usuario o la contraseña no son validos"}
+    
