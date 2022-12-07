@@ -37,8 +37,8 @@ datalake_container = config['datalake']['datalake_container']
 datalake_container2 = config['datalake']['datalake_container2']
 datalake_account_name = config['datalake']['datalake_account_name']
 
-#context = Context(config['database']['server'], config['database']['database'], config['database']['username'], 
-#    config['database']['password'], config['database']['driver'])
+context = Context(config['database']['server'], config['database']['database'], config['database']['username'], 
+   config['database']['password'], config['database']['driver'])
 
 # Producto Unico
 df_og = pd.read_csv(f'abfs://{datalake_container}@{datalake_account_name}.dfs.core.windows.net/Producto_Unico.csv',storage_options = {'account_key': datalake_account_access_key})
@@ -192,13 +192,13 @@ async def create_item(id: int, item: Item, response: Response):
         
         df2 = DataframeLogic.stockUpItem(id, item.stock, df2)
 
-        # # Actualiza los valores en la base de datos
-        # with context.cursor() as cursor:
-        #     for index, row in df2.loc[df2['Cod_Producto'] == id].iterrows():
-        #         cursor.execute("""
-        #             UPDATE dbo.Productos_Sucursales
-        #             SET Stock = ?
-        #             WHERE Cod_Producto = ? AND Cod_Sucursal = ?""", int(row['Stock']), id, int(row['Cod_Sucursal']))
+        # Actualiza los valores en la base de datos
+        with context.cursor() as cursor:
+            for index, row in df2.loc[df2['Cod_Producto'] == id].iterrows():
+                cursor.execute("""
+                    UPDATE dbo.Productos_Sucursales
+                    SET Stock = ?
+                    WHERE Cod_Producto = ? AND Cod_Sucursal = ?""", int(row['Stock']), id, int(row['Cod_Sucursal']))
 
         # Devuelve dataframe filtrado
         join = dflogic.filterDataframes(df,df2)
@@ -235,12 +235,12 @@ async def buyItem(id: int, item: BoughtItem, response: Response):
         response.status_code = status.HTTP_400_BAD_REQUEST
         return {"error":f"No se puede comprar una cantidad mayor al stock disponible."}
 
-    # with context.cursor() as cursor:
-    #         cursor.execute("""
-    #             UPDATE dbo.Productos_Sucursales
-    #             SET Stock = ?
-    #             WHERE Cod_Producto = ? AND Cod_Sucursal = ?""", 
-    #             df2[['Cod_Producto'] == id & df2['Cod_Sucursal'] == item.Sucursal, 'Stock'], id, item.Sucursal)
+    with context.cursor() as cursor:
+            cursor.execute("""
+                UPDATE dbo.Productos_Sucursales
+                SET Stock = ?
+                WHERE Cod_Producto = ? AND Cod_Sucursal = ?""", 
+                int(df2.loc[(df2['Cod_Producto'] == id) & (df2['Cod_Sucursal'] == item.Sucursal), 'Stock']), id, item.Sucursal)
     
     #Devuelve dataframe filtrado
     join = dflogic.filterDataframes(df,df2)
