@@ -3,7 +3,7 @@ import asyncio
 from pydantic import BaseModel, Field
 from typing import Union
 
-from fastapi import FastAPI, Response, status
+from fastapi import FastAPI, Response, status, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 
 import pandas as pd
@@ -216,8 +216,13 @@ async def create_item(id: int, item: Item, response: Response):
         return {"error":"El usuario o la contraseña no son validos"}
 
 
+def update_sales(ventas_df, df2):
+    ventas_df.to_csv(f'abfs://{datalake_container}@{datalake_account_name}.dfs.core.windows.net/VentasInternet_Unico.csv',storage_options = {'account_key': datalake_account_access_key} ,index=False)
+    df2.to_csv(f'abfs://{datalake_container}@{datalake_account_name}.dfs.core.windows.net/Producto_Sucursales.csv',storage_options = {'account_key': datalake_account_access_key} ,index=False)
+
+
 @app.put('/comprar/{id}')
-async def buyItem(id: int, item: BoughtItem, response: Response):
+async def buyItem(id: int, item: BoughtItem, response: Response, background_tasks: BackgroundTasks):
     global df2_og
     global df_ventas_og
 
@@ -264,11 +269,11 @@ async def buyItem(id: int, item: BoughtItem, response: Response):
     
     # Comento la subida del csv de ventas porque tarda demasiado (18 segundos en mi caso)
     #ventas.to_csv(f'abfs://{datalake_container}@{datalake_account_name}.dfs.core.windows.net/VentasInternet_Unico.csv',storage_options = {'account_key': datalake_account_access_key} ,index=False)
-    df2.to_csv(f'abfs://{datalake_container}@{datalake_account_name}.dfs.core.windows.net/Producto_Sucursales.csv',storage_options = {'account_key': datalake_account_access_key} ,index=False)
+    #df2.to_csv(f'abfs://{datalake_container}@{datalake_account_name}.dfs.core.windows.net/Producto_Sucursales.csv',storage_options = {'account_key': datalake_account_access_key} ,index=False)
+    background_tasks.add_task(update_sales, ventas, df2)
     
     #return json.loads(join.to_json(orient='records'))
     return json.loads(ventas.loc[len(ventas)-1].to_json())
-
 
 
 @app.post('/productos/')
