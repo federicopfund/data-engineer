@@ -293,13 +293,25 @@ async def create_item(item: ItemAdd, response: Response):
         prod_unico_add.loc[len(prod_unico_add)]=[1+len(prod_unico_add),str(item.name),item.subcat,item.cat]
         max = prod_suc_add['Cod_Producto'].max()
 
+        stock = item.stock
+        lista_stock = []
         for i in range(10):
-            if item.stock > 0:
+            if stock > 0:
                 stock_i= random.randint(0, 3)
-                item.stock = item.stock-stock_i
+                stock = stock-stock_i
             else:
                 stock_i = 0
-            prod_suc_add.loc[len(prod_suc_add)]=[max+1,i+1,stock_i,stock_i,{'Cod_Sucursal': (i+1), 'Stock': (stock_i)}]
+            lista_stock.append(stock_i)
+        
+        if sum(lista_stock) > item.stock:
+            for i in range(sum(lista_stock) - item.stock):
+                lista_stock[i] -= 1
+        elif sum(lista_stock) < item.stock:
+            for i in range(item.stock - sum(lista_stock)):
+                lista_stock[i] += 1
+        
+        for i in range(10):
+            prod_suc_add.loc[len(prod_suc_add)]=[max+1,i+1,lista_stock[i],lista_stock[i],{'Cod_Sucursal': (i+1), 'Stock': lista_stock[i]}]
 
         df2_og = prod_suc_add
         df_og = prod_unico_add
