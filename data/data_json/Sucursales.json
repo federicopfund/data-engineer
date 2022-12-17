@@ -1,0 +1,79 @@
+[
+  {
+    "Cod_Sucursal": "1",
+    "Cod_Sucursal_PK": "1",
+    "Sucursal": "Sucursal 01",
+    "Latitud": "-12.124862",
+    "Longitud": "-77.015019"
+  },
+  {
+    "Cod_Sucursal": "2",
+    "Cod_Sucursal_PK": "2",
+    "Sucursal": "Sucursal 02",
+    "Latitud": "-12.122454",
+    "Longitud": "-77.019827"
+  },
+  {
+    "Cod_Sucursal": "3",
+    "Cod_Sucursal_PK": "3",
+    "Sucursal": "Sucursal 03",
+    "Latitud": "-12.130041",
+    "Longitud": "-77.022183"
+  },
+  {
+    "Cod_Sucursal": "4",
+    "Cod_Sucursal_PK": "4",
+    "Sucursal": "Sucursal 04",
+    "Latitud": "-12.131412",
+    "Longitud": "-77.018919"
+  },
+  {
+    "Cod_Sucursal": "5",
+    "Cod_Sucursal_PK": "5",
+    "Sucursal": "Sucursal 05",
+    "Latitud": "-12.133655",
+    "Longitud": "-77.019065"
+  },
+  {
+    "Cod_Sucursal": "6",
+    "Cod_Sucursal_PK": "6",
+    "Sucursal": "Sucursal 06",
+    "Latitud": "-12.130634",
+    "Longitud": "-77.018207"
+  },
+  {
+    "Cod_Sucursal": "7",
+    "Cod_Sucursal_PK": "7",
+    "Sucursal": "Sucursal 07",
+    "Latitud": "-12.127502",
+    "Longitud": "-77.022895"
+  },
+  {
+    "Cod_Sucursal": "8",
+    "Cod_Sucursal_PK": "8",
+    "Sucursal": "Sucursal 08",
+    "Latitud": "-12.12661",
+    "Longitud": "-77.018374"
+  },
+  {
+    "Cod_Sucursal": "9",
+    "Cod_Sucursal_PK": "9",
+    "Sucursal": "Sucursal 09",
+    "Latitud": "-12.12935",
+    "Longitud": "-77.020225"
+  },
+  {
+    "Cod_Sucursal": "10",
+    "Cod_Sucursal_PK": "10",
+    "Sucursal": "Sucursal 10",
+    "Latitud": "-12.128183",
+    "Longitud": "-77.020952"
+  },
+  {
+    "Cod_Sucursal": "11",
+    "Cod_Sucursal_PK": "0",
+    "Sucursal": "NA",
+    "Latitud": "0",
+    "Longitud": "0"
+  }
+]

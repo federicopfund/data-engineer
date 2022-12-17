@@ -1,0 +1,394 @@
+[
+  {
+    "TruckID": "346",
+    "ProjectID": "10",
+    "OperatorID": "11381",
+    "TotalOreMined": "3399.9900",
+    "TotalWasted": "271.9992",
+    "Date": "2011-06-12T00:00:00.0000000"
+  },
+  {
+    "TruckID": "346",
+    "ProjectID": "9",
+    "OperatorID": "11445",
+    "TotalOreMined": "3399.9900",
+    "TotalWasted": "271.9992",
+    "Date": "2011-06-06T00:00:00.0000000"
+  },
+  {
+    "TruckID": "346",
+    "ProjectID": "10",
+    "OperatorID": "11496",
+    "TotalOreMined": "3399.9900",
+    "TotalWasted": "271.9992",
+    "Date": "2011-11-30T00:00:00.0000000"
+  },
+  {
+    "TruckID": "346",
+    "ProjectID": "9",
+    "OperatorID": "11964",
+    "TotalOreMined": "3399.9900",
+    "TotalWasted": "271.9992",
+    "Date": "2011-10-14T00:00:00.0000000"
+  },
+  {
+    "TruckID": "346",
+    "ProjectID": "9",
+    "OperatorID": "11006",
+    "TotalOreMined": "3399.9900",
+    "TotalWasted": "271.9992",
+    "Date": "2011-01-24T00:00:00.0000000"
+  },
+  {
+    "TruckID": "346",
+    "ProjectID": "9",
+    "OperatorID": "11106",
+    "TotalOreMined": "3399.9900",
+    "TotalWasted": "271.9992",
+    "Date": "2011-05-18T00:00:00.0000000"
+  },
+  {
+    "TruckID": "346",
+    "ProjectID": "9",
+    "OperatorID": "11767",
+    "TotalOreMined": "3399.9900",
+    "TotalWasted": "271.9992",
+    "Date": "2011-09-17T00:00:00.0000000"
+  },
+  {
+    "TruckID": "346",
+    "ProjectID": "9",
+    "OperatorID": "11010",
+    "TotalOreMined": "3399.9900",
+    "TotalWasted": "271.9992",
+    "Date": "2011-01-14T00:00:00.0000000"
+  },
+  {
+    "TruckID": "346",
+    "ProjectID": "8",
+    "OperatorID": "11380",
+    "TotalOreMined": "3399.9900",
+    "TotalWasted": "271.9992",
+    "Date": "2011-10-11T00:00:00.0000000"
+  },
+  {
+    "TruckID": "346",
+    "ProjectID": "10",
+    "OperatorID": "11414",
+    "TotalOreMined": "3399.9900",
+    "TotalWasted": "271.9992",
+    "Date": "2011-08-13T00:00:00.0000000"
+  },
+  {
+    "TruckID": "346",
+    "ProjectID": "9",
+    "OperatorID": "11446",
+    "TotalOreMined": "3399.9900",
+    "TotalWasted": "271.9992",
+    "Date": "2011-06-18T00:00:00.0000000"
+  },
+  {
+    "TruckID": "346",
+    "ProjectID": "9",
+    "OperatorID": "11999",
+    "TotalOreMined": "3399.9900",
+    "TotalWasted": "271.9992",
+    "Date": "2011-11-10T00:00:00.0000000"
+  },
+  {
+    "TruckID": "346",
+    "ProjectID": "9",
+    "OperatorID": "12014",
+    "TotalOreMined": "3399.9900",
+    "TotalWasted": "271.9992",
+    "Date": "2011-12-08T00:00:00.0000000"
+  },
+  {
+    "TruckID": "346",
+    "ProjectID": "6",
+    "OperatorID": "19855",
+    "TotalOreMined": "3399.9900",
+    "TotalWasted": "271.9992",
+    "Date": "2011-05-21T00:00:00.0000000"
+  },
+  {
+    "TruckID": "346",
+    "ProjectID": "9",
+    "OperatorID": "11003",
+    "TotalOreMined": "3399.9900",
+    "TotalWasted": "271.9992",
+    "Date": "2010-12-29T00:00:00.0000000"
+  },
+  {
+    "TruckID": "346",
+    "ProjectID": "9",
+    "OperatorID": "11104",
+    "TotalOreMined": "3399.9900",
+    "TotalWasted": "271.9992",
+    "Date": "2011-05-04T00:00:00.0000000"
+  },
+  {
+    "TruckID": "346",
+    "ProjectID": "9",
+    "OperatorID": "11907",
+    "TotalOreMined": "3399.9900",
+    "TotalWasted": "271.9992",
+    "Date": "2011-09-28T00:00:00.0000000"
+  },
+  {
+    "TruckID": "346",
+    "ProjectID": "9",
+    "OperatorID": "11002",
+    "TotalOreMined": "3399.9900",
+    "TotalWasted": "271.9992",
+    "Date": "2011-01-07T00:00:00.0000000"
+  },
+  {
+    "TruckID": "346",
+    "ProjectID": "9",
+    "OperatorID": "11070",
+    "TotalOreMined": "3399.9900",
+    "TotalWasted": "271.9992",
+    "Date": "2011-04-28T00:00:00.0000000"
+  },
+  {
+    "TruckID": "346",
+    "ProjectID": "9",
+    "OperatorID": "11105",
+    "TotalOreMined": "3399.9900",
+    "TotalWasted": "271.9992",
+    "Date": "2011-05-14T00:00:00.0000000"
+  },
+  {
+    "TruckID": "346",
+    "ProjectID": "10",
+    "OperatorID": "11238",
+    "TotalOreMined": "3399.9900",
+    "TotalWasted": "271.9992",
+    "Date": "2011-01-06T00:00:00.0000000"
+  },
+  {
+    "TruckID": "346",
+    "ProjectID": "9",
+    "OperatorID": "12005",
+    "TotalOreMined": "3399.9900",
+    "TotalWasted": "271.9992",
+    "Date": "2011-11-21T00:00:00.0000000"
+  },
+  {
+    "TruckID": "346",
+    "ProjectID": "9",
+    "OperatorID": "11034",
+    "TotalOreMined": "3399.9900",
+    "TotalWasted": "271.9992",
+    "Date": "2011-02-01T00:00:00.0000000"
+  },
+  {
+    "TruckID": "346",
+    "ProjectID": "9",
+    "OperatorID": "11134",
+    "TotalOreMined": "3399.9900",
+    "TotalWasted": "271.9992",
+    "Date": "2011-05-03T00:00:00.0000000"
+  },
+  {
+    "TruckID": "346",
+    "ProjectID": "10",
+    "OperatorID": "11334",
+    "TotalOreMined": "3399.9900",
+    "TotalWasted": "271.9992",
+    "Date": "2011-03-04T00:00:00.0000000"
+  },
+  {
+    "TruckID": "346",
+    "ProjectID": "9",
+    "OperatorID": "11459",
+    "TotalOreMined": "3399.9900",
+    "TotalWasted": "271.9992",
+    "Date": "2011-07-27T00:00:00.0000000"
+  },
+  {
+    "TruckID": "346",
+    "ProjectID": "9",
+    "OperatorID": "11995",
+    "TotalOreMined": "3399.9900",
+    "TotalWasted": "271.9992",
+    "Date": "2011-11-08T00:00:00.0000000"
+  },
+  {
+    "TruckID": "346",
+    "ProjectID": "9",
+    "OperatorID": "12009",
+    "TotalOreMined": "3399.9900",
+    "TotalWasted": "271.9992",
+    "Date": "2011-12-11T00:00:00.0000000"
+  },
+  {
+    "TruckID": "346",
+    "ProjectID": "9",
+    "OperatorID": "12245",
+    "TotalOreMined": "3399.9900",
+    "TotalWasted": "271.9992",
+    "Date": "2011-12-12T00:00:00.0000000"
+  },
+  {
+    "TruckID": "346",
+    "ProjectID": "1",
+    "OperatorID": "25980",
+    "TotalOreMined": "3399.9900",
+    "TotalWasted": "271.9992",
+    "Date": "2011-07-14T00:00:00.0000000"
+  },
+  {
+    "TruckID": "346",
+    "ProjectID": "1",
+    "OperatorID": "26041",
+    "TotalOreMined": "3399.9900",
+    "TotalWasted": "271.9992",
+    "Date": "2011-09-30T00:00:00.0000000"
+  },
+  {
+    "TruckID": "346",
+    "ProjectID": "8",
+    "OperatorID": "11332",
+    "TotalOreMined": "3399.9900",
+    "TotalWasted": "271.9992",
+    "Date": "2011-10-15T00:00:00.0000000"
+  },
+  {
+    "TruckID": "346",
+    "ProjectID": "9",
+    "OperatorID": "11768",
+    "TotalOreMined": "3399.9900",
+    "TotalWasted": "271.9992",
+    "Date": "2011-09-03T00:00:00.0000000"
+  },
+  {
+    "TruckID": "346",
+    "ProjectID": "9",
+    "OperatorID": "11900",
+    "TotalOreMined": "3399.9900",
+    "TotalWasted": "271.9992",
+    "Date": "2011-09-21T00:00:00.0000000"
+  },
+  {
+    "TruckID": "346",
+    "ProjectID": "9",
+    "OperatorID": "11968",
+    "TotalOreMined": "3399.9900",
+    "TotalWasted": "271.9992",
+    "Date": "2011-10-28T00:00:00.0000000"
+  },
+  {
+    "TruckID": "346",
+    "ProjectID": "9",
+    "OperatorID": "11026",
+    "TotalOreMined": "3399.9900",
+    "TotalWasted": "271.9992",
+    "Date": "2011-01-23T00:00:00.0000000"
+  },
+  {
+    "TruckID": "346",
+    "ProjectID": "9",
+    "OperatorID": "11360",
+    "TotalOreMined": "3399.9900",
+    "TotalWasted": "271.9992",
+    "Date": "2011-06-27T00:00:00.0000000"
+  },
+  {
+    "TruckID": "346",
+    "ProjectID": "9",
+    "OperatorID": "11992",
+    "TotalOreMined": "3399.9900",
+    "TotalWasted": "271.9992",
+    "Date": "2011-11-17T00:00:00.0000000"
+  },
+  {
+    "TruckID": "346",
+    "ProjectID": "1",
+    "OperatorID": "25887",
+    "TotalOreMined": "3399.9900",
+    "TotalWasted": "271.9992",
+    "Date": "2011-03-04T00:00:00.0000000"
+  },
+  {
+    "TruckID": "346",
+    "ProjectID": "4",
+    "OperatorID": "26004",
+    "TotalOreMined": "3399.9900",
+    "TotalWasted": "271.9992",
+    "Date": "2011-09-11T00:00:00.0000000"
+  },
+  {
+    "TruckID": "346",
+    "ProjectID": "4",
+    "OperatorID": "25861",
+    "TotalOreMined": "3399.9900",
+    "TotalWasted": "271.9992",
+    "Date": "2011-01-06T00:00:00.0000000"
+  },
+  {
+    "TruckID": "346",
+    "ProjectID": "1",
+    "OperatorID": "25863",
+    "TotalOreMined": "3399.9900",
+    "TotalWasted": "271.9992",
+    "Date": "2010-12-29T00:00:00.0000000"
+  },
+  {
+    "TruckID": "346",
+    "ProjectID": "4",
+    "OperatorID": "25974",
+    "TotalOreMined": "3399.9900",
+    "TotalWasted": "271.9992",
+    "Date": "2011-06-20T00:00:00.0000000"
+  },
+  {
+    "TruckID": "346",
+    "ProjectID": "7",
+    "OperatorID": "28389",
+    "TotalOreMined": "3399.9900",
+    "TotalWasted": "271.9992",
+    "Date": "2010-12-29T00:00:00.0000000"
+  },
+  {
+    "TruckID": "346",
+    "ProjectID": "7",
+    "OperatorID": "28414",
+    "TotalOreMined": "3399.9900",
+    "TotalWasted": "271.9992",
+    "Date": "2011-05-21T00:00:00.0000000"
+  },
+  {
+    "TruckID": "346",
+    "ProjectID": "6",
+    "OperatorID": "20075",
+    "TotalOreMined": "3399.9900",
+    "TotalWasted": "271.9992",
+    "Date": "2011-12-02T00:00:00.0000000"
+  },
+  {
+    "TruckID": "346",
+    "ProjectID": "1",
+    "OperatorID": "25964",
+    "TotalOreMined": "3399.9900",
+    "TotalWasted": "271.9992",
+    "Date": "2011-06-12T00:00:00.0000000"
+  },
+  {
+    "TruckID": "346",
+    "ProjectID": "1",
+    "OperatorID": "25998",
+    "TotalOreMined": "3399.9900",
+    "TotalWasted": "271.9992",
+    "Date": "2011-09-14T00:00:00.0000000"
+  },
+  {
+    "TruckID": "346",
+    "ProjectID": "8",
+    "OperatorID": "29476",
+    "TotalOreMined": "3399.9900",
+    "TotalWasted": "271.9992",
+    "Date": "2011-07-21T00:00:00.0000000"
+  }
+]
