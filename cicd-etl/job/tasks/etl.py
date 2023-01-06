@@ -1,143 +1,105 @@
-from job.common import Task
-from sklearn.datasets import fetch_california_housing
+from pyspark.sql.types import IntegerType,DecimalType
+import pyspark.sql.functions as function
+from pyspark.sql import SparkSession
+from collections import deque
 import pandas as pd
+import sys
+import re
 
+# Configuración del acceso a la storage account donde se encuentran los archivos CSV
 
-class SampleETLTask(Task):
-        
-        
-    def main(self):
-        """Main ETL script definition.
+storage_account_name = 'storagebasedatos2510'
+storage_account_access_key = 'A2unit3rNXeeU445/ZoKWxti8RhVEH+RiRk4AXfiJHwHrbO1rGB4U0eWpedsV7mPyyIZqHvEXE2f+AStgBgCZw=='
+spark.conf.set('fs.azure.account.key.' + storage_account_name + '.blob.core.windows.net', storage_account_access_key)
+datalake_container = 'output'
+datalake_storage_name = 'storagedatalake2510'
+datalake_account_access_key = '2P0PSy5tfLMxuSwmFGk5ibSVXvRVaK7gWyn2bxD+fABrMfwlRejLOvxq2rpGtpZnPnSzQiC5mlHH+AStWVsSjA=='
+# String de direcciones que vienen del Pipeline DataFactory
+patterns = dbutils.widgets.get('parametro_direcciones')
+# nombre del contenedor del Blob storage donde se encuentren los csv
+blob_container = 'csv'
 
-        :return: None
-        """
-
-        # log that main ETL job is starting
-        log.warn('etl_job is up-and-running')
-
-        # execute ETL pipeline
-        data = extract_data(self)
-        data_transformed = transform_data(data, 21)
-        load_data(data_transformed)
-
-        # log the success and terminate Spark application
-        log.warn('test_etl_job is finished')
-        spark.stop()
-        return None
-
-
-    def extract_data(self):
-        """Load data from Parquet file format.
-
-        :param self: self start session object.
-        :return: Spark DataFrame.
-        """
-        df = (
-            self
-            .read
-            .parquet('tests/test_data/employees'))
-
-        return df
-
-
-    def transform_data(df, steps_per_floor_):
-        """Transform original dataset rename.
-
-        :param df: Input DataFrame.
-        :param steps_per_floor_: The number of steps per-floor at 43 Tanner
-            Street.
-        :return: Transformed DataFrame.
-        """
-        df_transformed = (
-            df
-            .select(
-                col('id'),
-                concat_ws(
-                    ' ',
-                    col('first_name'),
-                    col('second_name')).alias('name'),
-                (col('floor') * lit(steps_per_floor_)).alias('steps_to_desk')))
-
-        return df_transformed
-
-
-    def load_data(df):
-        """Collect data locally and write to CSV.
-
-        :param df: DataFrame to print.
-        :return: None
-        """
-        (df
-        .coalesce(1)
-        .write
-        .csv('loaded_data', mode='overwrite', header=True))
-        return None
-
-
-    def create_test_data(self, config):
-        """Create un Pre-test data.
-
-        This function creates both both pre- and post- transformation data
-        saved as Parquet files in tests/test_data. This will be used for
-        unit tests as well as to load as part of the example ETL job.
-        :return: None
-        """
-        # create example data from scratch
-        local_records = [
-            Row(id=1, first_name='Dan', second_name='Germain', floor=1),
-            Row(id=2, first_name='Dan', second_name='Sommerville', floor=1),
-            Row(id=3, first_name='Alex', second_name='Ioannides', floor=2),
-            Row(id=4, first_name='Ken', second_name='Lai', floor=2),
-            Row(id=5, first_name='Stu', second_name='White', floor=3),
-            Row(id=6, first_name='Mark', second_name='Sweeting', floor=3),
-            Row(id=7, first_name='Phil', second_name='Bird', floor=4),
-            Row(id=8, first_name='Kim', second_name='Suter', floor=4)
-        ]
-
-        df = self.createDataFrame(local_records)
-
-        # write to Parquet file format
-        (df
-        .coalesce(1)
-        .write
-        .parquet('tests/test_data/employees', mode='overwrite'))
-
-        # create transformed version of data
-        df_tf = transform_data(df, config['steps_per_floor'])
-
-        # write transformed version of data to Parquet
-        (df_tf
-        .coalesce(1)
-        .write
-        .parquet('tests/test_data/employees_report', mode='overwrite'))
-
-        return None   
-        
+def main(Spark,patterns) -> None:
+    '''Main ETL Script.
+        Input : param spark :> Spark instancia.
+        Output: return      :> None.
+    '''
+    transform = deque() # srendimiento O(1) en cualquier dirección. en el medio se relentiza. es aconsejable sacar de los estremos.
+    FactMine       = re.compile(r'\bFactMine.csv\b')
+    Categoria      = re.compile(r'\bCategoria.csv\b')
+    Mine           = re.compile(r'\bMine.csv\b')
+    Productos      = re.compile(r'\bProductos.csv\b')
+    VentasInternet = re.compile(r'\bVentasInternet.csv\b')
     
+    for Iter in patterns.split(","):
+        match Iter:                                                          # Transformacion  | 1 |
+            case Categoria.match(Iter).group():
+                filePathstorage = "wasbs://" + blob_container + "@" + storage_account_name + f".blob.core.windows.net/{Categoria.search(Iter).group()}"
+                # Lea el archivo en un Spark DataFrame usando CSV Infiriendo el esquema y especificando que el archivo contiene encavezado,
+                df_Categoria = (spark.read.format("csv").option("header","true").option("inferSchema","true").load(filePathstorage,inferSchema = True, header = True, encoding="utf-8"))               
+                CategoriaRename = (df_Categoria.withColumnRenamed('Categoria','Nombre_Categoria'))
+                transform.append(CategoriaRename)
+                return CategoriaRename         
+                                                                             # Transformacion | 2 |
+            case FactMine.match(Iter).group():
+                filePathstorage = "wasbs://" + blob_container + "@" + storage_account_name + f".blob.core.windows.net/{FactMine.search(Iter).group()}"
+                df_FactMine = (spark.read.format("csv").option("header","true").option("inferSchema","true").load(filePathstorage,inferSchema = True, header = True, encoding="utf-8"))
+                SumTotalOreMined = (df_FactMine.agg(function.round(function.sum("TotalOreMined"),4).alias("Suma_TotalOreMined")))
+                transform.append(SumTotalOreMined)
+                return SumTotalOreMined
+                                                                              # Transformaciones | 3 | 4 |    
+            case Mine.match(Iter).group():                                   
+                filePathstorage = "wasbs://" + blob_container + "@" + storage_account_name + f".blob.core.windows.net/{Mine.search(Iter).group()}"
+                df_Mine = (spark.read.format("csv").option("header","true").option("inferSchema","true").load(filePathstorage,inferSchema = True, header = True, encoding="utf-8"))
+                SelectedColumns = (df_Mine.select("Country","FirstName","LastName","Age"))
+                SumTotalWastedByCountry = (df_Mine.groupBy("Country").agg(function.round(function.sum("TotalWasted"),4).alias("Suma_TotalWasted")))
+                transform.extend(SelectedColumns)
+                transform.append(SumTotalWastedByCountry)
+                return SelectedColumns, SumTotalWastedByCountry
+                                                                                # Transformacion | 5 |
+            case Productos.match(Iter).group():                               
+                filePathstorage = "wasbs://" + blob_container + "@" + storage_account_name + f".blob.core.windows.net/{Productos.search(Iter).group()}"
+                df_Productos = (spark.read.format("csv").option("header","true").option("inferSchema","true").load(filePathstorage,inferSchema = True, header = True, encoding="utf-8"))
+                ProductCount= (df_Productos.agg(function.count("Cod_Producto").alias("Cantidad_CodProducto")))
+                ProductosCount_Cast = (ProductCount.withColumn("Cantidad_CodProducto" ,function.col("Cantidad_CodProducto").cast(IntegerType())))
+                transform.append(ProductCount)
+                transform.append(ProductosCount_Cast)
+                return ProductCount, ProductosCount_Cast
+                                                                                # Transformaciones 6 | 7 | 8 | 9
+            case VentasInternet.match(Iter).group():                     
+                filePathstorage = "wasbs://" + blob_container + "@" + storage_account_name + f".blob.core.windows.net/{VentasInternet.search(Iter).group()}"
+                df_VentasInternet = (park.read.format("csv").option("header","true").option("inferSchema","true").load(filePathstorage,inferSchema = True, header = True, encoding="utf-8"))
+                TableSortedByDescCode = (df_VentasInternet.sort(function.col("Cod_Producto").desc()))
+                SubcategoriaFiltered = (TableSortedByDescCode.filter(dataframes[4]['Cod_Categoria'] == 3))
+                VentasWithNetIncome = (df_VentasInternet.withColumn("Ingresos_Netos", function.round(function.col("Cantidad")*function.col("PrecioUnitario")-function.col("CostoUnitario"),4).cast(DecimalType(10,4))))
+                IngresosPorCodProducto = (VentasWithNetIncome.groupBy(function.col("Cod_Producto")).agg(function.round(function.avg("Ingresos_Netos"),4).alias("Ingreso_Neto_Promedio"), function.round(function.sum("Ingresos_Netos"),4).alias("Suma_Ingresos_Netos")))
+                transform.append(TableSortedByDescCode)
+                transform.append(SubcategoriaFiltered)
+                transform.append(ventasWithNetIncome)
+                transform.append(ingresosPorCodProducto)
+                return TableSortedByDescCode, SubcategoriaFiltered, VentasWithNetIncome, IngresosPorCodProducto
+
+    # Carga de las tablas transformadas en formato CSV en el Azure Data Lake Storage   
+    for i in range(len(transform)-1):
+        transform[i]
+            .toPandas()
+                .to_csv(f'abfs://{datalake_container}@{datalake_storage_name}.dfs.core.windows.net/transformacion{i+1}.csv',storage_options = {'account_key': datalake_account_access_key} ,index=False)
+
+    return None
+
+if __name__ == "__main__":
+    if len(sys.argv) !=2:
+        print(f"Uso: count <file>",file=sys.stderr)
+        sys.exit(-1)
+        Spark = (SparkSession.builder.appName("etl").getOrCreate()) #Cree una SparkSession utilizando las API SparkSession.Si no existe entonces cree una instancia.Solo puede ser una Intancia por JVM.
+        main(Spark)
+        Spark.stop()
     
-    def _write_data(self):
-        db = self.conf["output"].get("database", "default")
-        table = self.conf["output"]["table"]
-        self.logger.info(f"Writing housing dataset to {db}.{table}")
-        _data: pd.DataFrame = fetch_california_housing(as_frame=True).frame
-        df = self.spark.createDataFrame(_data)
-        df.write.format("delta").mode("overwrite").saveAsTable(f"{db}.{table}")
-        self.logger.info("Dataset successfully written")
+      
 
-    def launch(self):
-        self.logger.info("Launching sample ETL task")
-        self._write_data()
-        self.logger.info("Sample ETL task finished!")
+         
 
-# if you're using python_wheel_task, you'll need the entrypoint function to be used in setup.py
-def entrypoint():  # pragma: no cover
-    task = SampleETLTask()
-    task.launch()
-    Task.main()
 
-# if you're using spark_python_task, you'll need the __main__ block to start the code execution
-if __name__ == '__main__':
-    entrypoint()
-    
 
-    
+
+
