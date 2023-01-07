@@ -37,6 +37,7 @@ def main(Spark,patterns) -> None:
                 filePathstorage = "wasbs://" + blob_container \
                                              + "@" + storage_account_name \
                                              + f".blob.core.windows.net/{Categoria.search(Iter).group()}"
+              
               # Spark DataFrame usando CSV Infiriendo el esquema y especificando que el archivo contiene encavezado,
                 df_Categoria = (spark
                                     .read
@@ -47,7 +48,7 @@ def main(Spark,patterns) -> None:
                 # tranformacion 1
                 CategoriaRename = (df_Categoria.withColumnRenamed('Categoria','Nombre_Categoria'))
                 # Construimos la URL con el Nombre de la Transformacion Especifica, para mayor interpretacion de tablas
-                filePathDataLake=f'abfs://{datalake_container}@{datalake_storage_name}.dfs.core.windows.net/{CategoriaRename}.csv'
+                filePathDataLake=f'abfs://{datalake_container}@{datalake_storage_name}.dfs.core.windows.net/CategoriaRename.csv'
                 # Tranforma DataFrame Spark a Dataframe Pandas luego a csv y escribe en el contenedor de un data lake
                 CategoriaRename
                             .toPandas()
@@ -60,6 +61,7 @@ def main(Spark,patterns) -> None:
                 filePathstorage = "wasbs://" + blob_container \
                                              + "@" + storage_account_name \
                                              + f".blob.core.windows.net/{FactMine.search(Iter).group()}"
+              
                 # Spark DataFrame usando CSV Infiriendo el esquema y especificando que el archivo contiene encavezado.
                 df_FactMine = (spark
                                     .read
@@ -71,7 +73,7 @@ def main(Spark,patterns) -> None:
                 SumTotalOreMined = (df_FactMine.agg(function.round(function.sum("TotalOreMined"),4)
                                                                             .alias("Suma_TotalOreMined")))
                  # Construimos la URL con el Nombre de la Transformacion Especifica, para mayor interpretacion de tablas
-                filePathDataLake=f'abfs://{datalake_container}@{datalake_storage_name}.dfs.core.windows.net/{SumTotalOreMined}.csv'
+                filePathDataLake=f'abfs://{datalake_container}@{datalake_storage_name}.dfs.core.windows.net/SumTotalOreMined.csv'
                 # Tranforma DataFrame Spark a Dataframe Pandas luego a csv y escribe en el contenedor de un data lake
                 SumTotalOreMined
                             .toPandas()
@@ -95,7 +97,7 @@ def main(Spark,patterns) -> None:
                
                 SelectedColumns = (df_Mine.select("Country","FirstName","LastName","Age"))
                  # Construimos la URL con el Nombre de la Transformacion Especifica, para mayor interpretacion de tablas
-                filePathDataLake=f'abfs://{datalake_container}@{datalake_storage_name}.dfs.core.windows.net/{SelectedColumns}.csv'
+                filePathDataLake=f'abfs://{datalake_container}@{datalake_storage_name}.dfs.core.windows.net/SelectedColumns.csv'
                 # Tranforma DataFrame Spark a Dataframe Pandas luego a csv y escribe en el contenedor de un data lake
                 SelectedColumns
                             .toPandas()
@@ -106,8 +108,9 @@ def main(Spark,patterns) -> None:
                                                 .groupBy("Country")
                                                     .agg(function.round(function.sum("TotalWasted"),4)
                                                         .alias("Suma_TotalWasted")))
+              
                  # Construimos la URL con el Nombre de la Transformacion Especifica, para mayor interpretacion de tablas
-                filePathDataLake=f'abfs://{datalake_container}@{datalake_storage_name}.dfs.core.windows.net/{SumTotalWastedByCountry}.csv'
+                filePathDataLake=f'abfs://{datalake_container}@{datalake_storage_name}.dfs.core.windows.net/SumTotalWastedByCountry.csv'
                 # Tranforma DataFrame Spark a Dataframe Pandas luego a csv y escribe en el contenedor de un data lake
                 SumTotalWastedByCountry
                                      .toPandas()
@@ -129,7 +132,7 @@ def main(Spark,patterns) -> None:
                 
                 ProductCount = (df_Productos.agg(function.count("Cod_Producto").alias("Cantidad_CodProducto")))
                   # Construimos la URL con el Nombre de la Transformacion Especifica, para mayor interpretacion de tablas
-                filePathDataLake=f'abfs://{datalake_container}@{datalake_storage_name}.dfs.core.windows.net/{ProductCount}.csv'
+                filePathDataLake=f'abfs://{datalake_container}@{datalake_storage_name}.dfs.core.windows.net/ProductCount.csv'
                 # Tranforma DataFrame Spark a Dataframe Pandas luego a csv y escribe en el contenedor de un data lake
                 ProductCount
                             .toPandas()
@@ -139,7 +142,7 @@ def main(Spark,patterns) -> None:
                                             .withColumn("Cantidad_CodProducto" ,function.col("Cantidad_CodProducto")
                                             .cast(IntegerType())))
                 # Construimos la URL con el Nombre de la Transformacion Especifica, para mayor interpretacion de tablas
-                filePathDataLake=f'abfs://{datalake_container}@{datalake_storage_name}.dfs.core.windows.net/{ProductosCount_Cast}.csv'
+                filePathDataLake=f'abfs://{datalake_container}@{datalake_storage_name}.dfs.core.windows.net/ProductosCount_Cast.csv'
                 # Tranforma DataFrame Spark a Dataframe Pandas luego a csv y escribe en el contenedor de un data lake
                 ProductosCount_Cast
                                 .toPandas()
@@ -160,7 +163,7 @@ def main(Spark,patterns) -> None:
                 
                 TableSortedByDescCode = (df_VentasInternet.sort(function.col("Cod_Producto").desc()))
                   # Construimos la URL con el Nombre de la Transformacion Especifica, para mayor interpretacion de tablas
-                filePathDataLake=f'abfs://{datalake_container}@{datalake_storage_name}.dfs.core.windows.net/{TableSortedByDescCode}.csv'
+                filePathDataLake=f'abfs://{datalake_container}@{datalake_storage_name}.dfs.core.windows.net/TableSortedByDescCode.csv'
                 # Tranforma DataFrame Spark a Dataframe Pandas luego a csv y escribe en el contenedor de un data lake
                 TableSortedByDescCode
                                 .toPandas()
@@ -169,7 +172,7 @@ def main(Spark,patterns) -> None:
 
                 SubcategoriaFiltered = (TableSortedByDescCode.filter(TableSortedByDescCode['Cod_Categoria'] == 3))
                  # Construimos la URL con el Nombre de la Transformacion Especifica, para mayor interpretacion de tablas
-                filePathDataLake=f'abfs://{datalake_container}@{datalake_storage_name}.dfs.core.windows.net/{SubcategoriaFiltered}.csv'
+                filePathDataLake=f'abfs://{datalake_container}@{datalake_storage_name}.dfs.core.windows.net/SubcategoriaFiltered.csv'
                 # Tranforma DataFrame Spark a Dataframe Pandas luego a csv y escribe en el contenedor de un data lake
                 SubcategoriaFiltered
                                 .toPandas()
@@ -182,7 +185,7 @@ def main(Spark,patterns) -> None:
                                                                 .col("CostoUnitario"),4)
                                                                     .cast(DecimalType(10,4))))
                 # Construimos la URL con el Nombre de la Transformacion Especifica, para mayor interpretacion de tablas
-                filePathDataLake=f'abfs://{datalake_container}@{datalake_storage_name}.dfs.core.windows.net/{VentasWithNetIncome}.csv'
+                filePathDataLake=f'abfs://{datalake_container}@{datalake_storage_name}.dfs.core.windows.net/VentasWithNetIncome.csv'
                 # Tranforma DataFrame Spark a Dataframe Pandas luego a csv y escribe en el contenedor de un data lake
                 VentasWithNetIncome
                                 .toPandas()
@@ -197,7 +200,7 @@ def main(Spark,patterns) -> None:
                                                                 .round(function.sum("Ingresos_Netos"),4)
                                                                 .alias("Suma_Ingresos_Netos")))
                  # Construimos la URL con el Nombre de la Transformacion Especifica, para mayor interpretacion de tablas
-                filePathDataLake=f'abfs://{datalake_container}@{datalake_storage_name}.dfs.core.windows.net/{IngresosPorCodProducto}.csv'
+                filePathDataLake=f'abfs://{datalake_container}@{datalake_storage_name}.dfs.core.windows.net/IngresosPorCodProducto.csv'
                 # Tranforma DataFrame Spark a Dataframe Pandas luego a csv y escribe en el contenedor de un data lake
                 IngresosPorCodProducto
                                 .toPandas()
