@@ -6,10 +6,13 @@ While using this project, you need Python 3.X and `pip` or `conda` for package m
 
 ## Local environment setup
 
-1. Instantiate a local Python environment via a tool of your choice. This example is based on `conda`, but you can use any environment management tool:
+1. Instantiate a local Python environment:  
 ```bash
-conda create -n job python=3.9
-conda activate job
+
+cd $HOME
+
+source anaconda3/bin/activate
+
 ```
 
 2. If you don't have JDK installed on your local machine, install it (in this example we use `conda`-based installation):

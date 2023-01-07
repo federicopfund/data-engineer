@@ -9,7 +9,7 @@ import tempfile
 from typing import Iterator
 from unittest.mock import patch
 
-import mlflow
+
 import pytest
 from delta import configure_spark_with_delta_pip
 from pyspark.sql import SparkSession
@@ -94,33 +94,6 @@ def spark() -> SparkSession:
     if Path(warehouse_dir).exists():
         shutil.rmtree(warehouse_dir)
 
-
-@pytest.fixture(scope="session", autouse=True)
-def mlflow_local():
-    """
-    This fixture provides local instance of mlflow with support for tracking and registry functions.
-    After the test session:
-    * temporary storage for tracking and registry is deleted.
-    * Active run will be automatically stopped to avoid verbose errors.
-    :return: None
-    """
-    logging.info("Configuring local MLflow instance")
-    tracking_uri = tempfile.TemporaryDirectory().name
-    registry_uri = f"sqlite:///{tempfile.TemporaryDirectory().name}"
-
-    mlflow.set_tracking_uri(Path(tracking_uri).as_uri())
-    mlflow.set_registry_uri(registry_uri)
-    logging.info("MLflow instance configured")
-    yield None
-
-    mlflow.end_run()
-
-    if Path(tracking_uri).exists():
-        shutil.rmtree(tracking_uri)
-
-    if Path(registry_uri).exists():
-        Path(registry_uri).unlink()
-    logging.info("Test session finished, unrolling the MLflow instance")
 
 
 @pytest.fixture(scope="session", autouse=True)

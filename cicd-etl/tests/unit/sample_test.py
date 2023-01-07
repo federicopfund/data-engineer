@@ -2,7 +2,6 @@ from job.tasks.etl import SampleETLTask
 from job.tasks.ml import SampleMLTask
 from pyspark.sql import SparkSession
 from pathlib import Path
-import mlflow
 import logging
 
 def test_jobs(spark: SparkSession, tmp_path: Path):
