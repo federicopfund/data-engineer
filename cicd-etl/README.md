@@ -1,103 +1,93 @@
-# cd_ci
+# 
+## 1) Instalacion de Java y Scala:
 
-This is a sample project for Databricks, generated via cookiecutter.
-
-While using this project, you need Python 3.X and `pip` or `conda` for package management.
-
-## Local environment setup
-
-1. Instantiate a local Python environment:  
+> Si no tienes instalado el jdk de java:
 ```bash
-
-cd $HOME
-
-source anaconda3/bin/activate
-
+sudo apt update
+sudo apt install openjdk=11.0.17 
+java --version
 ```
-
-2. If you don't have JDK installed on your local machine, install it (in this example we use `conda`-based installation):
+#### Output
 ```bash
-conda install -c conda-forge openjdk=11.0.15
+openjdk 11.0.17 2022-10-18
+OpenJDK Runtime Environment (build 11.0.17+8-post-Ubuntu-1ubuntu222.04)
+OpenJDK 64-Bit Server VM (build 11.0.17+8-post-Ubuntu-1ubuntu222.04, mixed mode, sharing)
 ```
-
-3. Install project locally (this will also install dev requirements):
+> Instalar Scala:  
 ```bash
-pip install -e ".[local,test]"
+sudo apt install scala
+scala -version
 ```
-
-## Running unit tests
-
-For unit testing, please use `pytest`:
-```
-pytest tests/unit --cov
-```
-
-Please check the directory `tests/unit` for more details on how to use unit tests.
-In the `tests/unit/conftest.py` you'll also find useful testing primitives, such as local Spark instance with Delta support, local MLflow and DBUtils fixture.
-
-## Running integration tests
-
-There are two options for running integration tests:
-
-- On an all-purpose cluster via `dbx execute`
-- On a job cluster via `dbx launch`
-
-For quicker startup of the job clusters we recommend using instance pools ([AWS](https://docs.databricks.com/clusters/instance-pools/index.html), [Azure](https://docs.microsoft.com/en-us/azure/databricks/clusters/instance-pools/), [GCP](https://docs.gcp.databricks.com/clusters/instance-pools/index.html)).
-
-For an integration test on all-purpose cluster, use the following command:
-```
-dbx execute <workflow-name> --cluster-name=<name of all-purpose cluster>
-```
-
-To execute a task inside multitask job, use the following command:
-```
-dbx execute <workflow-name> \
-    --cluster-name=<name of all-purpose cluster> \
-    --job=<name of the job to test> \
-    --task=<task-key-from-job-definition>
-```
-
-For a test on a job cluster, deploy the job assets and then launch a run from them:
-```
-dbx deploy <workflow-name> --assets-only
-dbx launch <workflow-name>  --from-assets --trace
-```
-
-
-## Interactive execution and development on Databricks clusters
-
-1. `dbx` expects that cluster for interactive execution supports `%pip` and `%conda` magic [commands](https://docs.databricks.com/libraries/notebooks-python-libraries.html).
-2. Please configure your workflow (and tasks inside it) in `conf/deployment.yml` file.
-3. To execute the code interactively, provide either `--cluster-id` or `--cluster-name`.
+#### Output
 ```bash
-dbx execute <workflow-name> \
-    --cluster-name="<some-cluster-name>"
+Scala code runner version 2.11.12 -- Copyright 2002-2017, LAMP/EPFL
 ```
 
-Multiple users also can use the same cluster for development. Libraries will be isolated per each user execution context.
+# Instalar Apache Spark
+ 
+>Descargar la última versión.
 
-## Working with notebooks and Repos
+[link](https://archive.apache.org/dist/spark/spark-3.3.1/)
 
-To start working with your notebooks from a Repos, do the following steps:
-
-1. Add your git provider token to your user settings in Databricks
-2. Add your repository to Repos. This could be done via UI, or via CLI command below:
 ```bash
-databricks repos create --url <your repo URL> --provider <your-provider>
+cd /tmp
+wget https://archive.apache.org/dist/spark/spark-3.3.1/spark-3.3.1-bin-hadoop3.tgz 
 ```
-This command will create your personal repository under `/Repos/<username>/job`.
-3. Use `git_source` in your job definition as described [here](https://dbx.readthedocs.io/en/latest/guides/python/devops/notebook/?h=git_source#using-git_source-to-specify-the-remote-source)
 
-## CI/CD pipeline settings
+> Extraiga el archivo descargado y muévalo al /opt directorio, renombrado como spark e elimina de archivos temporales el relese.
+```bash
+tar -xvzf spark-3.3.1-bin-hadoop3.tgz 
+sudo mv spark-3.3.1-bin-hadoop3.tgz /opt/spark
+sudo rm -r spark-3.3.1-bin-hadoop3.tgz 
+```
+>Cree variables de entorno para poder ejecutar y ejecutar Spark:
+```bash
+nano ~/.bashrc
+```
+>Agregue las líneas en la parte inferior del archivo y guárdelo.
+```bash
+export SPARK_HOME=/opt/spark
 
-Please set the following secrets or environment variables for your CI provider:
-- `DATABRICKS_HOST`
-- `DATABRICKS_TOKEN`
+export PATH=$PATH:$SPARK_HOME/bin:$SPARK_HOME/sbin
+```
+>Ejecute los siguientes comandos para aplicar los cambios de su entorno.
+```bash
+source ~/.bashrc
+```
+# Inicie Apache Spark.
+>En este punto, Apache Spark está instalado y listo para usar. 
+> Ejecute los siguientes comandos para iniciarlo.
+```bash
+cd /opt/spark
 
-## Testing and releasing via CI pipeline
+./sbin/start-master.sh
+```
+>Inicie el proceso de trabajo de Spark ejecutando los siguientes comandos.
+```
+./sbin/start-slave.sh spark://localhost:7077
+```
+>Puede reemplazar el host localhost con el nombre de host del servidor o la dirección IP.
+```
+http://localhost:8080
+```
 
-- To trigger the CI pipeline, simply push your code to the repository. If CI provider is correctly set, it shall trigger the general testing pipeline
-- To trigger the release pipeline, get the current version from the `job/__init__.py` file and tag the current code version:
+>Si deseas conectarse a Spark a través de su shell de comandos, ejecute los siguientes comandos:
+```
+./sbin/spark-shell
+```
+# Run ETL
+>Run Spark App si el clon fuen en Documents.
+
+```
+./bin/spark-submit \
+                --master spark://fede:7077 \
+                 $HOME/Documents/notebooks/cicd-etl/job/tasks/etl.py
+
+```
+
+>### Testing and releasing 
+
+
 ```
 git tag -a v<your-project-version> -m "Release tag for version <your-project-version>"
 git push origin --tags
