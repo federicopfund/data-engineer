@@ -84,17 +84,19 @@ cd --
 cd Documents/notebooks
 ```
 >Es posible que veas la carpeta data:
->Ahora mueve esa carpeta a: `opt/saprk/spark-warehouse.`
+>Ahora mueve esa carpeta a: `opt/spark/spark-warehouse.`
 
 ```
-sudo mv data opt/saprk/spark-warehouse
+mv data ../../../../opt/spark/spark-warehouse
 ```
 >Ahora  vuelve a: `opt/spark`:
 ```
 cd /opt/spark
 ```
 >Analiza el directorio, veras las carpeta `data` dentro de `spark-warehouse.`
-
+```
+ls -l
+```
 
 # Run `ETL`
 >Run Spark App si el clon fuen en Documents.
