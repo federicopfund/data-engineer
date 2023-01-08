@@ -1,5 +1,5 @@
 # 
-## 1) Instalacion de Java y Scala:
+## 1) Instalacion de `Java` y `Scala`:
 
 > Si no tienes instalado el jdk de java:
 ```bash
@@ -7,7 +7,7 @@ sudo apt update
 sudo apt install openjdk=11.0.17 
 java --version
 ```
-#### Output
+#### `Output:`
 ```bash
 openjdk 11.0.17 2022-10-18
 OpenJDK Runtime Environment (build 11.0.17+8-post-Ubuntu-1ubuntu222.04)
@@ -18,12 +18,12 @@ OpenJDK 64-Bit Server VM (build 11.0.17+8-post-Ubuntu-1ubuntu222.04, mixed mode,
 sudo apt install scala
 scala -version
 ```
-#### Output
+#### `Output:`
 ```bash
 Scala code runner version 2.11.12 -- Copyright 2002-2017, LAMP/EPFL
 ```
 
-# Instalar Apache Spark
+# Instalar `Apache Spark`
  
 >Descargar la última versión.
 
@@ -34,13 +34,13 @@ cd /tmp
 wget https://archive.apache.org/dist/spark/spark-3.3.1/spark-3.3.1-bin-hadoop3.tgz 
 ```
 
-> Extraiga el archivo descargado y muévalo al /opt directorio, renombrado como spark e elimina de archivos temporales el relese.
+> Extraiga el archivo descargado y muévalo al `/opt` directorio, renombrado como `spark` e elimina de archivos temporales el relese.
 ```bash
 tar -xvzf spark-3.3.1-bin-hadoop3.tgz 
 sudo mv spark-3.3.1-bin-hadoop3.tgz /opt/spark
 sudo rm -r spark-3.3.1-bin-hadoop3.tgz 
 ```
->Cree variables de entorno para poder ejecutar y ejecutar Spark:
+>Cree variables de entorno para poder ejecutar y ejecutar `Spark`:
 ```bash
 nano ~/.bashrc
 ```
@@ -54,7 +54,7 @@ export PATH=$PATH:$SPARK_HOME/bin:$SPARK_HOME/sbin
 ```bash
 source ~/.bashrc
 ```
-# Inicie Apache Spark.
+# Inicie Apache `Spark`.
 >En este punto, Apache Spark está instalado y listo para usar. 
 > Ejecute los siguientes comandos para iniciarlo.
 ```bash
@@ -75,9 +75,37 @@ http://localhost:8080
 ```
 ./sbin/spark-shell
 ```
-# Run ETL
+# Path de data:
+> Ahora Moveremos la careta data al lugar indicado: seguramente te encuentras en el `path:`  /opt/spark:
+> Pocisionate en la carpeta donde esta data Osea:
+
+```
+cd --
+cd Documents/notebooks
+```
+>Es posible que veas la carpeta data:
+>Ahora mueve esa carpeta a: `opt/saprk/spark-warehouse.`
+
+```
+sudo mv data opt/saprk/spark-warehouse
+```
+>Ahora  vuelve a: `opt/spark`:
+```
+cd /opt/spark
+```
+>Analiza el directorio, veras las carpeta `data` dentro de `spark-warehouse.`
+
+
+# Run `ETL`
 >Run Spark App si el clon fuen en Documents.
 
+```
+./bin/spark-submit \
+                --master spark://localhost:7077 \
+                 $HOME/Documents/notebooks/cicd-etl/job/tasks/etl.py
+
+```
+>En mi caso:
 ```
 ./bin/spark-submit \
                 --master spark://fede:7077 \
