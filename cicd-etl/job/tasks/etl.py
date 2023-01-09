@@ -50,7 +50,7 @@ def main(spark,patterns,storage_account_name,storage_account_access_key,datalake
                                         storage_options = {'account_key':\
                                              datalake_account_access_key} ,index=False))"""
                 # Retornamos el DataFrame para posteriones usos
-                return CategoriaRename         
+                continue #CategoriaRename         
                                              # Transformacion | 2 |
             case "FactMine.csv":
                 print("Comenzamos con el etl en la tabla:{Iter}..")
@@ -93,7 +93,7 @@ def main(spark,patterns,storage_account_name,storage_account_access_key,datalake
                     
 
                 # Retornamos el data frama para posteriones usos
-                return SumTotalOreMined
+                continue #SumTotalOreMined
                                                # Transformaciones | 3 | 4 |    
             case "Mine.csv":
                 print(f'Comienzan las transformaciones en la tabla:{Iter}')
@@ -161,7 +161,7 @@ def main(spark,patterns,storage_account_name,storage_account_access_key,datalake
                                                 storage_options = {'account_key': datalake_account_access_key} \
                                                 ,index=False))"""
                 
-                return SelectedColumns, SumTotalWastedByCountry
+                continue #SelectedColumns, SumTotalWastedByCountry
                                                     
                                      # Transformacion | 5 |
             case "Producto.csv":
@@ -228,7 +228,7 @@ def main(spark,patterns,storage_account_name,storage_account_access_key,datalake
                    # Visualiza
                    # ProductCountTemporalQuery.show()  
 
-                return ProductCount, ProductosCount_Cast
+                continue #ProductCount, ProductosCount_Cast
                                                             # Transformaciones 6 | 7 | 8 | 9
             
             case "VentasInternet.csv":
@@ -347,7 +347,7 @@ def main(spark,patterns,storage_account_name,storage_account_access_key,datalake
                                             storage_options = {'account_key': datalake_account_access_key} 
                                             ,index=False)"""
             
-                return TableSortedByDescCode, SubcategoriaFiltered, VentasWithNetIncome, IngresosPorCodProducto
+                continue #TableSortedByDescCode, SubcategoriaFiltered, VentasWithNetIncome, IngresosPorCodProducto
             
             case _:
                 raise ValueError("No se encuenta el Arcvhivo")
