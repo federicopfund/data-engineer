@@ -124,7 +124,7 @@ ls -l
                      Categoria.csv \
                      FactMine.csv \
                      Producto.csv \
-                     MIne.csv
+                     Mine.csv
 
 ```
 > Recuerda tienes que estar parado en el directorio ```/opt/spark ```y tener la carpeta de ```csv``` proveniente de ```data``` en 
