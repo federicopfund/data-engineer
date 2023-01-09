@@ -93,7 +93,8 @@ mv data ../../../../opt/spark/spark-warehouse
 ```
 cd /opt/spark
 ```
->Analiza el directorio, veras las carpeta `data` dentro de `spark-warehouse.`
+>Analiza el directorio, veras las carpeta `csv` dentro de `spark-warehouse.` con todos los archivos a tranformar. asegurate que se encuentre dicha carpeta. recuerda la carpeta csv dentro de   `spark-warehouse.`.
+
 ```
 ls -l
 ```
@@ -107,11 +108,11 @@ ls -l
                  $HOME/Documents/notebooks/cicd-etl/job/tasks/etl.py
 
 ```
->En mi caso:
+>En mi caso solo para el archivo VentasInternet.csv:
 ```
 ./bin/spark-submit \
                 --master spark://fede:7077 \
-                 $HOME/Documents/notebooks/cicd-etl/job/tasks/etl.py
+                 $HOME/Documents/notebooks/cicd-etl/job/tasks/etl.py VentasInternet.csv
 
 ```
 
@@ -119,6 +120,6 @@ ls -l
 
 
 ```
-git tag -a v<your-project-version> -m "Release tag for version <your-project-version>"
+git tag -a v<0.0.3> -m "Release tag for version <0.0.3>"
 git push origin --tags
 ```
