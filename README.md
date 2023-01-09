@@ -115,6 +115,21 @@ ls -l
                  $HOME/Documents/notebooks/cicd-etl/job/tasks/etl.py VentasInternet.csv
 
 ```
+> Si quiere ejecutar todas las tranformaciones con el siguiente comando:
+
+```
+./bin/spark-submit --master spark://fede:7077 \
+                    $HOME/Documents/notebooks/cicd-etl/job/tasks/etl.py\
+                     VentasInternet.csv \
+                     Categoria.csv \
+                     FactMine.csv \
+                     Producto.csv \
+                     MIne.csv
+
+```
+> Recuerda tienes que estar parado en el directorio ```/opt/spark ```y tener la carpeta de ```csv``` proveniente de ```data``` en 
+```spark-warehouse```.
+> Tiempo de ejucion total: ```36.316101``` ms.  tranquilo bucaremos mayor eficiencia.
 
 >### Testing and releasing 
 
