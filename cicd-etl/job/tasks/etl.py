@@ -19,7 +19,7 @@ def main(spark,patterns,storage_account_name,storage_account_access_key,datalake
         print(f'|--------------------------------------> Matcheando tablas:{Iter} <---------------------------------------|')
         match Iter:                                      
             case "Categoria.csv":                          # Transformacion   |1|
-                print(f"|---------------------------> Comensaremos con etl en la tabla {Iter} <---------------------------|")
+                print(f"|---------------------------------> Comensaremos con etl en la tabla {Iter} <---------------------------|")
                 if len(sys.argv) == 0:
                     filePaths = "wasbs://" + blob_container \
                                              + "@" + storage_account_name \
@@ -57,7 +57,7 @@ def main(spark,patterns,storage_account_name,storage_account_access_key,datalake
                 continue       
                                              # Transformacion | 2 |
             case "FactMine.csv":
-                print(f"|--------------------> Comenzamos con el etl en la tabla:{Iter}<-----------------------------|")
+                print(f"|----------------------------> Comenzamos con el etl en la tabla:{Iter}<-----------------------------|")
                 if len(sys.argv) == 0:
                     filePaths = "wasbs://" + blob_container \
                                              + "@" + storage_account_name \
@@ -80,12 +80,13 @@ def main(spark,patterns,storage_account_name,storage_account_access_key,datalake
                     SumTotalOreMined = (df_FactMine.agg(function.round(function.sum("TotalOreMined"),4)
                                                                                        .alias("Suma_TotalOreMined")))
                     
-                    ## Visualiza display:
+                    # Visualiza display:
                     SumTotalOreMined.show()
                     # Crea tabla Temporal
-                    SumTotalOreMined.createOrReplaceTempView("SumTotalOreMinedTemporal")
+                    df_FactMine.createOrReplaceTempView("SumTotalOreMinedTemporal")
                     # Query
-                    SumTotalOreMinedTemporalQuery = spark.sql("select from SumTotalOreMinedTemporal *")
+                    SumTotalOreMinedTemporalQuery = spark.sql("select TruckID ,ProjectID, OperatorID \
+                                                                                        from SumTotalOreMinedTemporal")
                     # Visualiza
                     SumTotalOreMined.show()
                     # Construimos la URL con el Nombre de la Transformacion Especifica.
@@ -102,7 +103,7 @@ def main(spark,patterns,storage_account_name,storage_account_access_key,datalake
                 continue 
                                                # Transformaciones | 3 | 4 |    
             case "Mine.csv":
-                print(f'|---------------> Comienzan las transformaciones en la tabla:{Iter}<----------------------|')
+                print(f'|-------------------------> Comienzan las transformaciones en la tabla:{Iter}<----------------------|')
                 if len(sys.argv) == 0:
                     filePaths = "wasbs://" + blob_container \
                                              + "@" + storage_account_name \
@@ -127,7 +128,7 @@ def main(spark,patterns,storage_account_name,storage_account_access_key,datalake
                     # Crea tabla Temporal
                     SelectedColumns.createOrReplaceTempView("SelectedColumnsTemporal")
                     # Query
-                    SelectedColumnsTemporalQuery = spark.sql("select from SelectedColumnsTemporal *")
+                    SelectedColumnsTemporalQuery = spark.sql("select Country, FirstName,Age from SelectedColumnsTemporal")
                     # Visualiza
                     SelectedColumnsTemporalQuery.show()
                     # Construimos la URL con el Nombre de la Transformacion Especifica.
@@ -141,7 +142,7 @@ def main(spark,patterns,storage_account_name,storage_account_access_key,datalake
                                             storage_options = {'account_key': datalake_account_access_key}\
                                             ,index=False)"""
                     transform.append(SelectedColumns)
-                    print(f"|----------------------> Dataframe SumTotalWastedByCountry <--------------------------|")
+                    print(f"|----------------------------> Dataframe SumTotalWastedByCountry <--------------------------|")
                     SumTotalWastedByCountry = (df_Mine
                                                 .groupBy("Country")
                                                     .agg(function.round(function.sum("TotalWasted"),4)
@@ -154,7 +155,7 @@ def main(spark,patterns,storage_account_name,storage_account_access_key,datalake
                     # Crea tabla Temporal
                     SumTotalWastedByCountry.createOrReplaceTempView("SumTotalWastedByCountryTemporal")
                     # Query
-                    SumTotalWastedByCountryQuery = spark.sql("select from SumTotalWastedByCountryTemporal *")
+                    SumTotalWastedByCountryQuery = spark.sql("select Country from SumTotalWastedByCountryTemporal")
                     # Visualiza
                     SumTotalWastedByCountryQuery.show()  
                 
@@ -173,7 +174,7 @@ def main(spark,patterns,storage_account_name,storage_account_access_key,datalake
                                                     
                                                     # Transformacion | 5 |
             case "Producto.csv":
-                print(f"|-------------------> Comienzan las tranformaciones en la tabla:{Iter} <-------------------|")
+                print(f"|--------------------------> Comienzan las tranformaciones en la tabla:{Iter} <-------------------|")
                 if len(sys.argv) == 0:
                     filePaths = "wasbs://" + blob_container \
                                              + "@" + storage_account_name \
@@ -192,13 +193,14 @@ def main(spark,patterns,storage_account_name,storage_account_access_key,datalake
                     # Query al Schema df_Productos
                     ProductCount = (df_Productos.agg(function.count("Cod_Producto").alias("Cantidad_CodProducto")))
                     # Visualizamos Schema del DataFrame ProductoCount
-                    ProductCount.printSchema()
-                    print("|----------------------------------> View <-------------------------------------------|")
+                    ProductCount.show()
+                    #print("|----------------------------------> View <-------------------------------------------|")
                     # Crea tabla Temporal
                     ProductCount.createOrReplaceTempView("ProductCountTemporal")
                     # Query
-                    ProductCountTemporalQuery = spark.sql("select from ProductCountTemporal *")
-                    # Visualiza
+                    ProductCountTemporalQuery = spark.sql("select * from ProductCountTemporal")
+                 
+                    # Visualiza 
                     ProductCountTemporalQuery.show()  
               
                     filePathDataLake=f'abfs://{datalake_container}@{datalake_storage_name}.\
@@ -228,17 +230,12 @@ def main(spark,patterns,storage_account_name,storage_account_access_key,datalake
                                         .to_csv(filePathDataLake,\
                                                 storage_options = {'account_key': datalake_account_access_key}\
                                                  ,index=False)"""
-                    print("|----------------------------------> View <-------------------------------------------|")
-                    ProductProductosCount_Cast.createOrReplaceTempView("ProductosCount_CastTemporal")
-                    # Query
-                    ProductosCount_CastTemporalQuery = spark.sql("select from ProductosCount_CastTemporal *")
-                    # Visualiza
-                    ProductCountTemporalQuery.show()  
+                    
                 continue
                                                # Transformaciones 6 | 7 | 8 | 9
             
             case "VentasInternet.csv":
-                print(f"|------------->Comienzan las Tranformaciones en la tabla: {Iter}<----------------------|")
+                print(f"|------------------->Comienzan las Tranformaciones en la tabla: {Iter}<----------------------|")
                 if len(sys.argv) == 0:
                     filePaths = "wasbs://" + blob_container \
                                              + "@" + storage_account_name \
@@ -267,7 +264,8 @@ def main(spark,patterns,storage_account_name,storage_account_access_key,datalake
                     # Crea tabla Temporal
                     TableSortedByDescCode.createOrReplaceTempView("TableSortedByDescCodeTemporal")
                     # Query
-                    TableSortedByDescCodeTemporalQuery = spark.sql("select from TableSortedByDescCodeTemporal *")
+                    TableSortedByDescCodeTemporalQuery = spark.sql("select Cod_Territorio,Cod_Cliente,Cod_Producto \
+                                                                                        from TableSortedByDescCodeTemporal")
                     # Visualiza
                     TableSortedByDescCodeTemporalQuery.show() 
                     # Construimos la URL con el Nombre de la Transformacion Especifica.
@@ -281,16 +279,17 @@ def main(spark,patterns,storage_account_name,storage_account_access_key,datalake
                                                 storage_options = {'account_key': datalake_account_access_key} 
                                                 ,index=False)"""
 
-                    SubcategoriaFiltered = TableSortedByDescCode.filter(TableSortedByDescCode['Cod_Producto'] == 3)
+                    SubcategoriaFiltered = TableSortedByDescCode.filter(TableSortedByDescCode['Cod_Territorio']>=9)
                     transform.append(SubcategoriaFiltered)
                     # Visualizamos la tabla
                     SubcategoriaFiltered.show()
                     # Crea tabla Temporal
                     SubcategoriaFiltered.createOrReplaceTempView("SubcategoriaFilteredTemporal")
                     # Query
-                    SubcategoriaFilteredTemporalQuery = spark.sql("select from SubcategoriaFilteredTemporal *")
+                    SubcategoriaFilteredTemporalQuery = spark.sql("select PrecioUnitario,CostoUnitario,Impuesto \
+                                                                                from SubcategoriaFilteredTemporal")
                     # Visualiza
-                    SubcategoriaFilteredTemporal.show()
+                    SubcategoriaFilteredTemporalQuery.show()
 
                     # Construimos la URL con el Nombre de la Transformacion Especifica.
                     filePathDataLake=f'abfs://{datalake_container}@{datalake_storage_name}.\
@@ -315,10 +314,11 @@ def main(spark,patterns,storage_account_name,storage_account_access_key,datalake
                     # Crea tabla Temporal
                     VentasWithNetIncome.createOrReplaceTempView("VentasWithNetIncomeTemporal")
                     # Query
-                    VentasWithNetIncomeTemporalQuery = spark.sql("select from VentasWithNetIncomeTemporal *")
+                    VentasWithNetIncomeTemporalQuery = spark.sql("select PrecioUnitario,Cod_Producto,Ingresos_Netos > 17\
+                                                                                    from VentasWithNetIncomeTemporal")
                     # Visualiza
-                    VentasWithNetIncomeTemporalQuery.show() 
-                
+                    VentasWithNetIncomeTemporalQuery.show()  
+                 
                     # Construimos la URL con el Nombre de la Transformacion Especifica.
                     filePathDataLake=f'abfs://{datalake_container}@{datalake_storage_name}.\
                                                             dfs.core.windows.net/VentasWithNetIncome.csv'
@@ -345,7 +345,8 @@ def main(spark,patterns,storage_account_name,storage_account_access_key,datalake
                     # Crea tabla Temporal
                     IngresosPorCodProducto.createOrReplaceTempView("IngresosPorCodProductoTemporal")
                     # Query
-                    IngresosPorCodProductoTemporalQuery = spark.sql("select from IngresosPorCodProductoTemporal *")
+                    IngresosPorCodProductoTemporalQuery = spark.sql("select Ingreso_Neto_Promedio,Cod_Producto >473 \
+                                                                                from IngresosPorCodProductoTemporal")
                     # Visualiza
                     IngresosPorCodProductoTemporalQuery.show() 
                     # Construimos la URL con el Nombre de la Transformacion Especifica.
