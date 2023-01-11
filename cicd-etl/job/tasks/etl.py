@@ -8,7 +8,7 @@ import sys
 import re
 
 
-def main(spark,patterns,storage_account_name,storage_account_access_key,datalake_storage_name,datalake_account_access_key):
+def main(spark,patterns,storage_name,key_blobs,datalake_name,key_datalake):
     '''Main ETL Script.
         Input : param spark :> Spark instancia.
         Output: return      :> None.
@@ -19,7 +19,7 @@ def main(spark,patterns,storage_account_name,storage_account_access_key,datalake
         print(f'|--------------------------------------> Matcheando tablas:{Iter} <---------------------------------------|')
         match Iter:                                      
             case "Categoria.csv":                          # Transformacion   |1|
-                print(f"|---------------------------------> Comensaremos con etl en la tabla {Iter} <---------------------------|")
+                print(f"|---------------------------> Comensaremos con etl en la tabla {Iter} <---------------------------|")
                 if len(sys.argv) == 0:
                     filePaths = "wasbs://" + blob_container \
                                              + "@" + storage_account_name \
@@ -57,7 +57,7 @@ def main(spark,patterns,storage_account_name,storage_account_access_key,datalake
                 continue       
                                              # Transformacion | 2 |
             case "FactMine.csv":
-                print(f"|----------------------------> Comenzamos con el etl en la tabla:{Iter}<-----------------------------|")
+                print(f"|----------------------> Comenzamos con el etl en la tabla:{Iter}<-----------------------------|")
                 if len(sys.argv) == 0:
                     filePaths = "wasbs://" + blob_container \
                                              + "@" + storage_account_name \
@@ -103,7 +103,7 @@ def main(spark,patterns,storage_account_name,storage_account_access_key,datalake
                 continue 
                                                # Transformaciones | 3 | 4 |    
             case "Mine.csv":
-                print(f'|-------------------------> Comienzan las transformaciones en la tabla:{Iter}<----------------------|')
+                print(f'|----------------> Comienzan las transformaciones en la tabla:{Iter}<----------------------|')
                 if len(sys.argv) == 0:
                     filePaths = "wasbs://" + blob_container \
                                              + "@" + storage_account_name \
@@ -142,7 +142,7 @@ def main(spark,patterns,storage_account_name,storage_account_access_key,datalake
                                             storage_options = {'account_key': datalake_account_access_key}\
                                             ,index=False)"""
                     transform.append(SelectedColumns)
-                    print(f"|----------------------------> Dataframe SumTotalWastedByCountry <--------------------------|")
+                    print(f"|------------- ---------> Dataframe SumTotalWastedByCountry <--------------------------|")
                     SumTotalWastedByCountry = (df_Mine
                                                 .groupBy("Country")
                                                     .agg(function.round(function.sum("TotalWasted"),4)
@@ -174,7 +174,7 @@ def main(spark,patterns,storage_account_name,storage_account_access_key,datalake
                                                     
                                                     # Transformacion | 5 |
             case "Producto.csv":
-                print(f"|--------------------------> Comienzan las tranformaciones en la tabla:{Iter} <-------------------|")
+                print(f"|------------------> Comienzan las tranformaciones en la tabla:{Iter} <-------------------|")
                 if len(sys.argv) == 0:
                     filePaths = "wasbs://" + blob_container \
                                              + "@" + storage_account_name \
@@ -194,7 +194,7 @@ def main(spark,patterns,storage_account_name,storage_account_access_key,datalake
                     ProductCount = (df_Productos.agg(function.count("Cod_Producto").alias("Cantidad_CodProducto")))
                     # Visualizamos Schema del DataFrame ProductoCount
                     ProductCount.show()
-                    #print("|----------------------------------> View <-------------------------------------------|")
+                    print("|----------------------------------> View <-------------------------------------------|")
                     # Crea tabla Temporal
                     ProductCount.createOrReplaceTempView("ProductCountTemporal")
                     # Query
@@ -235,7 +235,7 @@ def main(spark,patterns,storage_account_name,storage_account_access_key,datalake
                                                # Transformaciones 6 | 7 | 8 | 9
             
             case "VentasInternet.csv":
-                print(f"|------------------->Comienzan las Tranformaciones en la tabla: {Iter}<----------------------|")
+                print(f"|------------->Comienzan las Tranformaciones en la tabla: {Iter}<----------------------|")
                 if len(sys.argv) == 0:
                     filePaths = "wasbs://" + blob_container \
                                              + "@" + storage_account_name \
@@ -265,7 +265,7 @@ def main(spark,patterns,storage_account_name,storage_account_access_key,datalake
                     TableSortedByDescCode.createOrReplaceTempView("TableSortedByDescCodeTemporal")
                     # Query
                     TableSortedByDescCodeTemporalQuery = spark.sql("select Cod_Territorio,Cod_Cliente,Cod_Producto \
-                                                                                        from TableSortedByDescCodeTemporal")
+                                                                                    from TableSortedByDescCodeTemporal")
                     # Visualiza
                     TableSortedByDescCodeTemporalQuery.show() 
                     # Construimos la URL con el Nombre de la Transformacion Especifica.
@@ -365,15 +365,20 @@ def main(spark,patterns,storage_account_name,storage_account_access_key,datalake
     return None
 
 if __name__ == "__main__":
-    
+    # Import 
+    import dotenv
+    import sys
+    import os
+    # cargamos las variables de entorno
+    dotenv.load_dotenv()
+    key_blobs = os.getenv('KEY_BLOBS')
+    key_datalake = os.getenv('KEY_DATALAKE')
     # Configuración del acceso a la storage account donde se encuentran los archivos CSV.
-    storage_account_name = 'storagebasedatos2510'
-    storage_account_access_key = 'A2unit3rNXeeU445/ZoKWxti8RhVEH+RiRk4AXfiJHwHrbO1rGB4U0eWpedsV7mPyyIZqHvEXE2f+AStgBgCZw=='
+    storage_name = 'storagebasedatos2510'
     datalake_container = 'output'
-    datalake_storage_name = 'storagedatalake2510'
-    datalake_account_access_key = '2P0PSy5tfLMxuSwmFGk5ibSVXvRVaK7gWyn2bxD+fABrMfwlRejLOvxq2rpGtpZnPnSzQiC5mlHH+AStWVsSjA=='
-    # Nombre del contenedor del Blob storage donde se encuentren los csv
+    datalake_name = 'storagedatalake2510'
     blob_container = 'csv'
+    # Nombre del contenedor del Blob storage donde se encuentren los csv
     # Cree una SparkSession utilizando las API SparkSession.
     # Si no existe entonces cree una instancia.
     # Solo puede ser una Intancia por JVM.
@@ -381,12 +386,11 @@ if __name__ == "__main__":
     # Patterns = dbutils.widgets.get('parametro_direcciones').split(",")
     patterns= sys.argv[1:]
     print(patterns)
-    if len(patterns) > 0:
-        #patterns = "Categoria.csv,Productos.csv".split(",")   
+    if len(patterns) > 0: 
         logger = Log4j(spark)
-        main(spark,patterns,storage_account_name,storage_account_access_key,datalake_storage_name,datalake_account_access_key)                                       
+        main(spark,patterns,storage_name,key_blobs,datalake_name,key_datalake)                                       
         spark.stop()                                              
     else:
         logger = Log4j(spark)
-        main(spark,patterns,storage_account_name,storage_account_access_key,datalake_storage_name,datalake_account_access_key)                                       
+        main(spark,patterns,storage_name,key_blobs,datalake_name,key_datalake)                                       
         spark.stop()  
