@@ -344,6 +344,9 @@ Transformada
 
 `hdfs dfs -put csv /user/fede/input` = Empuja la carpeta de archivo csv a la carpeta Input.
 
+>output:
+`-rw-r--r--   1 fede supergroup    1598678 2023-01-12 19:01 /user/fede/input/csv` 
+
 `hdfs dfs -ls /user/fede/input` = Muestra las carpetas en el directorio. 
 
 `hdfs dfs -cp /user/fede/input/csv/Mine.csv /user/fede/Output/landing` = Mueve el archivo Mine.csv al ente directorio landing. 
