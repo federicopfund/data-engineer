@@ -24,11 +24,15 @@ def main(spark,patterns,storage_name,key_blobs,datalake_name,key_datalake):
             case "Categoria.csv":                          # Transformacion   |1|
                 print(f"|---------------------------> Comensaremos con etl en la tabla {Iter} <---------------------------|")
                 if len(sys.argv) == 0:
+                    #blobs storage
                     filePaths = "wasbs://" + blob_container \
                                              + "@" + storage_name \
-                                             + f".blob.core.windows.net/Categoria.csv"
+                                             + f".blob.core.windows.net/{Iter}"
                 else:
-                    filePaths = f'file:/opt/spark/spark-warehouse/csv/Categoria.csv' 
+                    #local
+                    #filePaths = f'file:/opt/spark/spark-warehouse/csv/Categoria.csv'
+                    #hadoop
+                    filePaths = f'hdfs://fede:9000/user/fede/input/{Iter}' 
                     print("|----------------------------------> Crea DataFrame <-----------------------------------------|")
                     # Spark DataFrame Infiriendo el esquema y especificando que el archivo contiene encavezado,
                     df_Categoria = (spark
@@ -60,12 +64,15 @@ def main(spark,patterns,storage_name,key_blobs,datalake_name,key_datalake):
             case "FactMine.csv":
                 print(f"|----------------------> Comenzamos con el etl en la tabla:{Iter}<-----------------------------|")
                 if len(sys.argv) == 0:
+                    # blob storage
                     filePaths = "wasbs://" + blob_container \
                                              + "@" + storage_name \
-                                             + f".blob.core.windows.net/FactMine.csv"
+                                             + f".blob.core.windows.net/{Iter}"
                 else:
-                    filePaths = f'file:/opt/spark/spark-warehouse/csv/FactMine.csv'
-                                   
+                    #local
+                    #filePaths = f'file:/opt/spark/spark-warehouse/csv/{Iter}'
+                    #hadoop
+                    filePaths = f'hdfs://fede:9000/user/fede/input/csv/{Iter}' 
               
                     # Spark DataFrame Infiriendo el esquema y especificando que el archivo contiene encavezado.
                     df_FactMine = (spark
@@ -106,11 +113,15 @@ def main(spark,patterns,storage_name,key_blobs,datalake_name,key_datalake):
             case "Mine.csv":
                 print(f'|----------------> Comienzan las transformaciones en la tabla:{Iter}<----------------------|')
                 if len(sys.argv) == 0:
+                    #blob storage
                     filePaths = "wasbs://" + blob_container \
                                              + "@" + storage_name \
-                                             + f".blob.core.windows.net/Mine.csv"
+                                             + f".blob.core.windows.net/{Iter}"
                 else:
-                    filePaths = f'file:/opt/spark/spark-warehouse/csv/Mine.csv'
+                    #local
+                    #filePaths = f'file:/opt/spark/spark-warehouse/csv/{Iter}'
+                    #hadoop
+                    filePaths = f'hdfs://fede:9000/user/fede/input/csv/{Iter}' 
                     df_Mine = (spark
                                     .read
                                         .format("csv")
@@ -177,11 +188,15 @@ def main(spark,patterns,storage_name,key_blobs,datalake_name,key_datalake):
             case "Producto.csv":
                 print(f"|------------------> Comienzan las tranformaciones en la tabla:{Iter} <-------------------|")
                 if len(sys.argv) == 0:
+                    #blob storage
                     filePaths = "wasbs://" + blob_container \
                                              + "@" + storage_name \
-                                             + f".blob.core.windows.net/Producto.csv"
+                                             + f".blob.core.windows.net/{Iter}"
                 else:
-                    filePaths = f'file:/opt/spark/spark-warehouse/csv/Producto.csv'
+                    #local
+                    #filePaths = f'file:/opt/spark/spark-warehouse/csv/{Iter}'
+                    #hadoop
+                    filePaths = f'hdfs://fede:9000/user/fede/input/csv/{Iter}' 
                     df_Productos = (spark
                                         .read
                                             .format("csv")
@@ -238,13 +253,16 @@ def main(spark,patterns,storage_name,key_blobs,datalake_name,key_datalake):
             case "VentasInternet.csv":
                 print(f"|------------->Comienzan las Tranformaciones en la tabla: {Iter}<----------------------|")
                 if len(sys.argv) == 0:
+                    #blobs storage
                     filePaths = "wasbs://" + blob_container \
                                              + "@" + storage_name \
-                                             + f".blob.core.windows.net/VentasInternet.csv"
+                                             + f".blob.core.windows.net/{Iter}"
                 
                 else:
-                    filePaths = f'file:/opt/spark/spark-warehouse/csv/VentasInternet.csv'
-                                           
+                    #local
+                    #filePaths = f'file:/opt/spark/spark-warehouse/csv/{Iter}'
+                    #hadoop
+                    filePaths = f'hdfs://fede:9000/user/fede/input/csv/{Iter}'                       
                     # DataFrame df_VentasInternet
                     df_VentasInternet = (spark
                                             .read
