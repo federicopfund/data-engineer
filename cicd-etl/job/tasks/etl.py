@@ -13,8 +13,11 @@ def main(spark,patterns,storage_name,key_blobs,datalake_name,key_datalake):
         Input : param spark :> Spark instancia.
         Output: return      :> None.
     '''
+   
+    datalake_container = 'output'
+    blob_container = 'csv'
     transform = deque()
-    spark.conf.set('fs.azure.account.key.' + storage_account_name + '.blob.core.windows.net', storage_account_access_key)
+    spark.conf.set('fs.azure.account.key.' + storage_name + '.blob.core.windows.net', key_blobs)
     for Iter in patterns:
         print(f'|--------------------------------------> Matcheando tablas:{Iter} <---------------------------------------|')
         match Iter:                                      
@@ -22,7 +25,7 @@ def main(spark,patterns,storage_name,key_blobs,datalake_name,key_datalake):
                 print(f"|---------------------------> Comensaremos con etl en la tabla {Iter} <---------------------------|")
                 if len(sys.argv) == 0:
                     filePaths = "wasbs://" + blob_container \
-                                             + "@" + storage_account_name \
+                                             + "@" + storage_name \
                                              + f".blob.core.windows.net/Categoria.csv"
                 else:
                     filePaths = f'file:/opt/spark/spark-warehouse/csv/Categoria.csv' 
@@ -44,15 +47,13 @@ def main(spark,patterns,storage_name,key_blobs,datalake_name,key_datalake):
                     CategoriaRename.show()
                 
                     # Construimos la URL con el Nombre de la Transformacion Especifica.
-                    filePathDataLake=f'abfs://{datalake_container}@{datalake_storage_name}.\
+                    filePathDataLake=f'abfs://{datalake_container}@{datalake_name}.\
                                                                 dfs.core.windows.net/CategoriaRename.csv'
                     # Tranforma DataFrame Spark a Dataframe Pandas luego a csv.
-                    #  Escribe en el contenedor de un data lake.                
+                    # Escribe en el contenedor de un data lake.                
                     """(CategoriaRename
                             .toPandas()
-                                    .to_csv(filePathDataLake,\
-                                        storage_options = {'account_key':\
-                                             datalake_account_access_key} ,index=False))"""
+                                    .to_csv(filePathDataLake, storage_options = {'account_key': key_datalake} ,index=False))"""
                     transform.append(CategoriaRename)
                 continue       
                                              # Transformacion | 2 |
@@ -60,7 +61,7 @@ def main(spark,patterns,storage_name,key_blobs,datalake_name,key_datalake):
                 print(f"|----------------------> Comenzamos con el etl en la tabla:{Iter}<-----------------------------|")
                 if len(sys.argv) == 0:
                     filePaths = "wasbs://" + blob_container \
-                                             + "@" + storage_account_name \
+                                             + "@" + storage_name \
                                              + f".blob.core.windows.net/FactMine.csv"
                 else:
                     filePaths = f'file:/opt/spark/spark-warehouse/csv/FactMine.csv'
@@ -90,14 +91,14 @@ def main(spark,patterns,storage_name,key_blobs,datalake_name,key_datalake):
                     # Visualiza
                     SumTotalOreMined.show()
                     # Construimos la URL con el Nombre de la Transformacion Especifica.
-                    filePathDataLake=f'abfs://{datalake_container}@{datalake_storage_name}.\
+                    filePathDataLake=f'abfs://{datalake_container}@{datalake_name}.\
                                                                 dfs.core.windows.net/SumTotalOreMined.csv'
                     # Tranforma DataFrame Spark a Dataframe Pandas.
                     # luego a csv y escribe en el contenedor de un data lake.
                     """(SumTotalOreMined
                                 .toPandas()
                                         .to_csv(filePathDataLake,\
-                                            storage_options = {'account_key': datalake_account_access_key} \
+                                            storage_options = {'account_key': key_datalake} \
                                             ,index=False))"""
                     transform.append(SumTotalOreMined)
                 continue 
@@ -106,7 +107,7 @@ def main(spark,patterns,storage_name,key_blobs,datalake_name,key_datalake):
                 print(f'|----------------> Comienzan las transformaciones en la tabla:{Iter}<----------------------|')
                 if len(sys.argv) == 0:
                     filePaths = "wasbs://" + blob_container \
-                                             + "@" + storage_account_name \
+                                             + "@" + storage_name \
                                              + f".blob.core.windows.net/Mine.csv"
                 else:
                     filePaths = f'file:/opt/spark/spark-warehouse/csv/Mine.csv'
@@ -132,14 +133,14 @@ def main(spark,patterns,storage_name,key_blobs,datalake_name,key_datalake):
                     # Visualiza
                     SelectedColumnsTemporalQuery.show()
                     # Construimos la URL con el Nombre de la Transformacion Especifica.
-                    filePathDataLake=f'abfs://{datalake_container}@{datalake_storage_name}.\
+                    filePathDataLake=f'abfs://{datalake_container}@{datalake_name}.\
                                                             dfs.core.windows.net/SelectedColumns.csv'
                     # Tranforma DataFrame Spark a Dataframe Pandas luego a csv.
                     # Luego escribe en el contenedor de un data lake.
                     """SelectedColumns
                                 .toPandas()
                                         .to_csv(filePathDataLake,\
-                                            storage_options = {'account_key': datalake_account_access_key}\
+                                            storage_options = {'account_key': key_datalake}\
                                             ,index=False)"""
                     transform.append(SelectedColumns)
                     print(f"|------------- ---------> Dataframe SumTotalWastedByCountry <--------------------------|")
@@ -160,7 +161,7 @@ def main(spark,patterns,storage_name,key_blobs,datalake_name,key_datalake):
                     SumTotalWastedByCountryQuery.show()  
                 
                     # Construimos la URL con el Nombre de la Transformacion Especifica.
-                    filePathDataLake=f'abfs://{datalake_container}@{datalake_storage_name}.\
+                    filePathDataLake=f'abfs://{datalake_container}@{datalake_name}.\
                                                             dfs.core.windows.net/SumTotalWastedByCountry.csv'
                         
                     # Tranforma DataFrame Spark a Dataframe Pandas luego a csv.
@@ -168,7 +169,7 @@ def main(spark,patterns,storage_name,key_blobs,datalake_name,key_datalake):
                     """(SumTotalWastedByCountry
                                         .toPandas()
                                             .to_csv(filePathDataLake,\
-                                                storage_options = {'account_key': datalake_account_access_key} \
+                                                storage_options = {'account_key': key_datalake} \
                                                 ,index=False))"""
                 continue 
                                                     
@@ -177,7 +178,7 @@ def main(spark,patterns,storage_name,key_blobs,datalake_name,key_datalake):
                 print(f"|------------------> Comienzan las tranformaciones en la tabla:{Iter} <-------------------|")
                 if len(sys.argv) == 0:
                     filePaths = "wasbs://" + blob_container \
-                                             + "@" + storage_account_name \
+                                             + "@" + storage_name \
                                              + f".blob.core.windows.net/Producto.csv"
                 else:
                     filePaths = f'file:/opt/spark/spark-warehouse/csv/Producto.csv'
@@ -203,14 +204,14 @@ def main(spark,patterns,storage_name,key_blobs,datalake_name,key_datalake):
                     # Visualiza 
                     ProductCountTemporalQuery.show()  
               
-                    filePathDataLake=f'abfs://{datalake_container}@{datalake_storage_name}.\
+                    filePathDataLake=f'abfs://{datalake_container}@{datalake_name}.\
                                                         dfs.core.windows.net/ProductCount.csv'
                     # Tranforma DataFrame Spark a Dataframe Pandas luego a csv.
                     # Escribe en el contenedor de un data lake.
                     """ProductCount
                             .toPandas()
                                 .to_csv(filePathDataLake,\
-                                            storage_options = {'account_key': datalake_account_access_key}\ 
+                                            storage_options = {'account_key': key_datalake}\ 
                                             ,index=False)"""
                 
                     ProductosCount_Cast = (ProductCount
@@ -221,14 +222,14 @@ def main(spark,patterns,storage_name,key_blobs,datalake_name,key_datalake):
                     # Visualizamos el Schema.
                     ProductosCount_Cast.printSchema()
 
-                    filePathDataLake=f'abfs://{datalake_container}@{datalake_storage_name}.\
+                    filePathDataLake=f'abfs://{datalake_container}@{datalake_name}.\
                                                                     dfs.core.windows.net/ProductosCount_Cast.csv'
                     # Tranforma DataFrame Spark a Dataframe Pandas luego a csv.
                     # y escribe en el contenedor de un data lake.
                     """ProductosCount_Cast
                                     .toPandas()
                                         .to_csv(filePathDataLake,\
-                                                storage_options = {'account_key': datalake_account_access_key}\
+                                                storage_options = {'account_key': key_datalake}\
                                                  ,index=False)"""
                     
                 continue
@@ -238,7 +239,7 @@ def main(spark,patterns,storage_name,key_blobs,datalake_name,key_datalake):
                 print(f"|------------->Comienzan las Tranformaciones en la tabla: {Iter}<----------------------|")
                 if len(sys.argv) == 0:
                     filePaths = "wasbs://" + blob_container \
-                                             + "@" + storage_account_name \
+                                             + "@" + storage_name \
                                              + f".blob.core.windows.net/VentasInternet.csv"
                 
                 else:
@@ -269,14 +270,14 @@ def main(spark,patterns,storage_name,key_blobs,datalake_name,key_datalake):
                     # Visualiza
                     TableSortedByDescCodeTemporalQuery.show() 
                     # Construimos la URL con el Nombre de la Transformacion Especifica.
-                    filePathDataLake=f'abfs://{datalake_container}@{datalake_storage_name}\
+                    filePathDataLake=f'abfs://{datalake_container}@{datalake_name}\
                                                             .dfs.core.windows.net/TableSortedByDescCode.csv'
                     # Tranforma DataFrame Spark a Dataframe Pandas luego a csv.
                     # y escribe en el contenedor de un data lake
                     """TableSortedByDescCode
                                     .toPandas()
                                         .to_csv(filePathDataLake,\
-                                                storage_options = {'account_key': datalake_account_access_key} 
+                                                storage_options = {'account_key': key_datalake} 
                                                 ,index=False)"""
 
                     SubcategoriaFiltered = TableSortedByDescCode.filter(TableSortedByDescCode['Cod_Territorio']>=9)
@@ -292,14 +293,14 @@ def main(spark,patterns,storage_name,key_blobs,datalake_name,key_datalake):
                     SubcategoriaFilteredTemporalQuery.show()
 
                     # Construimos la URL con el Nombre de la Transformacion Especifica.
-                    filePathDataLake=f'abfs://{datalake_container}@{datalake_storage_name}.\
+                    filePathDataLake=f'abfs://{datalake_container}@{datalake_name}.\
                                                             dfs.core.windows.net/SubcategoriaFiltered.csv'
                     # Tranforma DataFrame Spark a Dataframe Pandas luego a csv 
                     # y escribe en el contenedor de un data lake
                     """SubcategoriaFiltered
                                     .toPandas()
                                         .to_csv(filePathDataLake,\
-                                            storage_options = {'account_key': datalake_account_access_key} 
+                                            storage_options = {'account_key': key_datalake} 
                                             ,index=False)"""
                 
                     VentasWithNetIncome = (df_VentasInternet
@@ -320,14 +321,14 @@ def main(spark,patterns,storage_name,key_blobs,datalake_name,key_datalake):
                     VentasWithNetIncomeTemporalQuery.show()  
                  
                     # Construimos la URL con el Nombre de la Transformacion Especifica.
-                    filePathDataLake=f'abfs://{datalake_container}@{datalake_storage_name}.\
+                    filePathDataLake=f'abfs://{datalake_container}@{datalake_name}.\
                                                             dfs.core.windows.net/VentasWithNetIncome.csv'
                       # Tranforma DataFrame Spark a Dataframe Pandas luego a csv
                       # y escribe en el contenedor de un data lake
                     """VentasWithNetIncome
                                 .toPandas()
                                     .to_csv(filePathDataLake,\
-                                            storage_options = {'account_key': datalake_account_access_key} \
+                                            storage_options = {'account_key': key_datalake} \
                                             ,index=False)"""
 
                     IngresosPorCodProducto = (VentasWithNetIncome
@@ -350,14 +351,14 @@ def main(spark,patterns,storage_name,key_blobs,datalake_name,key_datalake):
                     # Visualiza
                     IngresosPorCodProductoTemporalQuery.show() 
                     # Construimos la URL con el Nombre de la Transformacion Especifica.
-                    filePathDataLake=f'abfs://{datalake_container}@{datalake_storage_name}.\
+                    filePathDataLake=f'abfs://{datalake_container}@{datalake_name}.\
                                                                     dfs.core.windows.net/IngresosPorCodProducto.csv'
                     # Tranforma DataFrame Spark a Dataframe Pandas luego a csv 
                     # y escribe en el contenedor de un data lake
                     """IngresosPorCodProducto
                                 .toPandas()
                                     .to_csv(filePathDataLake,\
-                                            storage_options = {'account_key': datalake_account_access_key} 
+                                            storage_options = {'account_key': key_datalake} 
                                             ,index=False)"""
                 continue 
             case _:
@@ -371,13 +372,10 @@ if __name__ == "__main__":
     import os
     # cargamos las variables de entorno
     dotenv.load_dotenv()
-    key_blobs = os.getenv('KEY_BLOBS')
-    key_datalake = os.getenv('KEY_DATALAKE')
-    # Configuración del acceso a la storage account donde se encuentran los archivos CSV.
     storage_name = 'storagebasedatos2510'
-    datalake_container = 'output'
+    key_blobs = os.getenv('KEY_BLOBS')
     datalake_name = 'storagedatalake2510'
-    blob_container = 'csv'
+    key_datalake = os.getenv('KEY_DATALAKE')
     # Nombre del contenedor del Blob storage donde se encuentren los csv
     # Cree una SparkSession utilizando las API SparkSession.
     # Si no existe entonces cree una instancia.

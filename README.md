@@ -1,5 +1,5 @@
 # 
-## 1) Instalacion de `Java` y `Scala`:
+## Instalacion de `Java` y `Scala`:
 
 > Si no tienes instalado el jdk de java:
 ```bash
@@ -7,7 +7,7 @@ sudo apt update
 sudo apt install openjdk=11.0.17 
 java --version
 ```
-#### `Output:`
+ `Output:`
 ```bash
 openjdk 11.0.17 2022-10-18
 OpenJDK Runtime Environment (build 11.0.17+8-post-Ubuntu-1ubuntu222.04)
@@ -18,12 +18,12 @@ OpenJDK 64-Bit Server VM (build 11.0.17+8-post-Ubuntu-1ubuntu222.04, mixed mode,
 sudo apt install scala
 scala -version
 ```
-#### `Output:`
+`Output:`
 ```bash
 Scala code runner version 2.11.12 -- Copyright 2002-2017, LAMP/EPFL
 ```
 
-# Instalar `Apache Spark`
+## Instalar `Apache Spark`
  
 >Descargar la última versión.
 
@@ -75,7 +75,7 @@ http://localhost:8080
 ```
 ./sbin/spark-shell
 ```
-# Path de data:
+## Path de data:
 > Ahora Moveremos la careta data al lugar indicado: seguramente te encuentras en el `path:`  /opt/spark:
 > Pocisionate en la carpeta donde esta data Osea:
 
@@ -99,7 +99,8 @@ cd /opt/spark
 ls -l
 ```
 
-# Run `ETL`
+
+## Run `ETL` 
 >Run Spark App si el clon fuen en Documents.
 
 ```
@@ -318,11 +319,43 @@ Transformada
 
 ```
 
+>### Hadoop Config
+
+```
+
+
+```
+>### Hadoop Commandos
+
+<br />
+
+**Comandos utilizados Hadoop**
+
+<details>
+<summary>Comandos </summary>
+
+
+<br />
+
+
+`hdfs dfs -mkdir /user/fede/input/csv` = Crea un directorio `csv`. 
+
+`hdfs dfs -ls /` = Muestra el directorio. 
+
+`hdfs dfs -put csv /user/fede/input` = Empuja la carpeta de archivo csv a la carpeta Input.
+
+`hdfs dfs -ls /user/fede/input` = Muestra las carpetas en el directorio. 
+
+`hdfs dfs -cp /user/fede/input/csv/Mine.csv /user/fede/Output/landing` = Mueve el archivo Mine.csv al ente directorio landing. 
+
+`hdfs dfs -rm /user/fede/input/csv/Mine.csv` = Remueve el archivo Mine.csv de la carpeta csv.
 
 
 
->### Testing and releasing 
+<br />
 
+**Testing and releasing**
+<br />
 
 ```
 git tag -a v<0.0.3> -m "Release tag for version <0.0.3>"
