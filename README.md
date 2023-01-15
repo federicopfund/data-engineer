@@ -100,7 +100,7 @@ ls -l
 ```
 
 
-## Run `ETL` 
+## Run `ETL` Local
 >Run Spark App si el clon fuen en Documents.
 
 ```
@@ -209,9 +209,6 @@ root
 |         528|      14691|             7|    SO65588|       1|          4.99|       1.8663|  0.3992|0.1248|2013-09-02 00:00:00|2013-09-09 00:00:00|2013-09-14 00:00:00|            1|        3.1237|
 +------------+-----------+--------------+-----------+--------+--------------+-------------+--------+------+-------------------+-------------------+-------------------+-------------+--------------+
 
->
-
-
 ```
 >
 ```
@@ -318,23 +315,192 @@ Transformada
     |-- Suma_TotalWasted: double (nullable = true)
 
 ```
+### Para leer las tablas de un Nodo Storage en Hadoop
+>### Hadoop install
 
->### Hadoop Config
+>Comensamos con un:
+```
+sudo apt update
+
+```
+>Verificamos si java esta en el pack
+```
+echo #JAVA_HOME
+
+```
+>No se encuentra entonces los vamos a agregar al pack
+```
+cd /usr/lib/jvm
+
+```
+>Listamos con el comando
+```
+ls
+
+```
+>Vamos a agregar java al pack usando su ubicacion
+```
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+```
+>Verificamos si ya esta en el pack
+
+```
+echo $JAVA_HOME
+
+```
+>Instalamos ssh para el acceso remoto a los servidores
+```
+sudo apt-get install ssh
+
+```
+>Instalamos pdsh para ejecutar multuples comandos remotos
+```
+sudo apt-get install pdsh
+
+```
+>Vamos a la pagina oficial de hadoop para su descarga
+
+
+![link](http://hadoop.apache.org/)
+
+>Download: Vamos a utiliar la version 3.2.1 damos clic en Binary para descargar.
+>Nos dirigimos a la carpeta descargas.
+
+>cd 
+```
+cd Downloads
+
+```
+>ls para ver el binario y descomprimimos el archivo de hadoop.
+```
+tar -zxvf hadoop-3.2.1.tar.gz
+
+```
+> Renombramos la carpeta y la movemos al diractorio opt:
+```sh
+mv hadoop-3.2.1 a /opt/hadoop
 
 ```
 
+> luego verificamos que se creo  haya creado Hadoop.
+```sh
+ls
 
+```
+
+> Editamos el archivo hadoop-env.sh.
+```sh
+nano hadoop-env.sh
+
+```
+> Damos control f para buscar la palabra export e insertamos el path de JAVA_HOME 
+
+```sh
+export JAVA_HOME="/usr/lib/jvm/java-11-openjdk-amd64"
+
+```
+
+> Volvemos a la carpeta principal de hadoop.
+
+```sh
+cd ../..
+
+```
+> Ejecutamos el comando:
+```sh
+bin/hadoop
+```
+> Se muestra la documentacion del Script hadoop
+
+```sh
+bin/hadoop
+```
+
+> Volvemos a la documentacion a Single Nodo Setup e insertamos la siguiente configuracion en el archivo `core-site.xml`.
+
+```xml
+<configuration>
+    <property>
+        <name>fs.defaultFS</name>
+        <value>hdfs://localhost:9000</value>
+    </property>
+</configuration>
+```
+
+> Volvemos a la documentacion a Single Nodo Setup e insertamos la siguiente configuracion en el archivo `hdfs-site.xml`.
+
+```xml
+<configuration>
+    <property>
+        <name>dfs.replication</name>
+        <value>1</value>
+    </property>
+</configuration>
+```
+
+> Guardamos cambios.
+
+> Otorgamos acceso ssh al localhost sin frase y contraseña.
+
+```sh
+ssh localhost
+ssh-keygen -t rsa -P '' -f ~/.ssh/id_rsa
+```
+> Se nos genera una clavee:
+```sh
+cat ~/.ssh/id_rsa.pub >> ~/.shh/authorized_keys
+```
+> Para los permisos.
+
+```sh
+chmod 0600 ~/.ssh/authorized_keys
+```
+> Configurar los archivos para correr un modelo de programacion.
+```sh
+bin/hdfs namenode -format
+```
+```sh
+export PDSH_RCMD_TYPE=ssh
+```
+
+> Vamos a iniciar los diamon.
+```sh
+sbin/start-dfs.sh
+```
+
+>Vamos a Nuestro navegador para ver la interfas 
+```sh
+localhost:9870
+```
+>detenemos deamon
+```sh
+sbin/stop-dfs.sh
+```
+> Editamos el archivo:
+```sh
+nano mapred-site.xml
+```
+> Vamos a la paguina de la documentacion y copiamos el codigo en mapred-site.xml
+```sh
+
+<configuration>
+    <property>
+        <name>mapreduce.framework.name</name>
+        <value>yarn</value>
+    </property>
+    <property>
+        <name>mapreduce.application.classpath</name>
+        <value>$HADOOP_MAPRED_HOME/share/hadoop/mapreduce/*:$HADOOP_MAPRED_HOME/share/hadoop/mapreduce/lib/*</value>
+    </property>
+</configuration>
 ```
 >### Hadoop Commandos
 
 <br />
 
 **Comandos utilizados Hadoop**
-
 <details>
 <summary>Comandos </summary>
-
-
 <br />
 
 
@@ -354,13 +520,15 @@ Transformada
 `hdfs dfs -rm /user/fede/input/csv/Mine.csv` = Remueve el archivo Mine.csv de la carpeta csv.
 
 
-
 <br />
 
 **Testing and releasing**
+<details>
+<summary>Comandos </summary>
 <br />
 
 ```
 git tag -a v<0.0.3> -m "Release tag for version <0.0.3>"
 git push origin --tags
 ```
+<br />
