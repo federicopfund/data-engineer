@@ -1,3 +1,4 @@
+
 # 
 ## Instalacion de `Java` y `Scala`:
 
@@ -531,4 +532,14 @@ nano mapred-site.xml
 git tag -a v<0.0.3> -m "Release tag for version <0.0.3>"
 git push origin --tags
 ```
-<br />
+<br /
+
+
+Integrantes del GRUPO 1:
+-  Carlos Eduardo Denett
+-  Cecilia Marcela Espada 
+-  Federico Pfund
+-  Juan Martín Elena
+-  Agustín Fernández
+-  Patricio Perrone
+
