@@ -1,4 +1,5 @@
-﻿CREATE TABLE [dbo].[VentasInternet] (
+﻿
+CREATE TABLE [dbo].[VentasInternet] (
     [Cod_Producto]     VARCHAR (50) COLLATE Modern_Spanish_CI_AS NULL,
     [Cod_Cliente]      VARCHAR (50) COLLATE Modern_Spanish_CI_AS NULL,
     [Cod_Territorio]   VARCHAR (50) COLLATE Modern_Spanish_CI_AS NULL,
