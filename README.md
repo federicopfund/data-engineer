@@ -131,7 +131,7 @@ ls -l
 ```
 > Recuerda tienes que estar parado en el directorio ```/opt/spark ```y tener la carpeta de ```csv``` proveniente de ```data``` en 
 ```spark-warehouse```.
-> Tiempo de ejucion total: ```36.316101``` ms.  tranquilo bucaremos mayor eficiencia.
+> Tiempo total: ```36.316101``` ms.  tranquilo bucaremos mayor eficiencia.
 >Resultado:
 ```
 Schema de Ventas Internet
