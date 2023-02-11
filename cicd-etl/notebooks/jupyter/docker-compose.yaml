@@ -1,0 +1,17 @@
+services:
+  SparkJupyter:
+    image: SparkJupyter
+    hostname: fede
+    ports:
+      - "8888:8888"
+    volumes:
+      - "./jupyter:/home/fede/jupyter"
+      - "./data:/data"
+      - "./data:/public"
+    environment:
+      SHELL: /bin/bash
+    networks:
+      - Itjupyterlab
+networks:
+  Itjupyterlab:
+    name: Itjupyterlab
