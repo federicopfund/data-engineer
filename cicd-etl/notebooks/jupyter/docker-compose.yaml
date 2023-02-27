@@ -6,7 +6,7 @@ services:
       - "8888:8888"
     volumes:
       - "./jupyter:/home/fede/jupyter"
-      - "./data:/data"
+      - "./data:Apache_Spark_Developer/data"
       - "./data:/public"
     environment:
       SHELL: /bin/bash
