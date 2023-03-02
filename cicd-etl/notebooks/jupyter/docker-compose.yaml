@@ -1,6 +1,6 @@
 services:
-  SparkJupyter:
-    image: SparkJupyter
+  sparkjupyter:
+    image: sparkjupyter
     hostname: fede
     ports:
       - "8888:8888"
@@ -11,7 +11,7 @@ services:
     environment:
       SHELL: /bin/bash
     networks:
-      - Itjupyterlab
+      - itjupyterlab
 networks:
-  Itjupyterlab:
-    name: Itjupyterlab
+  itjupyterlab:
+    name: itjupyterlab
