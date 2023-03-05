@@ -354,7 +354,7 @@ echo $JAVA_HOME
 sudo apt-get install ssh
 
 ```
->Instalamos pdsh para ejecutar multuples comandos remotos
+>Instalamos pdsh para ejecutar multiples comandos remotos
 ```
 sudo apt-get install pdsh
 
@@ -374,12 +374,12 @@ cd Downloads
 ```
 >ls para ver el binario y descomprimimos el archivo de hadoop.
 ```
-tar -zxvf hadoop-3.2.1.tar.gz
+tar -zxvf hadoop-3.3.4.tar.gz
 
 ```
 > Renombramos la carpeta y la movemos al diractorio opt:
 ```sh
-mv hadoop-3.2.1 a /opt/hadoop
+mv hadoop-3.3.4 a /opt/hadoop
 
 ```
 
@@ -449,7 +449,7 @@ ssh-keygen -t rsa -P '' -f ~/.ssh/id_rsa
 ```
 > Se nos genera una clavee:
 ```sh
-cat ~/.ssh/id_rsa.pub >> ~/.shh/authorized_keys
+cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 ```
 > Para los permisos.
 
