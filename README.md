@@ -5,7 +5,7 @@
 > Si no tienes instalado el jdk de java:
 ```bash
 sudo apt update
-sudo apt install openjdk=11.0.17 
+sudo apt install openjdk-11-jdk 
 java --version
 ```
  `Output:`
@@ -38,8 +38,8 @@ wget https://archive.apache.org/dist/spark/spark-3.3.1/spark-3.3.1-bin-hadoop3.t
 > Extraiga el archivo descargado y muévalo al `/opt` directorio, renombrado como `spark` e elimina de archivos temporales el relese.
 ```bash
 tar -xvzf spark-3.3.1-bin-hadoop3.tgz 
-sudo mv spark-3.3.1-bin-hadoop3.tgz /opt/spark
-sudo rm -r spark-3.3.1-bin-hadoop3.tgz 
+sudo mv spark-3.3.1-bin-hadoop3 /opt/spark
+cd /opt/spark 
 ```
 >Cree variables de entorno para poder ejecutar y ejecutar `Spark`:
 ```bash
