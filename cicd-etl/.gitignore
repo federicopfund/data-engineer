@@ -38,3 +38,6 @@ mlruns/
 .env
 .env*
 .dbx
+ 
+# sbt pakage
+job/tasks/streaming/target
