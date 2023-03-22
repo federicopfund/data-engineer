@@ -482,7 +482,7 @@ sbin/stop-dfs.sh
 nano mapred-site.xml
 ```
 > Vamos a la paguina de la documentacion y copiamos el codigo en mapred-site.xml
-```sh
+```xml
 
 <configuration>
     <property>
@@ -525,7 +525,7 @@ nano mapred-site.xml
 
 **Testing and releasing**
 <details>
-<summary>Comandos </summary>
+<summary>Comandos</summary>
 <br />
 
 ```
