@@ -21,3 +21,35 @@ spec:
           resources:
             requests:
               cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 200m
+              memory: 512Mi
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8081
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8081
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            allowPrivilegeEscalation: false
+          imagePullPolicy: Always
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  minReadySeconds: 5
+---
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: spark-worker-pdb
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      component: spark-worker
