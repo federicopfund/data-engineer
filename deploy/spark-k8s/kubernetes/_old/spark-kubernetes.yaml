@@ -1,3 +1,4 @@
+# Spark Master Deployment
 kind: Deployment
 apiVersion: apps/v1
 metadata:
@@ -22,9 +23,17 @@ spec:
           resources:
             requests:
               cpu: 100m
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
 
+# Spark Master Service
 ---
-
 kind: Service
 apiVersion: v1
 metadata:
@@ -36,8 +45,8 @@ spec:
   selector:
     component: spark-master
 
+# Spark Web UI Service
 ---
-
 kind: Service
 apiVersion: v1
 metadata:
@@ -49,8 +58,8 @@ spec:
   selector:
     component: spark-master
 
+# Spark Worker Deployment
 ---
-
 kind: Deployment
 apiVersion: apps/v1
 metadata:
