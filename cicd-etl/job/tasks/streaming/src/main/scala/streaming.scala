@@ -1,79 +1,90 @@
-import org.apache.spark.sql._
-import org.apache.spark.sql.functions._
-import org.apache.spark.sql.streaming._
-import org.apache.spark.sql.types._
-import org.apache.spark.sql.cassandra._
+import org.apache.spark.SparkConf
+import org.apache.spark.streaming.{Seconds, StreamingContext}
+import org.apache.spark.streaming.kafka010.{ConsumerStrategies, KafkaUtils, LocationStrategies}
+import org.apache.log4j.{Level, Logger}
+import org.apache.spark.sql.{SparkSession, Row}
+import org.apache.spark.sql.types.{StringType, StructField, StructType, DoubleType, LongType}
+import org.apache.log4j.{Level, Logger}
+import scala.collection.mutable.ListBuffer
 
-import com.datastax.oss.driver.api.core.uuid.Uuids // com.datastax.cassandra:cassandra-driver-core:4.0.0
-import com.datastax.spark.connector._              // com.datastax.spark:spark-cassandra-connector_2.11:2.4.3
+object SparkKafkaStreamingApp {
+   // Configuración del logger
+  val log: Logger = Logger.getLogger(getClass.getName)
+  // Define el esquema para el DataFrame
+  val schema = StructType(
+    Seq(
+      StructField("timestamp", LongType, true),
+      StructField("profileName", StringType, true),
+      StructField("temp", DoubleType, true),
+      StructField("humd", DoubleType, true),
+      StructField("pres", DoubleType, true)
+    )
+  )
 
-case class DeviceData(device: String, temp: Double, humd: Double, pres: Double)
+  def main(args: Array[String]): Unit = {
+    Logger.getRootLogger.setLevel(Level.WARN)
+    
+    // Configuración de Spark
+    val conf = new SparkConf()
+                      .setAppName("SparkKafkaStreamingApp")
+                      .setMaster("local[*]")
+                      .set("spark.executor.cores", "4")  
+                      .set("spark.executor.instances", "3")  
+                      .set("spark.executor.memory", "2g")
+                      .set("spark.driver.extraJavaOptions", "-Djava.version=11")
+                      .set("spark.executor.extraJavaOptions", "-Djava.version=11")
 
-object Streaming {
+    val ssc = new StreamingContext(conf, Seconds(1))  // Intervalo de 5 segundos
+    
+    
+    // Configuración de Kafka
+    val kafkaParams = Map[String, Object](
+      "bootstrap.servers" -> "localhost:9092",
+      "key.deserializer" -> "org.apache.kafka.common.serialization.StringDeserializer",
+      "value.deserializer" -> "org.apache.kafka.common.serialization.StringDeserializer",
+      "group.id" -> "spark-consumer-group",
+      "auto.offset.reset" -> "latest",
+      "enable.auto.commit" -> (false: java.lang.Boolean),  "max.poll.records" -> "500",          // Ajusta según tus necesidades
+      "session.timeout.ms" -> "30000",      
+      "heartbeat.interval.ms" -> "5000",    
+      "max.poll.interval.ms" -> "600000"
+      )
 
-	def main(args: Array[String]) {
+    // Tópicos de Kafka a los que queremos suscribirnos
+    val topics = Array("weather")
 
-		// initialize Spark
-		val spark = SparkSession
-			.builder
-			.appName("Streaming")
-			.config("spark.cassandra.connection.host", "localhost")
-			.getOrCreate()
+    // Crear el DStream que recibe los datos de Kafka
+    val kafkaStream = KafkaUtils.createDirectStream[String, String](
+      ssc,
+      LocationStrategies.PreferConsistent,
+      ConsumerStrategies.Subscribe[String, String](topics, kafkaParams)
+    )
 
-		import spark.implicits._
+    // Acumulador de fil
+    // Procesar los datos del dispositivo
+    kafkaStream.foreachRDD { rdd =>
+      rdd.foreach { record =>
+        val message = record.value()
+        val messageData = message.split(",").map(_.trim)
 
-		// read from Kafka
-		val inputDF = spark
-			.readStream
-			.format("kafka") // org.apache.spark:spark-sql-kafka-0-10_2.11:2.4.5
-			.option("kafka.bootstrap.servers", "localhost:9092")
-			.option("subscribe", "weather")
-			.load()
+        // Asumimos que los datos siempre tienen cinco partes: timestamp, profileName, temp, humd, pres
+        if (messageData.length == 5) {
+          val Array(timestamp, profileName, temp, humd, pres) = messageData
+          val row = Row(timestamp.toLong, profileName, temp.toDouble, humd.toDouble, pres.toDouble)
+          // Registrar información en el log
+          log.info(s"Processed message: $timestamp, $profileName, $temp, $humd, $pres")
+          // Agregar la fila al acumulador
+         
+          // Puedes realizar otras transformaciones o acciones en el DataFrame aquí según tus necesidades
+        }
+  
+      }
 
-		// only select 'value' from the table,
-		// convert from bytes to string
-		val rawDF = inputDF.selectExpr("CAST(value AS STRING)").as[String]
+    }
 
-		// split each row on comma, load it to the case class
-		val expandedDF = rawDF.map(row => row.split(","))
-			.map(row => DeviceData(
-				row(1),
-				row(2).toDouble,
-				row(3).toDouble,
-				row(4).toDouble
-			))
-
-		// groupby and aggregate
-		val summaryDf = expandedDF
-			.groupBy("device")
-			.agg(avg("temp"), avg("humd"), avg("pres"))
-
-		// create a dataset function that creates UUIDs
-		val makeUUID = udf(() => Uuids.timeBased().toString)
-
-		// add the UUIDs and renamed the columns
-		// this is necessary so that the dataframe matches the 
-		// table schema in cassandra
-		val summaryWithIDs = summaryDf.withColumn("uuid", makeUUID())
-			.withColumnRenamed("avg(temp)", "temp")
-			.withColumnRenamed("avg(humd)", "humd")
-			.withColumnRenamed("avg(pres)", "pres")
-
-		// write dataframe to Cassandra
-		val query = summaryWithIDs
-			.writeStream
-			.trigger(Trigger.ProcessingTime("5 seconds"))
-			.foreachBatch { (batchDF: DataFrame, batchID: Long) =>
-				println(s"Writing to Cassandra $batchID")
-				batchDF.write
-					.cassandraFormat("weather", "stuff") // table, keyspace
-					.mode("append")
-					.save()
-			}
-			.outputMode("update")
-			.start()
-
-		// until ^C
-		query.awaitTermination()
-	}
+    // Iniciar el streaming
+    ssc.start()
+    ssc.awaitTermination()
+  }
 }
+
