@@ -5,7 +5,7 @@
 > Si no tienes instalado el jdk de java:
 ```bash
 sudo apt update
-sudo apt install openjdk=11.0.17 
+sudo apt install openjdk-19-jre-headless
 java --version
 ```
  `Output:`
