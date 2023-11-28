@@ -3,15 +3,20 @@ kind: Ingress
 metadata:
   name: minikube-ingress
   annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   rules:
   - host: spark-kubernetes
     http:
       paths:
-        - pathType: Prefix
-          path: /
-          backend:
-            service:
-              name: spark-master
-              port:
-                number: 8080
+      - pathType: Prefix
+        path: /
+        backend:
+          service:
+            name: spark-master
+            port:
+              number: 8080
+  tls:
+  - hosts:
+    - spark-kubernetes
+    secretName: fede-tls-secret  # Replace with the actual name of your TLS secret
