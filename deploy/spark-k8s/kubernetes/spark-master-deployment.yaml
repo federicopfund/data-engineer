@@ -1,5 +1,5 @@
-kind: Deployment
 apiVersion: apps/v1
+kind: Deployment
 metadata:
   name: spark-master
 spec:
@@ -17,8 +17,29 @@ spec:
           image: spark-hadoop:3.2.0
           command: ["/spark-master"]
           ports:
-            - containerPort: 7077
-            - containerPort: 8080
+            - name: spark
+              containerPort: 7077
+            - name: webui
+              containerPort: 8080
           resources:
             requests:
-              cpu: 100m
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "200m"
+              memory: "512Mi"
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8080
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            allowPrivilegeEscalation: false
+          env:
+            - name: SPARK_MASTER_VAR
+              value: "some-value"

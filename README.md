@@ -32,7 +32,11 @@
 > Si no tienes instalado el jdk de java:
 ```bash
 sudo apt update
+
+sudo apt install openjdk-19-jre-headless
+=======
 sudo apt install openjdk-11-jdk 
+
 java --version
 ```
  `Output:`
@@ -158,7 +162,11 @@ ls -l
 ```
 > Recuerda tienes que estar parado en el directorio ```/opt/spark ```y tener la carpeta de ```csv``` proveniente de ```data``` en 
 ```spark-warehouse```.
+
+> Tiempo de ejecucion total: ```36.316101``` ms.  tranquilo bucaremos mayor eficiencia.
+=======
 > Tiempo total: ```36.316101``` ms.  tranquilo bucaremos mayor eficiencia.
+
 >Resultado:
 ```
 Schema de Ventas Internet
