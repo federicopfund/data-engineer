@@ -1,11 +1,42 @@
+## Modernización de la infraestructura de inteligencia empresarial
 
+### Descripción del proyecto:
+>En mi último cargo, encabecé un proyecto integral centrado en la modernización de la infraestructura de Business Intelligence (BI). El proyecto tenía como objetivo mejorar la eficiencia del procesamiento de datos, las capacidades de almacenamiento y las técnicas de visualización, aprovechando tecnologías y herramientas de última generación.
+
+## Responsabilidades clave y logros:
+
+### Transformación ETL con Apache Spark:
+
+>Lideré el diseño e implementación de procesos de Extracción, Transformación, Carga (ETL) utilizando tecnologías Apache Spark. Aseguró una transformación perfecta de datos internos y externos, estructurados y no estructurados.
+
+### Almacenamiento de datos con Apache Hadoop:
+>Implementé Apache Hadoop como solución de almacenamiento principal, optimizando los procesos de almacenamiento y recuperación de datos. Colaboré con el equipo para diseñar una arquitectura de almacenamiento de datos eficiente dentro del marco de Hadoop.
+### Integración del entorno de Databricks:
+>Utilicé el entorno Databricks para mejorar las capacidades colaborativas de ingeniería y ciencia de datos. Aseguré la integración fluida de Databricks en el ecosistema de BI existente para flujos de trabajo optimizados.
+### Automatización de fábrica de datos de Azure:
+>Implementé Azure Data Factory para automatizar la ejecución de la canalización ETL sin problemas. Diseñé y orquesté cuadernos "Pipeline", optimizando el flujo de trabajo general de procesamiento de datos.
+
+### Integración de Data Lake:
+>Integró con éxito la salida de los procesos ETL en un DataLake centralizado. Se garantizó la coherencia, accesibilidad y seguridad de los datos dentro del entorno de DataLake.
+
+### Power BI Visualizacion:
+>Aprovechó Power BI para visualizar y presentar datos transformados. Desarrollé paneles de control interactivos y reveladores para facilitar la toma de decisiones basada en datos.
+### Resultado del proyecto:
+>El proyecto dio como resultado una infraestructura de BI robusta y escalable, capaz de manejar diversos tipos de datos y requisitos de procesamiento. Al incorporar Apache Spark, Hadoop, Databricks, Azure Data Factory y Power BI, logramos una canalización de datos perfecta de un extremo a otro. Los procesos automatizados no solo mejoraron la eficiencia sino que también permitieron obtener información en tiempo real a través de visualizaciones dinámicas de Power BI.
+
+### Conclusiones clave:
+>Este proyecto mostró mi capacidad para navegar e integrar varias tecnologías de vanguardia en el panorama de BI. La ejecución exitosa del proyecto resalta mi competencia en el diseño, implementación y optimización de soluciones de BI de un extremo a otro que satisfacen las necesidades cambiantes de las organizaciones basadas en datos.
 # 
 ## Instalacion de `Java` y `Scala`:
 
 > Si no tienes instalado el jdk de java:
 ```bash
 sudo apt update
+
 sudo apt install openjdk-19-jre-headless
+=======
+sudo apt install openjdk-11-jdk 
+
 java --version
 ```
  `Output:`
@@ -38,8 +69,8 @@ wget https://archive.apache.org/dist/spark/spark-3.3.1/spark-3.3.1-bin-hadoop3.t
 > Extraiga el archivo descargado y muévalo al `/opt` directorio, renombrado como `spark` e elimina de archivos temporales el relese.
 ```bash
 tar -xvzf spark-3.3.1-bin-hadoop3.tgz 
-sudo mv spark-3.3.1-bin-hadoop3.tgz /opt/spark
-sudo rm -r spark-3.3.1-bin-hadoop3.tgz 
+sudo mv spark-3.3.1-bin-hadoop3 /opt/spark
+cd /opt/spark 
 ```
 >Cree variables de entorno para poder ejecutar y ejecutar `Spark`:
 ```bash
@@ -131,7 +162,11 @@ ls -l
 ```
 > Recuerda tienes que estar parado en el directorio ```/opt/spark ```y tener la carpeta de ```csv``` proveniente de ```data``` en 
 ```spark-warehouse```.
+
 > Tiempo de ejecucion total: ```36.316101``` ms.  tranquilo bucaremos mayor eficiencia.
+=======
+> Tiempo total: ```36.316101``` ms.  tranquilo bucaremos mayor eficiencia.
+
 >Resultado:
 ```
 Schema de Ventas Internet
@@ -354,7 +389,7 @@ echo $JAVA_HOME
 sudo apt-get install ssh
 
 ```
->Instalamos pdsh para ejecutar multuples comandos remotos
+>Instalamos pdsh para ejecutar multiples comandos remotos
 ```
 sudo apt-get install pdsh
 
@@ -374,12 +409,12 @@ cd Downloads
 ```
 >ls para ver el binario y descomprimimos el archivo de hadoop.
 ```
-tar -zxvf hadoop-3.2.1.tar.gz
+tar -zxvf hadoop-3.3.4.tar.gz
 
 ```
 > Renombramos la carpeta y la movemos al diractorio opt:
 ```sh
-mv hadoop-3.2.1 a /opt/hadoop
+mv hadoop-3.3.4 a /opt/hadoop
 
 ```
 
@@ -449,7 +484,7 @@ ssh-keygen -t rsa -P '' -f ~/.ssh/id_rsa
 ```
 > Se nos genera una clavee:
 ```sh
-cat ~/.ssh/id_rsa.pub >> ~/.shh/authorized_keys
+cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 ```
 > Para los permisos.
 
@@ -482,7 +517,7 @@ sbin/stop-dfs.sh
 nano mapred-site.xml
 ```
 > Vamos a la paguina de la documentacion y copiamos el codigo en mapred-site.xml
-```sh
+```xml
 
 <configuration>
     <property>
@@ -525,7 +560,7 @@ nano mapred-site.xml
 
 **Testing and releasing**
 <details>
-<summary>Comandos </summary>
+<summary>Comandos</summary>
 <br />
 
 ```
