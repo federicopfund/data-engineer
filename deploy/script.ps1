@@ -21,6 +21,20 @@ Write-Host "login correcto.";
 $rgName = "Rgfedericopfund"
 Write-Host "los Servicios se crearan en el grupo de recurso $rgName.";
 
+Write-Host "Los servicios se crearán en el grupo de recurso $rgName."
+
+# Verificar si el grupo de recursos ya existe
+$existingResourceGroup = Get-AzResourceGroup -Name $rgName -ErrorAction SilentlyContinue
+
+if ($existingResourceGroup -eq $null) {
+    # Crear el grupo de recursos si no existe
+    $resourceGroupLocation = "East US"  # Cambia según tu ubicación preferida
+    $rgName = New-AzResourceGroup -Name $rgName -Location $resourceGroupLocation
+
+    # Validar la operación
+    Validate-Operation "Creating Resource Group" $rgName
+}
+
 Write-Host "Se definen las variables de los servicios.";
 
 $accountName = "storageblobs$suffix"
