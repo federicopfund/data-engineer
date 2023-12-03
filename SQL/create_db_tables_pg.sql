@@ -1,82 +1,64 @@
--- Postgres Table Creation Script
---
+-- Crear un esquema llamado "ecommerce"
+CREATE SCHEMA IF NOT EXISTS ecommerce;
 
---
--- Table structure for table departments
---
+-- Cambiar al esquema "ecommerce"
+SET search_path TO ecommerce;
 
+-- Tabla para departamentos
 CREATE TABLE departments (
-  department_id INT NOT NULL,
-  department_name VARCHAR(45) NOT NULL,
-  PRIMARY KEY (department_id)
+  department_id SERIAL PRIMARY KEY,
+  department_name VARCHAR(100) NOT NULL
 );
 
---
--- Table structure for table categories
---
-
+-- Tabla para categorías
 CREATE TABLE categories (
-  category_id INT NOT NULL,
-  category_department_id INT NOT NULL,
-  category_name VARCHAR(45) NOT NULL,
-  PRIMARY KEY (category_id)
-); 
+  category_id SERIAL PRIMARY KEY,
+  category_name VARCHAR(100) NOT NULL,
+  department_id INT NOT NULL,
+  FOREIGN KEY (department_id) REFERENCES departments(department_id)
+);
 
---
--- Table structure for table products
---
-
+-- Tabla para productos
 CREATE TABLE products (
-  product_id INT NOT NULL,
-  product_category_id INT NOT NULL,
-  product_name VARCHAR(45) NOT NULL,
-  product_description VARCHAR(255) NOT NULL,
-  product_price FLOAT NOT NULL,
-  product_image VARCHAR(255) NOT NULL,
-  PRIMARY KEY (product_id)
+  product_id SERIAL PRIMARY KEY,
+  product_name VARCHAR(255) NOT NULL,
+  product_description TEXT,
+  product_price DECIMAL(10, 2) NOT NULL,
+  product_image_url VARCHAR(255),
+  category_id INT NOT NULL,
+  FOREIGN KEY (category_id) REFERENCES categories(category_id)
 );
 
---
--- Table structure for table customers
---
-
+-- Tabla para clientes
 CREATE TABLE customers (
-  customer_id INT NOT NULL,
-  customer_fname VARCHAR(45) NOT NULL,
-  customer_lname VARCHAR(45) NOT NULL,
-  customer_email VARCHAR(45) NOT NULL,
-  customer_password VARCHAR(45) NOT NULL,
-  customer_street VARCHAR(255) NOT NULL,
-  customer_city VARCHAR(45) NOT NULL,
-  customer_state VARCHAR(45) NOT NULL,
-  customer_zipcode VARCHAR(45) NOT NULL,
-  PRIMARY KEY (customer_id)
-); 
+  customer_id SERIAL PRIMARY KEY,
+  customer_fname VARCHAR(100) NOT NULL,
+  customer_lname VARCHAR(100) NOT NULL,
+  customer_email VARCHAR(255) NOT NULL,
+  customer_password VARCHAR(255) NOT NULL,
+  customer_street_address VARCHAR(255) NOT NULL,
+  customer_city VARCHAR(100) NOT NULL,
+  customer_state VARCHAR(100) NOT NULL,
+  customer_zipcode VARCHAR(20) NOT NULL
+);
 
---
--- Table structure for table orders
---
-
+-- Tabla para órdenes
 CREATE TABLE orders (
-  order_id INT NOT NULL,
-  order_date TIMESTAMP NOT NULL,
-  order_customer_id INT NOT NULL,
-  order_status VARCHAR(45) NOT NULL,
-  PRIMARY KEY (order_id)
+  order_id SERIAL PRIMARY KEY,
+  order_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  customer_id INT NOT NULL,
+  order_status VARCHAR(50) NOT NULL,
+  FOREIGN KEY (customer_id) REFERENCES customers(customer_id)
 );
 
---
--- Table structure for table order_items
---
-
+-- Tabla para elementos de orden
 CREATE TABLE order_items (
-  order_item_id INT NOT NULL,
-  order_item_order_id INT NOT NULL,
-  order_item_product_id INT NOT NULL,
-  order_item_quantity INT NOT NULL,
-  order_item_subtotal FLOAT NOT NULL,
-  order_item_product_price FLOAT NOT NULL,
-  PRIMARY KEY (order_item_id)
+  order_item_id SERIAL PRIMARY KEY,
+  order_id INT NOT NULL,
+  product_id INT NOT NULL,
+  quantity INT NOT NULL,
+  subtotal DECIMAL(10, 2) NOT NULL,
+  product_price DECIMAL(10, 2) NOT NULL,
+  FOREIGN KEY (order_id) REFERENCES orders(order_id),
+  FOREIGN KEY (product_id) REFERENCES products(product_id)
 );
-
-
