@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    environment:
+      POSTGRES_USER: fedex
+      POSTGRES_PASSWORD: 234
+      POSTGRES_DB: ecommerce
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - postgres_network
+    restart: unless-stopped
+    shm_size: '2gb'  # Adjust based on your system's memory
+
+volumes:
+  postgres_data:
+
+networks:
+  postgres_network:
+    driver: bridge
