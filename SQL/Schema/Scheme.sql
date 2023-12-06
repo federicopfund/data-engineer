@@ -1,3 +1,6 @@
+
+DROP SCHEMA IF EXISTS ecommerce CASCADE;
+
 -- Crear un esquema llamado "ecommerce"
 CREATE SCHEMA IF NOT EXISTS ecommerce;
 
@@ -26,8 +29,8 @@ CREATE TABLE categories (
 -- Tabla para subcategorías de productos
 CREATE TABLE subcategories (
   subcategory_id SERIAL PRIMARY KEY,
-  subcategory_code VARCHAR(50) COLLATE Modern_Spanish_CI_AS,
-  subcategory_name VARCHAR(50) COLLATE Modern_Spanish_CI_AS,
+  subcategory_code VARCHAR(50) ,
+  subcategory_name VARCHAR(50) ,
   category_id INT NOT NULL,
   FOREIGN KEY (category_id) REFERENCES categories(category_id)
 );
@@ -86,36 +89,13 @@ CREATE TABLE order_promotions (
 -- Tabla para sucursales
 CREATE TABLE branches (
   branch_id SERIAL PRIMARY KEY,
-  branch_code VARCHAR(50) COLLATE Modern_Spanish_CI_AS,
-  branch_code_pk INT COLLATE Modern_Spanish_CI_AS,
-  branch_name VARCHAR(50) COLLATE Modern_Spanish_CI_AS,
-  latitude FLOAT COLLATE Modern_Spanish_CI_AS,
-  longitude FLOAT COLLATE Modern_Spanish_CI_AS
+  branch_code VARCHAR(50) ,
+  branch_code_pk INT,
+  branch_name VARCHAR(50),
+  latitude FLOAT,
+  longitude FLOAT 
 );
 
--- Tabla para subcategorías
-CREATE TABLE subcategories (
-  subcategory_id SERIAL PRIMARY KEY,
-  subcategory_code VARCHAR(50) COLLATE Modern_Spanish_CI_AS,
-  subcategory_name VARCHAR(50) COLLATE Modern_Spanish_CI_AS,
-  category_id INT NOT NULL,
-  FOREIGN KEY (category_id) REFERENCES categories(category_id)
-);
--- Tabla para facturas de minería
-CREATE TABLE fact_mine (
-  truck_id INT NOT NULL,
-  project_id INT NOT NULL,
-  operator_id INT NOT NULL,
-  total_ore_mined MONEY NOT NULL,
-  total_wasted MONEY NOT NULL,
-  date_mined DATETIME NULL,
-  PRIMARY KEY (truck_id, project_id, operator_id),
-  FOREIGN KEY (truck_id) REFERENCES trucks(truck_id),
-  FOREIGN KEY (project_id) REFERENCES projects(project_id),
-  FOREIGN KEY (operator_id) REFERENCES operators(operator_id)
-);
-
--- Otras tablas del esquema...
 
 -- Tabla para camiones
 CREATE TABLE trucks (
@@ -126,29 +106,47 @@ CREATE TABLE trucks (
 -- Tabla para proyectos
 CREATE TABLE projects (
   project_id INT PRIMARY KEY,
-  project_name NVARCHAR(100) NOT NULL
+  project_name VARCHAR(100) NOT NULL
 );
 
 -- Tabla para operadores
 CREATE TABLE operators (
   operator_id INT PRIMARY KEY,
-  first_name NVARCHAR(50) NULL,
-  last_name NVARCHAR(50) NULL
+  first_name VARCHAR(50) NULL,
+  last_name VARCHAR(50) NULL
 );
+
+
+-- Tabla para facturas de minería
+CREATE TABLE fact_mine (
+  truck_id INT NOT NULL,
+  project_id INT NOT NULL,
+  operator_id INT NOT NULL,
+  total_ore_mined MONEY NOT NULL,
+  total_wasted MONEY NOT NULL,
+  date_mined TIMESTAMP NULL,
+  PRIMARY KEY (truck_id, project_id, operator_id),
+  FOREIGN KEY (truck_id) REFERENCES trucks(truck_id),
+  FOREIGN KEY (project_id) REFERENCES projects(project_id),
+  FOREIGN KEY (operator_id) REFERENCES operators(operator_id)
+);
+
+-- Otras tablas del esquema...
+
 
 
 -- Tabla para ventas por Internet
 CREATE TABLE internet_sales (
-  Cod_Producto VARCHAR(50) COLLATE Modern_Spanish_CI_AS,
-  Cod_Cliente VARCHAR(50) COLLATE Modern_Spanish_CI_AS,
-  Cod_Territorio VARCHAR(50) COLLATE Modern_Spanish_CI_AS,
-  NumeroOrden INT COLLATE Modern_Spanish_CI_AS,
-  Cantidad INT COLLATE Modern_Spanish_CI_AS,
-  PrecioUnitario MONEY COLLATE Modern_Spanish_CI_AS,
-  CostoUnitario MONEY COLLATE Modern_Spanish_CI_AS,
-  Impuesto MONEY COLLATE Modern_Spanish_CI_AS,
-  Flete REAL COLLATE Modern_Spanish_CI_AS,
-  FechaOrden DATETIMEOFFSET COLLATE Modern_Spanish_CI_AS,
-  FechaEnvio DATETIMEOFFSET COLLATE Modern_Spanish_CI_AS,
-  FechaVencimiento DATETIMEOFFSET COLLATE Modern_Spanish_CI_AS,
+  Cod_Producto VARCHAR(50),
+  Cod_Cliente VARCHAR(50) ,
+  Cod_Territorio VARCHAR(50),
+  NumeroOrden INT,
+  Cantidad INT,
+  PrecioUnitario MONEY ,
+  CostoUnitario MONEY,
+  Impuesto MONEY,
+  Flete REAL,
+  FechaOrden TIMESTAMPTZ,
+  FechaEnvio TIMESTAMPTZ,
+  FechaVencimiento TIMESTAMPTZ
 );
