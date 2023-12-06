@@ -1,5 +1,5 @@
 CREATE OR REPLACE PROCEDURE add_product(
-    product_code VARCHAR(20) UNIQUE,
+    product_code VARCHAR(20),
     product_name VARCHAR(255),
     category_id INT,
     price DECIMAL(10, 2),
