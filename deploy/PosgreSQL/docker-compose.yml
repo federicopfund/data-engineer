@@ -8,10 +8,15 @@ services:
       POSTGRES_USER: fedex
       POSTGRES_PASSWORD: 234
       POSTGRES_DB: ecommerce
+      POSTGRES_MAX_CONNECTIONS: 100
+      POSTGRES_SHARED_BUFFERS: 256MB
+      POSTGRES_WORK_MEM: 32MB
+      POSTGRES_MAINTENANCE_WORK_MEM: 64MB
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - /Schema/Scheme.sql:/docker-entrypoint-initdb.d 
     networks:
       - postgres_network
     restart: unless-stopped
