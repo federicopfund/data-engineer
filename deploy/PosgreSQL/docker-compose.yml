@@ -16,7 +16,7 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - /Schema/Scheme.sql:/docker-entrypoint-initdb.d 
+      ##- /Schema/Scheme.sql:/docker-entrypoint-initdb.d 
     networks:
       - postgres_network
     restart: unless-stopped
