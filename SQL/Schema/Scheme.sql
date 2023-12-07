@@ -10,9 +10,10 @@ SET search_path TO ecommerce;
 -- Tabla para productos
 CREATE TABLE products (
   product_id SERIAL PRIMARY KEY,
-  product_code VARCHAR(20) UNIQUE NOT NULL,
+  product_code VARCHAR(20) NOT NULL,
   product_name VARCHAR(255) NOT NULL,
   category_id INT NOT NULL,
+  costo_unitario MONEY,
   price DECIMAL(10, 2) NOT NULL,
   stock_quantity INT NOT NULL,
   description TEXT,
@@ -60,6 +61,7 @@ CREATE TABLE orders (
 CREATE TABLE order_details (
   order_detail_id SERIAL PRIMARY KEY,
   order_id INT NOT NULL,
+  numero_orden INT,
   product_id INT NOT NULL,
   quantity INT NOT NULL,
   unit_price DECIMAL(10, 2) NOT NULL,
@@ -137,16 +139,18 @@ CREATE TABLE fact_mine (
 
 -- Tabla para ventas por Internet
 CREATE TABLE internet_sales (
-  Cod_Producto VARCHAR(50),
-  Cod_Cliente VARCHAR(50) ,
-  Cod_Territorio VARCHAR(50),
-  NumeroOrden INT,
-  Cantidad INT,
-  PrecioUnitario MONEY ,
-  CostoUnitario MONEY,
-  Impuesto MONEY,
-  Flete REAL,
-  FechaOrden TIMESTAMPTZ,
-  FechaEnvio TIMESTAMPTZ,
-  FechaVencimiento TIMESTAMPTZ
+  cod_producto VARCHAR(50),
+  cod_cliente VARCHAR(50) ,
+  cod_territorio VARCHAR(50),
+  product_code VARCHAR(20) NOT NULL,
+  category_id INT NOT NULL,
+  numero_orden INT,
+  stock_quantity INT NOT NULL,
+  promotion_id INT NOT NULL,
+  price DECIMAL(10, 2) NOT NULL,
+  impuesto MONEY,
+  flete REAL,
+  fecha_orden TIMESTAMPTZ,
+  fecha_envio TIMESTAMPTZ,
+  fecha_vencimiento TIMESTAMPTZ
 );
