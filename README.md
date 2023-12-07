@@ -27,6 +27,14 @@
 ### Conclusiones clave:
 >Este proyecto mostró mi capacidad para navegar e integrar varias tecnologías de vanguardia en el panorama de BI. La ejecución exitosa del proyecto resalta mi competencia en el diseño, implementación y optimización de soluciones de BI de un extremo a otro que satisfacen las necesidades cambiantes de las organizaciones basadas en datos.
 # 
+
+
+******
+
+<details>
+<summary>Instalacion</summary>
+<br />
+
 ## Instalacion de `Java` y `Scala`:
 
 > Si no tienes instalado el jdk de java:
@@ -86,7 +94,18 @@ export PATH=$PATH:$SPARK_HOME/bin:$SPARK_HOME/sbin
 ```bash
 source ~/.bashrc
 ```
-# Inicie Apache `Spark`.
+</details>
+
+******
+
+
+******
+
+<details>
+<summary>Inicie Apache Spark.</summary>
+<br />
+
+## Inicie Apache `Spark`.
 >En este punto, Apache Spark está instalado y listo para usar. 
 > Ejecute los siguientes comandos para iniciarlo.
 ```bash
@@ -107,6 +126,15 @@ http://localhost:8080
 ```
 ./sbin/spark-shell
 ```
+
+</details>
+
+******
+
+<details>
+<summary>Path de data.</summary>
+<br />
+
 ## Path de data:
 > Ahora Moveremos la careta data al lugar indicado: seguramente te encuentras en el `path:`  /opt/spark:
 > Pocisionate en la carpeta donde esta data Osea:
@@ -131,6 +159,12 @@ cd /opt/spark
 ls -l
 ```
 
+</details>
+
+******
+<details>
+<summary>Run ETL Local</summary>
+<br />
 
 ## Run `ETL` Local
 >Run Spark App si el clon fuen en Documents.
@@ -164,8 +198,14 @@ ls -l
 ```spark-warehouse```.
 
 > Tiempo de ejecucion total: ```36.316101``` ms.  tranquilo bucaremos mayor eficiencia.
-=======
-> Tiempo total: ```36.316101``` ms.  tranquilo bucaremos mayor eficiencia.
+
+</details>
+
+******
+
+<details>
+<summary>Resultado</summary>
+<br />
 
 >Resultado:
 ```
@@ -246,7 +286,7 @@ root
 +------------+-----------+--------------+-----------+--------+--------------+-------------+--------+------+-------------------+-------------------+-------------------+-------------+--------------+
 
 ```
->
+>Producto
 ```
 +------------+---------------------+-------------------+
 |Cod_Producto|Ingreso_Neto_Promedio|Suma_Ingresos_Netos|
@@ -351,6 +391,15 @@ Transformada
     |-- Suma_TotalWasted: double (nullable = true)
 
 ```
+</details>
+
+******
+
+
+<details>
+<summary>Hadoop install</summary>
+<br />
+
 ### Para leer las tablas de un Nodo Storage en Hadoop
 >### Hadoop install
 
@@ -530,7 +579,13 @@ nano mapred-site.xml
     </property>
 </configuration>
 ```
->### Hadoop Commandos
+
+
+</details>
+
+******
+
+### Hadoop Commandos
 
 <br />
 
@@ -567,14 +622,25 @@ nano mapred-site.xml
 git tag -a v<0.0.3> -m "Release tag for version <0.0.3>"
 git push origin --tags
 ```
-<br /
+<br />
+</details>
+<br />
+
+**Testing and releasing**
+<details>
+<summary>Integrantes </summary>
+<br />
 
 
-Integrantes del GRUPO 1:
--  Carlos Eduardo Denett
--  Cecilia Marcela Espada 
--  Federico Pfund
--  Juan Martín Elena
--  Agustín Fernández
--  Patricio Perrone
+```
+Integrantes
+        root
+            |-- Carlos Eduardo Denett: string (nullable = true)
+            |-- Cecilia Marcela Espada : string (nullable = true)
+            |-- Federico Pfund: string (nullable = true)
+            |-- Juan Martín Elena: integer (nullable = true)
+            |-- Agustín Fernández: string (nullable = true)
+            |-- Patricio Perrone: integer (nullable = true)
 
+
+```
