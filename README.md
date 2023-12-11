@@ -42,7 +42,7 @@
 sudo apt update
 
 sudo apt install openjdk-19-jre-headless
-=======
+
 sudo apt install openjdk-11-jdk 
 
 java --version
