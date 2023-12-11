@@ -19,4 +19,4 @@ spec:
   tls:
   - hosts:
     - spark-kubernetes
-    secretName: fede-tls-secret  # Replace with the actual name of your TLS secret
+    secretName: spark-tls-secret
