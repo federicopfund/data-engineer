@@ -14,7 +14,7 @@ else
 fi
 
 
-kubectl create secret tls spark-tls-secret --cert="${PWD}/tu_certificado.crt" --key="${PWD}/tu_clave_privada.key"
+
 
 
 # Deploy Spark Master
@@ -46,7 +46,7 @@ kind: ServiceAccount
 metadata:
   name: admin-user
   namespace: kubernetes-dashboard
----
+
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
@@ -59,21 +59,51 @@ subjects:
 - kind: ServiceAccount
   name: admin-user
   namespace: kubernetes-dashboard
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: kubernetes-dashboard
+  namespace: kubernetes-dashboard
+spec:
+  type: NodePort
+  ports:
+  - port: 443
+    targetPort: 8443
+  selector:
+    k8s-app: kubernetes-dashboard
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kubernetes-dashboard
+  namespace: kubernetes-dashboard
+spec:
+  selector:
+    matchLabels:
+      k8s-app: kubernetes-dashboard
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        k8s-app: kubernetes-dashboard
+    spec:
+      serviceAccountName: admin-user
+      containers:
+      - name: kubernetes-dashboard
+        image: kubernetesui/dashboard:v2.3.1
+        ports:
+        - containerPort: 8443
+
 EOF
 
+kubectl create secret tls spark-tls-secret --cert="${PWD}/tu_certificado.crt" --key="${PWD}/tu_clave_privada.key"
 # Create token for admin-user
 kubectl -n kubernetes-dashboard create serviceaccount admin-user
 kubectl -n kubernetes-dashboard create clusterrolebinding admin-user --clusterrole=cluster-admin --serviceaccount=kubernetes-dashboard:admin-user
-token_secret=$(kubectl -n kubernetes-dashboard get secret | grep admin-user | awk '{print $1}')
-token=$(kubectl -n kubernetes-dashboard get secret $token_secret -o jsonpath='{.data.token}' | base64 --decode)
-
-echo "Admin token for login: $token"
-
-# Open Kubernetes Dashboard in default browser
-case "$(uname -s)" in
-    Linux*) xdg-open "http://localhost:$port/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/#/login" ;;
-    Darwin*) open "http://localhost:$port/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/#/login" ;;
-    *) echo "Unsupported OS for automatic browser opening."
-esac
+kubectl -n kubernetes-dashboard create token admin-user
 
 
+kubectl proxy
+
+xdg-open "http://localhost:8081/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/"
