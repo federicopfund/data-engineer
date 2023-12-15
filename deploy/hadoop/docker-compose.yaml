@@ -9,6 +9,8 @@ services:
     ports:
       - "50070:50070"
     command: /etc/bootstrap.sh -d -namenode
+    networks:
+      - hadoop-net
 
   datanode:
     image: sequenceiq/hadoop-docker:latest
@@ -20,6 +22,9 @@ services:
     links:
       - namenode
     command: /etc/bootstrap.sh -d -datanode
+    networks:
+      - hadoop-net
+
 
   resourcemanager:
     image: sequenceiq/hadoop-docker:latest
@@ -31,6 +36,9 @@ services:
     links:
       - namenode
     command: /etc/bootstrap.sh -d -resourcemanager
+    networks:
+      - hadoop-net
+
 
   nodemanager:
     image: sequenceiq/hadoop-docker:latest
@@ -42,3 +50,9 @@ services:
     links:
       - namenode
     command: /etc/bootstrap.sh -d -nodemanager
+    networks:
+      - hadoop-net
+
+  networks:
+    hadoop-net:
+      external: true
