@@ -1,12 +1,14 @@
 package vortex.exelstream
 
-import org.apache.spark.sql.{SparkSession, DataFrame}
+import org.apache.spark.sql.types.{StructType, StructField, StringType, IntegerType}
+import org.apache.spark.sql.{SparkSession, DataFrame,Row}
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types.{IntegerType, DecimalType}
 import scala.concurrent.{Future, Await}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 import org.apache.spark.storage.StorageLevel
+import scala.collection.JavaConverters._
 
 object SparkSessionSingleton {
 
@@ -101,7 +103,7 @@ object MainETL {
     if (!fileExists(transformedFilePath)) {
       val filePath = s"./src/main/resources/csv/$pattern"
       val dfCategoria = spark.read.option("header", "true").option("inferSchema", "true").csv(filePath)
-      val dfFilteredCategoria = dfCategoria.na.drop()
+      val dfFilteredCategoria = dfCategoria.na.drop().repartition(5) 
       val isCached: Boolean = isDataFrameCached(dfFilteredCategoria)
       if (!isCached) {
         dfFilteredCategoria.cache()
@@ -124,7 +126,7 @@ object MainETL {
     if (!fileExists(transformedFilePath)) {
       val filePath = s"./src/main/resources/csv/$pattern"
       val dfFactMine = spark.read.format("csv").option("header", "true").option("inferSchema", "true").load(filePath)
-      val dfFilteredFactMine = dfFactMine.na.drop()
+      val dfFilteredFactMine = dfFactMine.na.drop().repartition(5) 
       val isCached: Boolean = isDataFrameCached(dfFilteredFactMine)
       if (!isCached) {
         dfFilteredFactMine.cache()
@@ -147,18 +149,23 @@ object MainETL {
     if (!fileExists(transformedFilePath)) {
       val filePath = s"./src/main/resources/csv/$pattern"
       val dfMine = spark.read.format("csv").option("header", "true").option("inferSchema", "true").load(filePath)
-      val dfFilteredMine = dfMine.na.drop()
+      val dfFilteredMine = dfMine.na.drop().repartition(5)
       val isCached: Boolean = isDataFrameCached(dfMine)
       if (!isCached) {
         dfFilteredMine.cache()
-        dfFilteredMine.createOrReplaceTempView("dfMineView")
-        val selectedColumns = spark.sql("SELECT Country, FirstName, LastName, Age FROM dfMineView")
-        selectedColumns.show()
+        dfFilteredMine.createOrReplaceTempView("dfView")
+        val transformations = List(
+          "SELECT Country, FirstName, LastName, Age FROM dfView",
+          "SELECT Country, FirstName, LastName, Age FROM dfView ORDER BY Age DESC",
+          "SELECT Country, COUNT(*) AS PersonasPorPais FROM dfView GROUP BY Country")
+
+        for ((transformation, index) <- transformations.zipWithIndex) {
+          println(s"Aplicando transformación ${index + 1}: $transformation")
+          val consulta: DataFrame = spark.sql(transformation).as("consulta")
+          saveAndShow(consulta, outputPath, s"${pattern}_${index}")
+        }
         dfFilteredMine.unpersist()
       }
-     
-      val sumTotalWastedByCountry = dfFilteredMine.groupBy("Country").agg(round(sum("TotalWasted"), 4).alias("Suma_TotalWasted"))
-      saveAndShow(sumTotalWastedByCountry, outputPath, s"${pattern}_sum")
     } else {
       println(s"La transformación para el patrón $pattern ya existe. No es necesario recalcular.")
     }
@@ -172,7 +179,7 @@ object MainETL {
     if (!fileExists(transformedFilePath)) {
       val filePath = s"./src/main/resources/csv/$pattern"
       val dfProductos = spark.read.format("csv").option("header", "true").option("inferSchema", "true").load(filePath)
-      val dfFilteredProductos = dfProductos.na.drop()
+      val dfFilteredProductos = dfProductos.na.drop().repartition(5) 
       val isCached: Boolean = isDataFrameCached(dfFilteredProductos)
       if (!isCached) {
         dfFilteredProductos.cache()
@@ -198,7 +205,7 @@ object MainETL {
     if (!fileExists(transformedFilePath)) {
       val filePath = s"./src/main/resources/csv/$pattern"
       val dfVentasInternet = spark.read.format("csv").option("header", "true").option("inferSchema", "true").load(filePath)
-      val dfFilteredVentasInternet = dfVentasInternet.na.drop()
+      val dfFilteredVentasInternet = dfVentasInternet.na.drop().repartition(5) 
       val isCached: Boolean = isDataFrameCached(dfFilteredVentasInternet)
       if (!isCached) {
         dfFilteredVentasInternet.cache()
