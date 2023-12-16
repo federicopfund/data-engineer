@@ -108,12 +108,16 @@ object MainETL {
       if (!isCached) {
         dfFilteredCategoria.cache()
         dfFilteredCategoria.createOrReplaceTempView("dfCategoriaView")
-        val consulta = spark.sql("SELECT Categoria FROM dfCategoriaView")
-        consulta.show()
-      }
+        val transformations = List(
+          "SELECT Categoria FROM dfCategoriaView",
+          "SELECT Categoria AS Nombre_Categoria, * FROM dfCategoriaView")
 
-      val CategoriaRename = dfCategoria.withColumnRenamed("Categoria", "Nombre_Categoria")
-      saveAndShow(CategoriaRename, outputPath, pattern)
+        for ((transformation, index) <- transformations.zipWithIndex) {
+          println(s"Aplicando transformación ${index + 1}: $transformation")
+          val consulta: DataFrame = spark.sql(transformation).as("consulta")
+          saveAndShow(consulta, outputPath, s"${pattern}_${index}")
+        }
+      }
       dfFilteredCategoria.unpersist()
     } else {
       println(s"La transformación para el patrón $pattern ya existe. No es necesario recalcular.")
@@ -131,13 +135,17 @@ object MainETL {
       if (!isCached) {
         dfFilteredFactMine.cache()
         dfFilteredFactMine.createOrReplaceTempView("dfFactMineView")
-        val consulta = spark.sql("SELECT TruckID, ProjectID, OperatorID, TotalOreMined FROM dfFactMineView")
-        consulta.show()
+        val transformations = List(
+          "SELECT TruckID, ProjectID, OperatorID, TotalOreMined FROM dfFactMineView",
+          "SELECT ROUND(SUM(TotalOreMined), 4) AS Suma_TotalOreMined FROM dfFactMineView")
+
+        for ((transformation, index) <- transformations.zipWithIndex) {
+          println(s"Aplicando transformación ${index + 1}: $transformation")
+          val consulta: DataFrame = spark.sql(transformation).as("consulta")
+          saveAndShow(consulta, outputPath, s"${pattern}_${index}")
+        }
         dfFilteredFactMine.unpersist()
       }
-
-      val sumTotalOreMined = dfFactMine.agg(round(sum("TotalOreMined"), 4).alias("Suma_TotalOreMined"))
-      saveAndShow(sumTotalOreMined, outputPath, pattern)
     } else {
       println(s"La transformación para el patrón $pattern ya existe. No es necesario recalcular.")
     }
@@ -184,15 +192,18 @@ object MainETL {
       if (!isCached) {
         dfFilteredProductos.cache()
         dfFilteredProductos.createOrReplaceTempView("dfProductosView")
-        val selectedColumns = spark.sql("SELECT Producto, Color FROM dfProductosView")
-        selectedColumns.show()
+        val transformations = List(
+          "SELECT Producto, Color FROM dfProductosView",
+          "SELECT Color, COUNT(*) AS CantidadProductos FROM dfProductosView GROUP BY Color",
+          "SELECT COUNT(Cod_Producto) AS Cantidad_CodProducto FROM dfProductosView")
+
+        for ((transformation, index) <- transformations.zipWithIndex) {
+          println(s"Aplicando transformación ${index + 1}: $transformation")
+          val consulta: DataFrame = spark.sql(transformation).as("consulta")
+          saveAndShow(consulta, outputPath, s"${pattern}_${index}")
+        }
+       dfFilteredProductos.unpersist()
       }
-     
-      val result: DataFrame = dfFilteredProductos.agg(count("Cod_Producto").alias("Cantidad_CodProducto"))
-      saveAndShow(result, outputPath, pattern)
-      dfFilteredProductos.unpersist()
-      val productosCountCast = result.withColumn("Cantidad_CodProducto", col("Cantidad_CodProducto").cast(IntegerType))
-      saveAndShow(productosCountCast, outputPath, s"${pattern}_cast")
     } else {
       println(s"La transformación para el patrón $pattern ya existe. No es necesario recalcular.")
     }
@@ -210,7 +221,16 @@ object MainETL {
       if (!isCached) {
         dfFilteredVentasInternet.cache()
         dfFilteredVentasInternet.createOrReplaceTempView("dfFilteredVentasInternet")
-        dfFilteredVentasInternet.printSchema()
+        val transformations = List(
+          "SELECT * FROM dfFilteredVentasInternet ORDER BY Cod_Producto DESC",
+          "SELECT * FROM dfFilteredVentasInternet WHERE Cod_Territorio >= 9",
+          "SELECT *, ROUND((Cantidad * PrecioUnitario - CostoUnitario), 4) AS Ingresos_Netos FROM dfFilteredVentasInternet")
+
+        for ((transformation, index) <- transformations.zipWithIndex) {
+          println(s"Aplicando transformación ${index + 1}: $transformation")
+          val consulta: DataFrame = spark.sql(transformation).as("consulta")
+          saveAndShow(consulta, outputPath, s"${pattern}_${index}")
+        }
         dfFilteredVentasInternet.unpersist()
       }
     } else {
