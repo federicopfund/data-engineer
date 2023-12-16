@@ -54,14 +54,13 @@ object SparkSessionSingleton {
 
 }
 
-
 object MainETL {
 
   def main(args: Array[String]): Unit = {
 
     val spark = SparkSessionSingleton.getSparkSession
+    
     try {
-     
       processPatternsParallel(spark, Array("Categoria.csv", "FactMine.csv", "Mine.csv", "Producto.csv", "VentasInternet.csv"))
     } finally {
       spark.stop()
@@ -100,141 +99,166 @@ object MainETL {
   def transformCategoria(spark: SparkSession, pattern: String): Unit = {
     val outputPath = "./src/main/resources/csv/transformed"
     val transformedFilePath = s"$outputPath/$pattern"
-    if (!fileExists(transformedFilePath)) {
-      val filePath = s"./src/main/resources/csv/$pattern"
-      val dfCategoria = spark.read.option("header", "true").option("inferSchema", "true").csv(filePath)
-      val dfFilteredCategoria = dfCategoria.na.drop().repartition(5) 
-      val isCached: Boolean = isDataFrameCached(dfFilteredCategoria)
-      if (!isCached) {
-        dfFilteredCategoria.cache()
-        dfFilteredCategoria.createOrReplaceTempView("dfCategoriaView")
-        val transformations = List(
-          "SELECT Categoria FROM dfCategoriaView",
-          "SELECT Categoria AS Nombre_Categoria, * FROM dfCategoriaView")
+    try {
+        if (!fileExists(transformedFilePath)) {
+          val filePath = s"./src/main/resources/csv/$pattern"
+          val dfCategoria = spark.read.option("header", "true").option("inferSchema", "true").csv(filePath)
+          val dfFilteredCategoria = dfCategoria.na.drop().repartition(5) 
+          val isCached: Boolean = isDataFrameCached(dfFilteredCategoria)
+          if (!isCached) {
+            dfFilteredCategoria.cache()
+            dfFilteredCategoria.createOrReplaceTempView("dfCategoriaView")
+            val transformations = List(
+              "SELECT Categoria FROM dfCategoriaView",
+              "SELECT Categoria AS Nombre_Categoria, * FROM dfCategoriaView")
 
-        for ((transformation, index) <- transformations.zipWithIndex) {
-          println(s"Aplicando transformación ${index + 1}: $transformation")
-          val consulta: DataFrame = spark.sql(transformation).as("consulta")
-          saveAndShow(consulta, outputPath, s"${pattern}_${index}")
+            for ((transformation, index) <- transformations.zipWithIndex) {
+              println(s"Aplicando transformación ${index + 1}: $transformation")
+              val consulta: DataFrame = spark.sql(transformation).as("consulta")
+              saveAndShow(consulta, outputPath, s"${pattern}_${index}")
+            }
+          }
+          dfFilteredCategoria.unpersist()
+        } else {
+          println(s"La transformación para el patrón $pattern ya existe. No es necesario recalcular.")
         }
-      }
-      dfFilteredCategoria.unpersist()
-    } else {
-      println(s"La transformación para el patrón $pattern ya existe. No es necesario recalcular.")
+     } catch {
+      case e: Exception =>
+        println(s"Error en la ejecución de la función transformVentasInternet: ${e.getMessage}")
     }
   }
-
+    
   def transformFactMine(spark: SparkSession, pattern: String): Unit = {
     val outputPath = "./src/main/resources/csv/transformed"
     val transformedFilePath = s"$outputPath/$pattern"
-    if (!fileExists(transformedFilePath)) {
-      val filePath = s"./src/main/resources/csv/$pattern"
-      val dfFactMine = spark.read.format("csv").option("header", "true").option("inferSchema", "true").load(filePath)
-      val dfFilteredFactMine = dfFactMine.na.drop().repartition(5) 
-      val isCached: Boolean = isDataFrameCached(dfFilteredFactMine)
-      if (!isCached) {
-        dfFilteredFactMine.cache()
-        dfFilteredFactMine.createOrReplaceTempView("dfFactMineView")
-        val transformations = List(
-          "SELECT TruckID, ProjectID, OperatorID, TotalOreMined FROM dfFactMineView",
-          "SELECT ROUND(SUM(TotalOreMined), 4) AS Suma_TotalOreMined FROM dfFactMineView")
+    try {
+        if (!fileExists(transformedFilePath)) {
+          val filePath = s"./src/main/resources/csv/$pattern"
+          val dfFactMine = spark.read.format("csv").option("header", "true").option("inferSchema", "true").load(filePath)
+          val dfFilteredFactMine = dfFactMine.na.drop().repartition(5) 
+          val isCached: Boolean = isDataFrameCached(dfFilteredFactMine)
+          if (!isCached) {
+            dfFilteredFactMine.cache()
+            dfFilteredFactMine.createOrReplaceTempView("dfFactMineView")
+            val transformations = List(
+              "SELECT TruckID, ProjectID, OperatorID, TotalOreMined FROM dfFactMineView",
+              "SELECT ROUND(SUM(TotalOreMined), 4) AS Suma_TotalOreMined FROM dfFactMineView")
 
-        for ((transformation, index) <- transformations.zipWithIndex) {
-          println(s"Aplicando transformación ${index + 1}: $transformation")
-          val consulta: DataFrame = spark.sql(transformation).as("consulta")
-          saveAndShow(consulta, outputPath, s"${pattern}_${index}")
+            for ((transformation, index) <- transformations.zipWithIndex) {
+              println(s"Aplicando transformación ${index + 1}: $transformation")
+              val consulta: DataFrame = spark.sql(transformation).as("consulta")
+              saveAndShow(consulta, outputPath, s"${pattern}_${index}")
+            }
+            dfFilteredFactMine.unpersist()
+          }
+        } else {
+          println(s"La transformación para el patrón $pattern ya existe. No es necesario recalcular.")
         }
-        dfFilteredFactMine.unpersist()
-      }
-    } else {
-      println(s"La transformación para el patrón $pattern ya existe. No es necesario recalcular.")
+     } catch {
+      case e: Exception =>
+        println(s"Error en la ejecución de la función transformVentasInternet: ${e.getMessage}")
     }
   }
     
   def transformMine(spark: SparkSession, pattern: String): Unit = {
     val outputPath = "./src/main/resources/csv/transformed"
     val transformedFilePath = s"$outputPath/$pattern"
-    if (!fileExists(transformedFilePath)) {
-      val filePath = s"./src/main/resources/csv/$pattern"
-      val dfMine = spark.read.format("csv").option("header", "true").option("inferSchema", "true").load(filePath)
-      val dfFilteredMine = dfMine.na.drop().repartition(5)
-      val isCached: Boolean = isDataFrameCached(dfMine)
-      if (!isCached) {
-        dfFilteredMine.cache()
-        dfFilteredMine.createOrReplaceTempView("dfView")
-        val transformations = List(
-          "SELECT Country, FirstName, LastName, Age FROM dfView",
-          "SELECT Country, FirstName, LastName, Age FROM dfView ORDER BY Age DESC",
-          "SELECT Country, COUNT(*) AS PersonasPorPais FROM dfView GROUP BY Country")
+    try {
+      if (!fileExists(transformedFilePath)) {
+        val filePath = s"./src/main/resources/csv/$pattern"
+        val dfMine = spark.read.format("csv").option("header", "true").option("inferSchema", "true").load(filePath)
+        val dfFilteredMine = dfMine.na.drop().repartition(5)
+        val isCached: Boolean = isDataFrameCached(dfMine)
+        if (!isCached) {
+          dfFilteredMine.cache()
+          dfFilteredMine.createOrReplaceTempView("dfView")
+          val transformations = List(
+            "SELECT Country, FirstName, LastName, Age FROM dfView",
+            "SELECT Country, FirstName, LastName, Age FROM dfView ORDER BY Age DESC",
+            "SELECT Country, COUNT(*) AS PersonasPorPais FROM dfView GROUP BY Country")
 
-        for ((transformation, index) <- transformations.zipWithIndex) {
-          println(s"Aplicando transformación ${index + 1}: $transformation")
-          val consulta: DataFrame = spark.sql(transformation).as("consulta")
-          saveAndShow(consulta, outputPath, s"${pattern}_${index}")
+          for ((transformation, index) <- transformations.zipWithIndex) {
+            println(s"Aplicando transformación ${index + 1}: $transformation")
+            val consulta: DataFrame = spark.sql(transformation).as("consulta")
+            saveAndShow(consulta, outputPath, s"${pattern}_${index}")
+          }
+          dfFilteredMine.unpersist()
         }
-        dfFilteredMine.unpersist()
+      } else {
+        println(s"La transformación para el patrón $pattern ya existe. No es necesario recalcular.")
       }
-    } else {
-      println(s"La transformación para el patrón $pattern ya existe. No es necesario recalcular.")
+    } catch {
+      case e: Exception =>
+        println(s"Error en la ejecución de la función transformVentasInternet: ${e.getMessage}")
     }
   }
-
+  
 
 
   def transformProduct(spark: SparkSession, pattern: String): Unit = {
     val outputPath = "./src/main/resources/csv/transformed"
     val transformedFilePath = s"$outputPath/$pattern"
-    if (!fileExists(transformedFilePath)) {
-      val filePath = s"./src/main/resources/csv/$pattern"
-      val dfProductos = spark.read.format("csv").option("header", "true").option("inferSchema", "true").load(filePath)
-      val dfFilteredProductos = dfProductos.na.drop().repartition(5) 
-      val isCached: Boolean = isDataFrameCached(dfFilteredProductos)
-      if (!isCached) {
-        dfFilteredProductos.cache()
-        dfFilteredProductos.createOrReplaceTempView("dfProductosView")
-        val transformations = List(
-          "SELECT Producto, Color FROM dfProductosView",
-          "SELECT Color, COUNT(*) AS CantidadProductos FROM dfProductosView GROUP BY Color",
-          "SELECT COUNT(Cod_Producto) AS Cantidad_CodProducto FROM dfProductosView")
+    try {
+        if (!fileExists(transformedFilePath)) {
+          val filePath = s"./src/main/resources/csv/$pattern"
+          val dfProductos = spark.read.format("csv").option("header", "true").option("inferSchema", "true").load(filePath)
+          val dfFilteredProductos = dfProductos.na.drop().repartition(5) 
+          val isCached: Boolean = isDataFrameCached(dfFilteredProductos)
+          if (!isCached) {
+            dfFilteredProductos.cache()
+            dfFilteredProductos.createOrReplaceTempView("dfProductosView")
+            val transformations = List(
+                "SELECT Producto, Color FROM dfProductosView",
+                "SELECT Color, COUNT(*) AS CantidadProductos FROM dfProductosView GROUP BY Color",
+                "SELECT COUNT(Cod_Producto) AS Cantidad_CodProducto FROM dfProductosView")
 
-        for ((transformation, index) <- transformations.zipWithIndex) {
-          println(s"Aplicando transformación ${index + 1}: $transformation")
-          val consulta: DataFrame = spark.sql(transformation).as("consulta")
-          saveAndShow(consulta, outputPath, s"${pattern}_${index}")
+            for ((transformation, index) <- transformations.zipWithIndex) {
+                println(s"Aplicando transformación ${index + 1}: $transformation")
+                val consulta: DataFrame = spark.sql(transformation).as("consulta")
+                saveAndShow(consulta, outputPath, s"${pattern}_${index}")
+            }
+            dfFilteredProductos.unpersist()
+            }
+          } else {
+          println(s"La transformación para el patrón $pattern ya existe. No es necesario recalcular.")
         }
-       dfFilteredProductos.unpersist()
-      }
-    } else {
-      println(s"La transformación para el patrón $pattern ya existe. No es necesario recalcular.")
+      } catch {
+      case e: Exception =>
+        println(s"Error en la ejecución de la función transformVentasInternet: ${e.getMessage}")
     }
   }
-
+  
 
   def transformVentasInternet(spark: SparkSession, pattern: String): Unit = {
     val outputPath = "./src/main/resources/csv/transformed"
     val transformedFilePath = s"$outputPath/$pattern"
-    if (!fileExists(transformedFilePath)) {
-      val filePath = s"./src/main/resources/csv/$pattern"
-      val dfVentasInternet = spark.read.format("csv").option("header", "true").option("inferSchema", "true").load(filePath)
-      val dfFilteredVentasInternet = dfVentasInternet.na.drop().repartition(5) 
-      val isCached: Boolean = isDataFrameCached(dfFilteredVentasInternet)
-      if (!isCached) {
-        dfFilteredVentasInternet.cache()
-        dfFilteredVentasInternet.createOrReplaceTempView("dfFilteredVentasInternet")
-        val transformations = List(
-          "SELECT * FROM dfFilteredVentasInternet ORDER BY Cod_Producto DESC",
-          "SELECT * FROM dfFilteredVentasInternet WHERE Cod_Territorio >= 9",
-          "SELECT *, ROUND((Cantidad * PrecioUnitario - CostoUnitario), 4) AS Ingresos_Netos FROM dfFilteredVentasInternet")
+    try {
+        if (!fileExists(transformedFilePath)) {
+          val filePath = s"./src/main/resources/csv/$pattern"
+          val dfVentasInternet = spark.read.format("csv").option("header", "true").option("inferSchema", "true").load(filePath)
+          val dfFilteredVentasInternet = dfVentasInternet.na.drop().repartition(5) 
+          val isCached: Boolean = isDataFrameCached(dfFilteredVentasInternet)
+          if (!isCached) {
+            dfFilteredVentasInternet.cache()
+            dfFilteredVentasInternet.createOrReplaceTempView("dfFilteredVentasInternet")
+            val transformations = List(
+              "SELECT * FROM dfFilteredVentasInternet ORDER BY Cod_Producto DESC",
+              "SELECT * FROM dfFilteredVentasInternet WHERE Cod_Territorio >= 9",
+              "SELECT *, ROUND((Cantidad * PrecioUnitario - CostoUnitario), 4) AS Ingresos_Netos FROM dfFilteredVentasInternet")
 
-        for ((transformation, index) <- transformations.zipWithIndex) {
-          println(s"Aplicando transformación ${index + 1}: $transformation")
-          val consulta: DataFrame = spark.sql(transformation).as("consulta")
-          saveAndShow(consulta, outputPath, s"${pattern}_${index}")
+            for ((transformation, index) <- transformations.zipWithIndex) {
+              println(s"Aplicando transformación ${index + 1}: $transformation")
+              val consulta: DataFrame = spark.sql(transformation).as("consulta")
+              saveAndShow(consulta, outputPath, s"${pattern}_${index}")
+            }
+            dfFilteredVentasInternet.unpersist()
+          }
+        } else {
+          println(s"La transformación para el patrón $pattern ya existe. No es necesario recalcular.")
         }
-        dfFilteredVentasInternet.unpersist()
-      }
-    } else {
-      println(s"La transformación para el patrón $pattern ya existe. No es necesario recalcular.")
+      } catch {
+      case e: Exception =>
+        println(s"Error en la ejecución de la función transformVentasInternet: ${e.getMessage}")
     }
   }
 
@@ -249,7 +273,6 @@ object MainETL {
     // Aquí, se utiliza java.nio.file.Files.exists para la verificación.
     java.nio.file.Files.exists(java.nio.file.Paths.get(filePath))
   }
-
 }
 
 
