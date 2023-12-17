@@ -8,10 +8,10 @@ lazy val root = (project in file("."))
   .settings(
     // Configuración básica del proyecto
     inThisBuild(List(
-      organization := "vortex",
+      organization := "Vortex",
       scalaVersion := "2.12.13"
     )),
-    name := "excelstream",
+    name := "tranform",
     version := "0.0.1",
 
     // Dependencias del proyecto
