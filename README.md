@@ -194,6 +194,39 @@ ls -l
                      Mine.csv
 
 ```
+> Para el archivo de ScalaETL :
+
+```
+./bin/spark-submit 
+                --class vortex.exelstream.MainETL 
+                --master spark://master:7077 
+                --deploy-mode client 
+                --executor-memory 4g 
+                --num-executors 4 
+                --executor-cores 4 
+                --driver-memory 1g 
+                --conf spark.some.config.option=valor
+                --conf spark.executor.extraJavaOptions="-XX:+PrintGCDetails -XX:+UseG1GC" 
+                --conf spark.sql.shuffle.partitions=8 
+                --conf spark.streaming.receiver.maxRate=2000 
+                --conf spark.default.parallelism=8 
+                --conf spark.sql.files.maxPartitionBytes=128m 
+                --conf spark.executor.memoryOverhead=1g 
+                --conf spark.memory.fraction=0.8 
+                --conf spark.memory.storageFraction=0.5 
+                --conf spark.shuffle.service.enabled=true 
+                --conf spark.dynamicAllocation.enabled=true 
+                --conf spark.speculation=true 
+                --conf spark.speculation.multiplier=1.5 
+                --conf spark.speculation.quantile=0.90 
+                --conf spark.reducer.maxSizeInFlight=128m 
+                --conf spark.shuffle.file.buffer=1m 
+                --conf spark.reducer.maxReqsInFlight=4 
+                --conf spark.locality.wait=0s 
+                --illegal-access=warn 
+                target/scala-2.12/tranform_2.12-0.0.1.jar
+
+```
 > Recuerda tienes que estar parado en el directorio ```/opt/spark ```y tener la carpeta de ```csv``` proveniente de ```data``` en 
 ```spark-warehouse```.
 
