@@ -1,4 +1,4 @@
-package vortex.exelstream
+package Vortex.tranform
 
 import org.apache.spark.sql.types.{StructType, StructField, StringType, IntegerType}
 import org.apache.spark.sql.{SparkSession, DataFrame,Row}
@@ -143,7 +143,7 @@ object MainETL {
             val transformations = List(
               "SELECT TruckID, ProjectID, OperatorID, TotalOreMined FROM dfFactMineView",
               "SELECT ROUND(SUM(TotalOreMined), 4) AS Suma_TotalOreMined FROM dfFactMineView")
-
+              
             for ((transformation, index) <- transformations.zipWithIndex) {
               println(s"Aplicando transformación ${index + 1}: $transformation")
               val consulta: DataFrame = spark.sql(transformation).as("consulta")
@@ -174,7 +174,8 @@ object MainETL {
           dfFilteredMine.createOrReplaceTempView("dfView")
           val transformations = List(
             "SELECT Country, FirstName, LastName, Age FROM dfView",
-            "SELECT Country, FirstName, LastName, Age FROM dfView ORDER BY Age DESC",
+            "SELECT DISTINCT FirstName, Country, LastName, Age FROM dfView",
+            "SELECT DISTINCT FirstName, Country, LastName, Age  FROM dfView ORDER BY Age DESC",
             "SELECT Country, COUNT(*) AS PersonasPorPais FROM dfView GROUP BY Country")
 
           for ((transformation, index) <- transformations.zipWithIndex) {
@@ -193,7 +194,6 @@ object MainETL {
     }
   }
   
-
 
   def transformProduct(spark: SparkSession, pattern: String): Unit = {
     val outputPath = "./src/main/resources/csv/transformed"
