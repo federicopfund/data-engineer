@@ -1,8 +1,6 @@
 import sbt._
 
 val sparkVersion = "2.4.8"
-val poiVersion = "4.1.2"
-val sparkExcelVersion = "0.14.0"
 
 lazy val root = (project in file("."))
   .settings(
