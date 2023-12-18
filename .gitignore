@@ -1,0 +1,52 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+*.egg-info/
+build
+dist
+
+# Unit test / coverage reports
+.coverage
+coverage.xml
+junit/*
+htmlcov/*
+
+# Caches
+.pytest_cache/
+
+# VSCode
+.vscode/
+
+# Idea
+.idea/
+*.iml
+
+# MacOS
+.DS_Store
+
+# Databricks eXtensions
+.dbx/lock.json
+.dbx/sync
+
+# local mlflow files
+mlruns/
+
+# Environment variables
+.env
+.env*
+.dbx
+ 
+# sbt pakage
+job/tasks/streaming/target
+
+
+/cicd-etl/job/tasks/ScalaETL/target
+
+/cicd-etl/job/tasks/ScalaETL/project
+/cicd-etl/job/tasks/ScalaETL/.bsp
+
+/cicd-etl/job/tasks/ScalaETL/src/main/resources/csv/transformed
+
