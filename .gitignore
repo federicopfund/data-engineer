@@ -48,5 +48,5 @@ job/tasks/streaming/target
 /cicd-etl/job/tasks/ScalaETL/project
 /cicd-etl/job/tasks/ScalaETL/.bsp
 
-/cicd-etl/job/tasks/ScalaETL/src/main/resources/csv/transformed
+
 
