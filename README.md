@@ -41,8 +41,6 @@
 ```bash
 sudo apt update
 
-sudo apt install openjdk-19-jre-headless
-
 sudo apt install openjdk-11-jdk 
 
 java --version
@@ -198,7 +196,7 @@ ls -l
 
 ```
 ./bin/spark-submit 
-                --class vortex.exelstream.MainETL 
+                --class Vortex.tranform.MainETL 
                 --master spark://master:7077 
                 --deploy-mode client 
                 --executor-memory 4g 
@@ -223,7 +221,6 @@ ls -l
                 --conf spark.shuffle.file.buffer=1m 
                 --conf spark.reducer.maxReqsInFlight=4 
                 --conf spark.locality.wait=0s 
-                --illegal-access=warn 
                 target/scala-2.12/tranform_2.12-0.0.1.jar
 
 ```
