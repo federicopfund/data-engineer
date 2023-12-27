@@ -88,6 +88,7 @@ object MainETL {
   def processPatternsParallel(spark: SparkSession, patterns: Array[String]): Unit = {
     val outputPath = "./src/main/resources/csv/transformed"
     deleteDirectory(outputPath)
+    createDirectory(outputPath)
     val futures = patterns.map { pattern =>
       Future {
         pattern match {
@@ -279,17 +280,19 @@ object MainETL {
     val path = Paths.get(directoryPath)
 
     if (Files.exists(path)) {
-      val files = Files.walk(path).iterator().asScala.toSeq
+      val files = Files.walk(path).iterator().asScala.toSeq.reverse
       files.foreach { filePath =>
-        Files.deleteIfExists(filePath)
-        println(s"Archivo eliminado: $filePath")
+        // Filtra la carpeta "transformed" del proceso de eliminación
+        if (!filePath.toString.endsWith("transformed")) {
+          Files.deleteIfExists(filePath)
+          println(s"Archivo eliminado: $filePath")
+        }
       }
 
-      Files.deleteIfExists(path)
       println(s"Directorio eliminado: $directoryPath")
-    } else {
-      println(s"El directorio $directoryPath no existe.")
-      createDirectory(outputPath)
+      } else {
+        println(s"El directorio $directoryPath no existe.")
+        createDirectory(directoryPath)
     }
   }
 }
