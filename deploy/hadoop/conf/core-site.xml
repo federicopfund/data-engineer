@@ -78,9 +78,6 @@
         <value>true</value>
     </property>
 
-
-
-
     <!-- Configuración de almacenamiento en caché -->
     <property>
         <name>fs.local.block.size</name>
@@ -106,10 +103,7 @@
     </property>
 
     <!-- Configuración de almacenamiento de metadatos -->
-    <property>
-        <name>fs.defaultFS</name>
-        <value>hdfs://localhost:9000</value>
-    </property>
+
 
     <!-- Configuración de caché de nombres de nodo -->
     <property>
