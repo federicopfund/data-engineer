@@ -12,6 +12,10 @@ ENV PATH $PATH:$HADOOP_HOME/bin
 COPY conf/core-site.xml $HADOOP_CONF_DIR/core-site.xml
 COPY conf/hdfs-site.xml $HADOOP_CONF_DIR/hdfs-site.xml
 
+#  Copiar la configuración personalizada de Hadoop
+COPY conf/core-site.xml usr/local/hadoop/share/hadoop/common/templates/core-site.xml
+COPY conf/hdfs-site.xml usr/local/hadoop/share/hadoop/hdfs/templates/hdfs-site.xml
+
 # Formatear el sistema de archivos HDFS
 RUN $HADOOP_HOME/bin/hdfs namenode -format
 
