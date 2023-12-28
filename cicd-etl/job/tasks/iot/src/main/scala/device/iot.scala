@@ -25,10 +25,10 @@ object DeviceDataProducer {
         val pres = profile("pres")._1 + Random.nextGaussian() * profile("pres")._2
 
         // create CSV structure
-        val msg = s"${System.currentTimeMillis()},$profileName,$temp,$humd,$pres"
+        val msg = s"$profileName,${temp},${humd},${pres}"
 
         // send to Kafka
-        producer.send(new ProducerRecord("weather", msg))
+        producer.send(new ProducerRecord("topic1", msg))
         println(s"sending data to kafka, #$count")
         println(s"sending data to kafka, #$msg")
         count += 1
