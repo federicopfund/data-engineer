@@ -127,7 +127,7 @@ object MainETL {
         for ((transformation, index) <- transformations.zipWithIndex) {
           println(s"Aplicando transformación ${index + 1}: $transformation")
           val consulta: DataFrame = spark.sql(transformation).as("consulta")
-          saveAndShow(consulta, outputPath, s"${pattern}_${index}")
+          saveAndShow(consulta, outputPath, s"${pattern.stripSuffix(".csv")}_${index}")
         }
       }
       dfFilteredCategoria.unpersist()
@@ -157,7 +157,7 @@ object MainETL {
         for ((transformation, index) <- transformations.zipWithIndex) {
             println(s"Aplicando transformación ${index + 1}: $transformation")
             val consulta: DataFrame = spark.sql(transformation).as("consulta")
-            saveAndShow(consulta, outputPath, s"${pattern}_${index}")
+            saveAndShow(consulta, outputPath, s"${pattern.stripSuffix(".csv")}_${index}")
         }
         dfFilteredFactMine.unpersist()
         }
@@ -187,7 +187,7 @@ object MainETL {
           for ((transformation, index) <- transformations.zipWithIndex) {
             println(s"Aplicando transformación ${index + 1}: $transformation")
             val consulta: DataFrame = spark.sql(transformation).as("consulta")
-            saveAndShow(consulta, outputPath, s"${pattern}_${index}")
+            saveAndShow(consulta, outputPath, s"${pattern.stripSuffix(".csv")}_${index}")
           }
           dfFilteredMine.unpersist()
         }
@@ -217,7 +217,7 @@ object MainETL {
         for ((transformation, index) <- transformations.zipWithIndex) {
           println(s"Aplicando transformación ${index + 1}: $transformation")
           val consulta: DataFrame = spark.sql(transformation).as("consulta")
-          saveAndShow(consulta, outputPath, s"${pattern}_${index}")
+          saveAndShow(consulta, outputPath, s"${pattern.stripSuffix(".csv")}_${index}")
         }
         dfFilteredProductos.unpersist()
       }
@@ -247,7 +247,7 @@ object MainETL {
         for ((transformation, index) <- transformations.zipWithIndex) {
           println(s"Aplicando transformación ${index + 1}: $transformation")
           val consulta: DataFrame = spark.sql(transformation).as("consulta")
-          saveAndShow(consulta, outputPath, s"${pattern}_${index}")
+          saveAndShow(consulta, outputPath, s"${pattern.stripSuffix(".csv")}_${index}")
         }
         dfFilteredVentasInternet.unpersist()
       }
