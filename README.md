@@ -27,14 +27,20 @@
 ### Conclusiones clave:
 >Este proyecto mostró mi capacidad para navegar e integrar varias tecnologías de vanguardia en el panorama de BI. La ejecución exitosa del proyecto resalta mi competencia en el diseño, implementación y optimización de soluciones de BI de un extremo a otro que satisfacen las necesidades cambiantes de las organizaciones basadas en datos.
 # 
+
+
+******
+
+<details>
+<summary>Instalacion</summary>
+<br />
+
 ## Instalacion de `Java` y `Scala`:
 
 > Si no tienes instalado el jdk de java:
 ```bash
 sudo apt update
 
-sudo apt install openjdk-19-jre-headless
-=======
 sudo apt install openjdk-11-jdk 
 
 java --version
@@ -86,7 +92,18 @@ export PATH=$PATH:$SPARK_HOME/bin:$SPARK_HOME/sbin
 ```bash
 source ~/.bashrc
 ```
-# Inicie Apache `Spark`.
+</details>
+
+******
+
+
+******
+
+<details>
+<summary>Inicie Apache Spark.</summary>
+<br />
+
+## Inicie Apache `Spark`.
 >En este punto, Apache Spark está instalado y listo para usar. 
 > Ejecute los siguientes comandos para iniciarlo.
 ```bash
@@ -107,6 +124,15 @@ http://localhost:8080
 ```
 ./sbin/spark-shell
 ```
+
+</details>
+
+******
+
+<details>
+<summary>Path de data.</summary>
+<br />
+
 ## Path de data:
 > Ahora Moveremos la careta data al lugar indicado: seguramente te encuentras en el `path:`  /opt/spark:
 > Pocisionate en la carpeta donde esta data Osea:
@@ -131,6 +157,12 @@ cd /opt/spark
 ls -l
 ```
 
+</details>
+
+******
+<details>
+<summary>Run ETL Local</summary>
+<br />
 
 ## Run `ETL` Local
 >Run Spark App si el clon fuen en Documents.
@@ -160,12 +192,50 @@ ls -l
                      Mine.csv
 
 ```
+> Para el archivo de ScalaETL :
+
+```
+./bin/spark-submit 
+                --class Vortex.tranform.MainETL 
+                --master spark://master:7077 
+                --deploy-mode client 
+                --executor-memory 4g 
+                --num-executors 4 
+                --executor-cores 4 
+                --driver-memory 1g 
+                --conf spark.some.config.option=valor
+                --conf spark.executor.extraJavaOptions="-XX:+PrintGCDetails -XX:+UseG1GC" 
+                --conf spark.sql.shuffle.partitions=8 
+                --conf spark.streaming.receiver.maxRate=2000 
+                --conf spark.default.parallelism=8 
+                --conf spark.sql.files.maxPartitionBytes=128m 
+                --conf spark.executor.memoryOverhead=1g 
+                --conf spark.memory.fraction=0.8 
+                --conf spark.memory.storageFraction=0.5 
+                --conf spark.shuffle.service.enabled=true 
+                --conf spark.dynamicAllocation.enabled=true 
+                --conf spark.speculation=true 
+                --conf spark.speculation.multiplier=1.5 
+                --conf spark.speculation.quantile=0.90 
+                --conf spark.reducer.maxSizeInFlight=128m 
+                --conf spark.shuffle.file.buffer=1m 
+                --conf spark.reducer.maxReqsInFlight=4 
+                --conf spark.locality.wait=0s 
+                target/scala-2.12/tranform_2.12-0.0.1.jar
+
+```
 > Recuerda tienes que estar parado en el directorio ```/opt/spark ```y tener la carpeta de ```csv``` proveniente de ```data``` en 
 ```spark-warehouse```.
 
 > Tiempo de ejecucion total: ```36.316101``` ms.  tranquilo bucaremos mayor eficiencia.
-=======
-> Tiempo total: ```36.316101``` ms.  tranquilo bucaremos mayor eficiencia.
+
+</details>
+
+******
+
+<details>
+<summary>Resultado</summary>
+<br />
 
 >Resultado:
 ```
@@ -246,7 +316,7 @@ root
 +------------+-----------+--------------+-----------+--------+--------------+-------------+--------+------+-------------------+-------------------+-------------------+-------------+--------------+
 
 ```
->
+>Producto
 ```
 +------------+---------------------+-------------------+
 |Cod_Producto|Ingreso_Neto_Promedio|Suma_Ingresos_Netos|
@@ -351,6 +421,15 @@ Transformada
     |-- Suma_TotalWasted: double (nullable = true)
 
 ```
+</details>
+
+******
+
+
+<details>
+<summary>Hadoop install</summary>
+<br />
+
 ### Para leer las tablas de un Nodo Storage en Hadoop
 >### Hadoop install
 
@@ -530,7 +609,13 @@ nano mapred-site.xml
     </property>
 </configuration>
 ```
->### Hadoop Commandos
+
+
+</details>
+
+******
+
+### Hadoop Commandos
 
 <br />
 
@@ -567,14 +652,25 @@ nano mapred-site.xml
 git tag -a v<0.0.3> -m "Release tag for version <0.0.3>"
 git push origin --tags
 ```
-<br /
+<br />
+</details>
+<br />
+
+**Testing and releasing**
+<details>
+<summary>Integrantes </summary>
+<br />
 
 
-Integrantes del GRUPO 1:
--  Carlos Eduardo Denett
--  Cecilia Marcela Espada 
--  Federico Pfund
--  Juan Martín Elena
--  Agustín Fernández
--  Patricio Perrone
+```
+Integrantes
+        root
+            |-- Carlos Eduardo Denett: string (nullable = true)
+            |-- Cecilia Marcela Espada : string (nullable = true)
+            |-- Federico Pfund: string (nullable = true)
+            |-- Juan Martín Elena: integer (nullable = true)
+            |-- Agustín Fernández: string (nullable = true)
+            |-- Patricio Perrone: integer (nullable = true)
 
+
+```
