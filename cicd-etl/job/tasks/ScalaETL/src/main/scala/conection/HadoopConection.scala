@@ -6,7 +6,7 @@ object HadoopConnectionExample extends App {
 
   // Configuración de Hadoop
   val hadoopConf = new Configuration()
-  val Archivos = Array("Categoria.csv", "FactMine.csv","Subcategoria.csv", "Mine.csv", "Producto.csv", "VentasInternet.csv")
+  val Archivos = Array("Categoria.csv", "FactMine.csv", "Subcategoria.csv", "Mine.csv", "Producto.csv", "VentasInternet.csv")
 
   // Ruta del sistema de archivos HDFS en el clúster Dockerizado
   val hdfsUri = "hdfs://172.19.0.2:9000"
@@ -21,15 +21,10 @@ object HadoopConnectionExample extends App {
   val fs = FileSystem.get(hadoopConf)
   val path = new Path(hdfsWorkingDir)
 
-  // Verificar si el directorio ya existe en HDFS
-  if (!fs.exists(path)) {
-    // Si no existe, crearlo
-    fs.mkdirs(path)
-    fs.setPermission(path, new FsPermission("777"))
-    println(s"Directorio creado: $hdfsWorkingDir")
-  } else {
-    println(s"El directorio $hdfsWorkingDir ya existe.")
-  }
+  // hdfs url
+  val pathhdfsString = "/user/fede/landing/csv/tranform"
+  val pathhdfs: Path = new Path(pathhdfsString)
+  createdirectory(pathhdfs)
 
   // Listar archivos en el directorio de trabajo
   listFiles(hdfsWorkingDir)
@@ -52,6 +47,16 @@ object HadoopConnectionExample extends App {
 
   // Cerrar la conexión al sistema de archivos HDFS
   fs.close()
+
+  def createdirectory(pathhdfs: Path): Unit = {
+    if (!fs.exists(pathhdfs)) {
+      fs.mkdirs(pathhdfs)
+      fs.setPermission(pathhdfs, new FsPermission("777"))
+      println(s"Directorio creado: $pathhdfs")
+    } else {
+      println(s"El directorio $pathhdfs ya existe.")
+    }
+  }
 
   def listFiles(directory: String): Unit = {
     val path = new Path(directory)
