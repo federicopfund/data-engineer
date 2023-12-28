@@ -7,6 +7,7 @@ import org.apache.spark.sql.types.{StringType, StructField, StructType, DoubleTy
 import org.apache.log4j.{Level, Logger}
 import scala.collection.mutable.ListBuffer
 
+
 object SparkKafkaStreamingApp {
    // Configuración del logger
   val log: Logger = Logger.getLogger(getClass.getName)
@@ -34,8 +35,8 @@ object SparkKafkaStreamingApp {
                       .set("spark.driver.extraJavaOptions", "-Djava.version=11")
                       .set("spark.executor.extraJavaOptions", "-Djava.version=11")
 
-    val ssc = new StreamingContext(conf, Seconds(1))  // Intervalo de 5 segundos
-    
+    val ssc = new StreamingContext(conf, Seconds(5))  // Intervalo de 5 segundos
+   
     
     // Configuración de Kafka
     val kafkaParams = Map[String, Object](
@@ -51,7 +52,7 @@ object SparkKafkaStreamingApp {
       )
 
     // Tópicos de Kafka a los que queremos suscribirnos
-    val topics = Array("weather")
+    val topics = Array("topic1")
 
     // Crear el DStream que recibe los datos de Kafka
     val kafkaStream = KafkaUtils.createDirectStream[String, String](
@@ -68,12 +69,11 @@ object SparkKafkaStreamingApp {
         val messageData = message.split(",").map(_.trim)
 
         // Asumimos que los datos siempre tienen cinco partes: timestamp, profileName, temp, humd, pres
-        if (messageData.length == 5) {
-          val Array(timestamp, profileName, temp, humd, pres) = messageData
-          val row = Row(timestamp.toLong, profileName, temp.toDouble, humd.toDouble, pres.toDouble)
+        if (messageData.length == 4) {
+          val Array(profileName, temp, humd, pres) = messageData
+          val row = Row(profileName, temp.toDouble, humd.toDouble, pres.toDouble)
           // Registrar información en el log
-          log.info(s"Processed message: $timestamp, $profileName, $temp, $humd, $pres")
-          // Agregar la fila al acumulador
+          log.info(s"Processed message:  $profileName, $temp, $humd, $pres")
          
           // Puedes realizar otras transformaciones o acciones en el DataFrame aquí según tus necesidades
         }
