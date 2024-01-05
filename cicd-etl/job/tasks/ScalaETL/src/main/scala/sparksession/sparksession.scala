@@ -5,7 +5,7 @@ import java.nio.file.attribute.BasicFileAttributes
 import java.nio.file.{Paths, Files}
 
 
-object SparkSessionSingleton extends App  {
+object SparkSessionSingleton {
 
   @transient private var instance: SparkSession = _
 
