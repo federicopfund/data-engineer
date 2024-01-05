@@ -29,12 +29,8 @@ lazy val root = (project in file("."))
     assembly / parallelExecution := true
   )
 
-lazy val HadoopConnection = (project in file("src/main/scala/hadoop")).settings(name := "scala.hadoop")
-
-lazy val etl = (project in file("src/main/scala/etl")).settings(name := "scala.etl")
+lazy val transform = (project in file("src/main/scala/transform")).settings(name := "scala.transform")
 
 lazy val sparksession = (project in file("src/main/scala/sparksession")).settings(name := "scala.sparkSession")
-
-lazy val main = (project in file("src/main/scala/main")).settings(name := "main")
 
 Global / excludeLintKeys += root / assembly / parallelExecution
