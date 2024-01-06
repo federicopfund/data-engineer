@@ -14,7 +14,8 @@ lazy val libraryDeps = Seq(
   "org.apache.spark" %% "spark-core" % sparkVersion,
   "org.apache.spark" %% "spark-sql" % sparkVersion,
   "org.scalatest" %% "scalatest" % "3.2.9" % Test,
-  "org.apache.hadoop" % "hadoop-client" % "2.2.0"
+  "org.apache.hadoop" % "hadoop-client" % "2.2.0",
+  "log4j" % "log4j" % "1.2.17"
 )
 
 lazy val root = (project in file("."))
