@@ -196,7 +196,7 @@ ls -l
 
 ```
 ./bin/spark-submit 
-                --class Vortex.tranform.MainETL 
+                --class main.MainETL 
                 --master spark://master:7077 
                 --deploy-mode client 
                 --executor-memory 4g 
