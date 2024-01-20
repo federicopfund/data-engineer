@@ -1,142 +1,182 @@
 
--- Tabla para almacenar informaciï¿½n de las cervezas
-CREATE TABLE Cervezas (
-    CervezaID INT PRIMARY KEY,
-	EstiloID INT,
-    Nombre VARCHAR(50) NOT NULL,
-    GraduacionAlcoholica DECIMAL(3, 1),
-    VolumenLitros DECIMAL(4, 2),
-    Precio DECIMAL(5, 2) NOT NULL,
-	FOREIGN KEY (EstiloID) REFERENCES EstilosCerveza(EstiloID)
-);
 
--- Tabla para almacenar informaciï¿½n de los ingredientes de las cervezas
-CREATE TABLE Ingredientes (
-    IngredienteID INT PRIMARY KEY,
-    Nombre VARCHAR(50) NOT NULL,
-    Tipo VARCHAR(50) NOT NULL,
-    Origen VARCHAR(50),
-    Descripcion TEXT,
-    FechaIngreso DATE,
-    Proveedor VARCHAR(50),
-    PrecioUnitario DECIMAL(8, 2),
-	EstiloID INT, -- Nueva columna para el ID del estilo
-    FOREIGN KEY (EstiloID) REFERENCES EstilosCerveza(EstiloID)
-);
-);
+-- Tabla para almacenar información de las cervezas
+IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Cerveza')
+BEGIN
+    -- Crear la tabla Cervezas
+    CREATE TABLE Cerveza (
+        CervezaID INT PRIMARY KEY,
+        Estilo VARCHAR(50) NOT NULL,
+        GraduacionAlcoholica DECIMAL(3, 1),
+        VolumenLitros DECIMAL(4, 2),
+        Precio DECIMAL(5, 2) NOT NULL,
+		Descripcion TEXT,
+        IBU INT,
+        SRM INT
+    );
+	
+END
 
--- Tabla para almacenar informaion de los estilos de Cerveza
-CREATE TABLE EstilosCerveza (
-    EstiloID INT PRIMARY KEY,
-    Nombre VARCHAR(50) NOT NULL,
-    Descripcion TEXT,
-    IBU INT, -- Unidades Internacionales de Amargor
-    SRM INT, -- ï¿½ndice de Color (Standard Reference Method)
-    RangoAlcohol DECIMAL(3, 1), -- Rango de Graduaciï¿½n Alcoholica (por ejemplo, 4.0 - 6.0)
-    Comentarios TEXT
-);
+-- Tabla para almacenar información de los ingredientes de las cervezas
+IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Ingredientes')
+BEGIN
+    -- Crear la tabla Ingredientes
+    CREATE TABLE Ingredientes (
+        IngredienteID INT PRIMARY KEY,
+        TipoIngrediente VARCHAR(50) NOT NULL,
+		CantidadStok INT,
+		CantUnidLitros DECIMAL(8, 4),
+        Origen VARCHAR(50),
+        Descripcion TEXT,
+        FechaIngreso DATE,
+        Proveedor VARCHAR(50),
+        PrecioUnitario DECIMAL(8, 2),
+        CervezaID INT,
+        FOREIGN KEY (CervezaID) REFERENCES Cerveza(CervezaID)
+    );
+	
+END
+
 
 -- Tablas para la produccion de cerveza.
--- Tabla para almacenar informaciï¿½n sobre la producciï¿½n de cerveza
-CREATE TABLE ProduccionCerveza (
-    ProduccionID INT PRIMARY KEY,
-    CervezaID INT,
-    FechaProduccion DATE NOT NULL,
-    CantidadProducida DECIMAL(8, 2) NOT NULL,
-    Estado VARCHAR(50) NOT NULL, -- Por ejemplo, "En proceso", "Listo para embotellar", etc.
-    FOREIGN KEY (CervezaID) REFERENCES Cervezas(CervezaID)
-);
+-- Tabla para almacenar información sobre la producción de cerveza
+IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'ProduccionCerveza')
+BEGIN
+    -- Crear la tabla ProduccionCerveza
+    CREATE TABLE ProduccionCerveza (
+        ProduccionID INT PRIMARY KEY,
+        CervezaID INT,
+        FechaProduccion DATE NOT NULL,
+        CantidadProducida DECIMAL(8, 2) NOT NULL,
+        Estado VARCHAR(50) NOT NULL,
+        FOREIGN KEY (CervezaID) REFERENCES Cerveza(CervezaID)
+    );
+END
 
--- Tabla para almacenar informaciï¿½n sobre los pasos de producciï¿½n de cerveza
-CREATE TABLE PasosProduccion (
-    PasoID INT PRIMARY KEY,
-    ProduccionID INT,
-    Descripcion VARCHAR(100) NOT NULL,
-    FechaPaso DATE NOT NULL,
-    FOREIGN KEY (ProduccionID) REFERENCES ProduccionCerveza(ProduccionID)
-);
+-- Tabla para almacenar información sobre los pasos de producción de cerveza
+IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'PasosProduccion')
+BEGIN
+    -- Crear la tabla PasosProduccion
+    CREATE TABLE PasosProduccion (
+        PasoID INT PRIMARY KEY,
+        ProduccionID INT,
+        Descripcion VARCHAR(100) NOT NULL,
+        FechaPaso DATE NOT NULL,
+        FOREIGN KEY (ProduccionID) REFERENCES ProduccionCerveza(ProduccionID)
+    );
+
+END
+
 
 -- Tablas para el manejo de Stock
--- Tabla para almacenar informaciï¿½n sobre el inventario de cervezas
-CREATE TABLE InventarioCervezas (
-    CervezaID INT PRIMARY KEY,
-    CantidadStock DECIMAL(8, 2) NOT NULL,
-    FOREIGN KEY (CervezaID) REFERENCES Cervezas(CervezaID)
-);
+-- Tabla para almacenar información sobre el inventario de cervezas
+IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'InventarioCervezas')
+BEGIN
+    -- Crear la tabla InventarioCervezas
+    CREATE TABLE InventarioCervezas (
+        CervezaID INT PRIMARY KEY,
+        CantidadStock DECIMAL(8, 2) NOT NULL,
+        FOREIGN KEY (CervezaID) REFERENCES Cerveza(CervezaID)
+    );
+END
+-- Tabla para almacenar información sobre los clientes
+IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Clientes')
+BEGIN
+    -- Crear la tabla Clientes
+    CREATE TABLE Clientes (
+        ClienteID INT PRIMARY KEY,
+        Nombre VARCHAR(50) NOT NULL,
+        Email VARCHAR(50),
+        Telefono VARCHAR(15),
+        Direccion VARCHAR(100),
+        Ciudad VARCHAR(50),
+        Pais VARCHAR(50),
+        CodigoPostal VARCHAR(10)
+    );
+END
 
 
--- Tabla para almacenar informaciï¿½n sobre las ventas de cervezas
-CREATE TABLE Orden (
-    VentaID INT PRIMARY KEY,
-    FechaVenta DATE NOT NULL,
-    CervezaID INT,
-    Cantidad DECIMAL(8, 2) NOT NULL,
-    PrecioTotal DECIMAL(8, 2) NOT NULL,
-    ClienteID INT, -- Nueva columna para el ID del cliente
-    FOREIGN KEY (CervezaID) REFERENCES Cervezas(CervezaID),
-    FOREIGN KEY (ClienteID) REFERENCES Clientes(ClienteID)
-);
+-- Tabla para almacenar información sobre las ventas de cervezas
+IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Orden')
+BEGIN
+    -- Crear la tabla Orden
+    CREATE TABLE Orden (
+        VentaID INT PRIMARY KEY,
+        FechaVenta DATE NOT NULL,
+        CervezaID INT,
+        Cantidad DECIMAL(8, 2) NOT NULL,
+        PrecioTotal DECIMAL(8, 2) NOT NULL,
+        ClienteID INT,
+        FOREIGN KEY (CervezaID) REFERENCES Cerveza(CervezaID),
+        FOREIGN KEY (ClienteID) REFERENCES Clientes(ClienteID)
+    );
+END
 
--- Tabla para almacenar informaciï¿½n sobre los clientes
-CREATE TABLE Clientes (
-    ClienteID INT PRIMARY KEY,
-    Nombre VARCHAR(50) NOT NULL,
-    Email VARCHAR(50),
-    Telefono VARCHAR(15),
-    Direccion VARCHAR(100), -- Nueva columna para la direcciï¿½n del cliente
-    Ciudad VARCHAR(50), -- Nueva columna para la ciudad del cliente
-    Pais VARCHAR(50), -- Nueva columna para el paï¿½s del cliente
-    CodigoPostal VARCHAR(10) -- Nueva columna para el cï¿½digo postal del cliente
-);
 
 -- Tablas para la distribucion
 
--- Tabla para almacenar informaciï¿½n de las subcursales
-CREATE TABLE Subcursales (
-    SubcursalID INT PRIMARY KEY,
-    Nombre VARCHAR(50) NOT NULL,
-    Direccion VARCHAR(100),
-    Ciudad VARCHAR(50),
-    Pais VARCHAR(50),
-    CodigoPostal VARCHAR(10)
-);
+-- Tabla para almacenar información de las subcursales
+IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Subcursales')
+BEGIN
+    -- Crear la tabla Subcursales
+    CREATE TABLE Subcursales (
+        SubcursalID INT PRIMARY KEY,
+        Nombre VARCHAR(50) NOT NULL,
+        Direccion VARCHAR(100),
+        Ciudad VARCHAR(50),
+        Pais VARCHAR(50),
+        CodigoPostal VARCHAR(10)
+    );
+END
 
--- Tabla para almacenar informaciï¿½n de los productos en cada subcursal
-CREATE TABLE InventarioSubcursal (
-    SubcursalID INT,
-    CervezaID INT,
-    CantidadStock DECIMAL(8, 2) NOT NULL,
-    PRIMARY KEY (SubcursalID, CervezaID),
-    FOREIGN KEY (SubcursalID) REFERENCES Subcursales(SubcursalID),
-    FOREIGN KEY (CervezaID) REFERENCES Cervezas(CervezaID)
-);
+-- Tabla para almacenar información de los productos en cada subcursal
+IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'InventarioSubcursal')
+BEGIN
+    -- Crear la tabla InventarioSubcursal
+    CREATE TABLE InventarioSubcursal (
+        SubcursalID INT,
+        CervezaID INT,
+        CantidadStock DECIMAL(8, 2) NOT NULL,
+        PRIMARY KEY (SubcursalID, CervezaID),
+        FOREIGN KEY (SubcursalID) REFERENCES Subcursales(SubcursalID),
+        FOREIGN KEY (CervezaID) REFERENCES Cerveza(CervezaID)
+    );
+END
 
--- Tabla para almacenar informaciï¿½n sobre las entregas a subcursales
-CREATE TABLE EntregasSubcursales (
-    EntregaID INT PRIMARY KEY,
-    FechaEntrega DATE NOT NULL,
-    SubcursalDestinoID INT,
-    CervezaID INT,
-    CantidadEntregada DECIMAL(8, 2) NOT NULL,
-    PrecioTotalEntrega DECIMAL(8, 2) NOT NULL,
-    FOREIGN KEY (SubcursalDestinoID) REFERENCES Subcursales(SubcursalID),
-    FOREIGN KEY (CervezaID) REFERENCES Cervezas(CervezaID)
-);
+-- Tabla para almacenar información sobre las entregas a subcursales
+IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'EntregasSubcursales')
+BEGIN
+	CREATE TABLE EntregasSubcursales (
+		EntregaID INT PRIMARY KEY,
+		FechaEntrega DATE NOT NULL,
+		SubcursalDestinoID INT,
+		CervezaID INT,
+		CantidadEntregada DECIMAL(8, 2) NOT NULL,
+		PrecioTotalEntrega DECIMAL(8, 2) NOT NULL,
+		FOREIGN KEY (SubcursalDestinoID) REFERENCES Subcursales(SubcursalID),
+		FOREIGN KEY (CervezaID) REFERENCES Cerveza(CervezaID)
+	);
+END
 
--- Tabla para almacenar informaciï¿½n sobre los proveedores de las subcursales
-CREATE TABLE ProveedoresSubcursales (
-    SubcursalID INT,
-    ProveedorID INT,
-    PRIMARY KEY (SubcursalID, ProveedorID),
-    FOREIGN KEY (SubcursalID) REFERENCES Subcursales(SubcursalID),
-    FOREIGN KEY (ProveedorID) REFERENCES Proveedores(ProveedorID)
-);
-
--- Tabla para almacenar informaciï¿½n sobre los proveedores
-CREATE TABLE Proveedores (
-    ProveedorID INT PRIMARY KEY,
-    Nombre VARCHAR(50) NOT NULL,
-    Contacto VARCHAR(50),
-    Telefono VARCHAR(15),
-    Email VARCHAR(50)
-);
+-- Tabla para almacenar información sobre los proveedores
+IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Proveedores')
+BEGIN
+	CREATE TABLE Proveedores (
+		ProveedorID INT PRIMARY KEY,
+		Nombre VARCHAR(50) NOT NULL,
+		Contacto VARCHAR(50),
+		Telefono VARCHAR(15),
+		Email VARCHAR(50)
+	);
+END
+-- Tabla para almacenar información sobre los proveedores de las subcursales
+IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'ProveedoresSubcursales')
+BEGIN
+	CREATE TABLE ProveedoresSubcursales (
+		SubcursalID INT,
+		ProveedorID INT,
+		PRIMARY KEY (SubcursalID, ProveedorID),
+		FOREIGN KEY (SubcursalID) REFERENCES Subcursales(SubcursalID),
+		FOREIGN KEY (ProveedorID) REFERENCES Proveedores(ProveedorID)
+	);
+END
