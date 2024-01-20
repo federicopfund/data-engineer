@@ -1,3 +1,12 @@
+
+--Cervezas: Contiene información sobre las cervezas disponibles, como nombre, estilo, graduación alcohólica, precio y stock.
+
+--Clientes: Almacena información sobre los clientes, como nombre, apellido, email y teléfono.
+
+--Ordenes: Registra las órdenes realizadas por los clientes, incluyendo la fecha y el total.
+
+--DetallesOrden: Almacena detalles de las órdenes, como la cerveza pedida, la cantidad, el precio unitario y el subtotal. Se establecen claves foráneas para mantener la integridad referencial.
+
 -- Tabla para almacenar información de las cervezas
 CREATE TABLE Cervezas (
     CervezaID INT PRIMARY KEY,
@@ -24,6 +33,24 @@ CREATE TABLE CervezaIngredientes (
     FOREIGN KEY (IngredienteID) REFERENCES Ingredientes(IngredienteID)
 );
 
+-- Tabla para almacenar información sobre la producción de cerveza
+CREATE TABLE ProduccionCerveza (
+    ProduccionID INT PRIMARY KEY,
+    CervezaID INT,
+    FechaProduccion DATE NOT NULL,
+    CantidadProducida DECIMAL(8, 2) NOT NULL,
+    Estado VARCHAR(50) NOT NULL, -- Por ejemplo, "En proceso", "Listo para embotellar", etc.
+    FOREIGN KEY (CervezaID) REFERENCES Cervezas(CervezaID)
+);
+
+-- Tabla para almacenar información sobre los pasos de producción de cerveza
+CREATE TABLE PasosProduccion (
+    PasoID INT PRIMARY KEY,
+    ProduccionID INT,
+    Descripcion VARCHAR(100) NOT NULL,
+    FechaPaso DATE NOT NULL,
+    FOREIGN KEY (ProduccionID) REFERENCES ProduccionCerveza(ProduccionID)
+);
 -- Tabla para almacenar información sobre el inventario de cervezas
 CREATE TABLE InventarioCervezas (
     CervezaID INT PRIMARY KEY,
