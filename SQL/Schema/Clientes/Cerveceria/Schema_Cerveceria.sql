@@ -180,3 +180,51 @@ BEGIN
 		FOREIGN KEY (ProveedorID) REFERENCES Proveedores(ProveedorID)
 	);
 END
+
+IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'TransaccionesInventario')
+BEGIN
+    -- Create the table TransaccionesInventario
+    CREATE TABLE TransaccionesInventario (
+        TransaccionID INT PRIMARY KEY,
+        CervezaID INT,
+        FechaTransaccion DATE NOT NULL,
+        CantidadAntes DECIMAL(8, 2) NOT NULL,
+        CantidadDespues DECIMAL(8, 2) NOT NULL,
+        TipoTransaccion VARCHAR(20) NOT NULL,
+        FOREIGN KEY (CervezaID) REFERENCES Cerveza(CervezaID)
+    );
+END;
+
+-- Añadir tabla de historial de precios
+IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'HistorialPrecios')
+BEGIN
+    -- Create the table HistorialPrecios
+    CREATE TABLE HistorialPrecios (
+        HistorialID INT PRIMARY KEY,
+        CervezaID INT,
+        FechaCambio DATE NOT NULL,
+        PrecioAntes DECIMAL(5, 2) NOT NULL,
+        PrecioDespues DECIMAL(5, 2) NOT NULL,
+        FOREIGN KEY (CervezaID) REFERENCES Cerveza(CervezaID)
+    );
+END;
+
+
+-- Añadir índices
+CREATE INDEX IX_Cerveza_Estilo ON Cerveza(Estilo);
+CREATE INDEX IX_Ingredientes_CervezaID ON Ingredientes(CervezaID);
+CREATE INDEX IX_ProduccionCerveza_CervezaID ON ProduccionCerveza(CervezaID);
+CREATE INDEX IX_PasosProduccion_ProduccionID ON PasosProduccion(ProduccionID);
+CREATE INDEX IX_InventarioCervezas_CervezaID ON InventarioCervezas(CervezaID);
+CREATE INDEX IX_Orden_ClienteID ON Orden(ClienteID);
+CREATE INDEX IX_Orden_CervezaID ON Orden(CervezaID);
+CREATE INDEX IX_EntregasSubcursales_CervezaID ON EntregasSubcursales(CervezaID);
+CREATE INDEX IX_ProveedoresSubcursales_ProveedorID ON ProveedoresSubcursales(ProveedorID);
+
+-- Añadir claves únicas compuestas
+ALTER TABLE Ingredientes
+ADD CONSTRAINT UQ_Ingredientes UNIQUE (IngredienteID, CervezaID);
+
+ALTER TABLE InventarioSubcursal
+ADD CONSTRAINT UQ_InventarioSubcursal UNIQUE (SubcursalID, CervezaID);
+
