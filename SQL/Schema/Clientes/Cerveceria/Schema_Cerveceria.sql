@@ -101,7 +101,7 @@ IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Orden
 BEGIN
     -- Crear la tabla Orden
     CREATE TABLE Orden (
-        VentaID INT PRIMARY KEY,
+        VentaID INT IDENTITY(1,1) NOT NULL,
         FechaVenta DATE NOT NULL,
         CervezaID INT,
         Cantidad DECIMAL(8, 2) NOT NULL,
@@ -209,22 +209,79 @@ BEGIN
     );
 END;
 
+-- Añadir índices si no existen
 
--- Añadir índices
-CREATE INDEX IX_Cerveza_Estilo ON Cerveza(Estilo);
-CREATE INDEX IX_Ingredientes_CervezaID ON Ingredientes(CervezaID);
-CREATE INDEX IX_ProduccionCerveza_CervezaID ON ProduccionCerveza(CervezaID);
-CREATE INDEX IX_PasosProduccion_ProduccionID ON PasosProduccion(ProduccionID);
-CREATE INDEX IX_InventarioCervezas_CervezaID ON InventarioCervezas(CervezaID);
-CREATE INDEX IX_Orden_ClienteID ON Orden(ClienteID);
-CREATE INDEX IX_Orden_CervezaID ON Orden(CervezaID);
-CREATE INDEX IX_EntregasSubcursales_CervezaID ON EntregasSubcursales(CervezaID);
-CREATE INDEX IX_ProveedoresSubcursales_ProveedorID ON ProveedoresSubcursales(ProveedorID);
+-- Índice en la tabla Cerveza
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'IX_Cerveza_Estilo' AND object_id = OBJECT_ID('Cerveza'))
+BEGIN
+    CREATE INDEX IX_Cerveza_Estilo ON Cerveza(Estilo);
+END
 
--- Añadir claves únicas compuestas
-ALTER TABLE Ingredientes
-ADD CONSTRAINT UQ_Ingredientes UNIQUE (IngredienteID, CervezaID);
+-- Índice en la tabla Ingredientes
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'IX_Ingredientes_CervezaID' AND object_id = OBJECT_ID('Ingredientes'))
+BEGIN
+    CREATE INDEX IX_Ingredientes_CervezaID ON Ingredientes(CervezaID);
+END
 
-ALTER TABLE InventarioSubcursal
-ADD CONSTRAINT UQ_InventarioSubcursal UNIQUE (SubcursalID, CervezaID);
+-- Índice en la tabla ProduccionCerveza
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'IX_ProduccionCerveza_CervezaID' AND object_id = OBJECT_ID('ProduccionCerveza'))
+BEGIN
+    CREATE INDEX IX_ProduccionCerveza_CervezaID ON ProduccionCerveza(CervezaID);
+END
+
+-- Índice en la tabla PasosProduccion
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'IX_PasosProduccion_ProduccionID' AND object_id = OBJECT_ID('PasosProduccion'))
+BEGIN
+    CREATE INDEX IX_PasosProduccion_ProduccionID ON PasosProduccion(ProduccionID);
+END
+
+-- Índice en la tabla InventarioCervezas
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'IX_InventarioCervezas_CervezaID' AND object_id = OBJECT_ID('InventarioCervezas'))
+BEGIN
+    CREATE INDEX IX_InventarioCervezas_CervezaID ON InventarioCervezas(CervezaID);
+END
+
+-- Índice en la tabla Orden
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'IX_Orden_ClienteID' AND object_id = OBJECT_ID('Orden'))
+BEGIN
+    CREATE INDEX IX_Orden_ClienteID ON Orden(ClienteID);
+END
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'IX_Orden_CervezaID' AND object_id = OBJECT_ID('Orden'))
+BEGIN
+    CREATE INDEX IX_Orden_CervezaID ON Orden(CervezaID);
+END
+
+-- Índice en la tabla EntregasSubcursales
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'IX_EntregasSubcursales_CervezaID' AND object_id = OBJECT_ID('EntregasSubcursales'))
+BEGIN
+    CREATE INDEX IX_EntregasSubcursales_CervezaID ON EntregasSubcursales(CervezaID);
+END
+
+-- Índice en la tabla ProveedoresSubcursales
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'IX_ProveedoresSubcursales_ProveedorID' AND object_id = OBJECT_ID('ProveedoresSubcursales'))
+BEGIN
+    CREATE INDEX IX_ProveedoresSubcursales_ProveedorID ON ProveedoresSubcursales(ProveedorID);
+END
+
+
+-- Añadir claves únicas compuestas si no existen
+
+-- Clave única compuesta en la tabla Ingredientes
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'UQ_Ingredientes' AND object_id = OBJECT_ID('Ingredientes'))
+BEGIN
+    ALTER TABLE Ingredientes
+    ADD CONSTRAINT UQ_Ingredientes UNIQUE (IngredienteID, CervezaID);
+END
+
+-- Clave única compuesta en la tabla InventarioSubcursal
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'UQ_InventarioSubcursal' AND object_id = OBJECT_ID('InventarioSubcursal'))
+BEGIN
+    ALTER TABLE InventarioSubcursal
+    ADD CONSTRAINT UQ_InventarioSubcursal UNIQUE (SubcursalID, CervezaID);
+END
+
+
+
+
 
