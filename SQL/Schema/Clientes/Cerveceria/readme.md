@@ -1,3 +1,10 @@
+
+# Cerveceria
+
+>Estructura de datos de una Cerveceria
+
+![diagrama ER](../Cerveceria/img/diagramaER.png)
+
 >Cervezas:
 
     CervezaID: Identificador único de la cerveza (clave primaria).
