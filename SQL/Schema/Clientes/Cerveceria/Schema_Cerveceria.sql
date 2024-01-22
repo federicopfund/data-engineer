@@ -1,4 +1,6 @@
 
+--CREATE DATABASE cerveceria;
+
 
 -- Tabla para almacenar información de las cervezas
 IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Cerveza')
@@ -101,7 +103,7 @@ IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Orden
 BEGIN
     -- Crear la tabla Orden
     CREATE TABLE Orden (
-        VentaID INT IDENTITY(1,1) NOT NULL,
+        VentaID INT IDENTITY(1,1) PRIMARY KEY, -- Definir VentaID como PK y autoincremental
         FechaVenta DATE NOT NULL,
         CervezaID INT,
         Cantidad DECIMAL(8, 2) NOT NULL,
