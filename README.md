@@ -2,7 +2,6 @@
 
 Los almacenes de datos relacionales se encuentran en el centro de la mayoría de las soluciones de inteligencia empresarial (BI). Aunque los detalles específicos pueden variar entre implementaciones de almacenamiento de datos, un patrón común basado en un esquema desnormalizado y multidimensional ha surgido como el diseño estándar de un almacenamiento de datos relacional.
 
-Azure Synapse Analytics incluye un motor de base de datos relacional altamente escalable optimizado para cargas de trabajo de almacenamiento de datos. Mediante el uso de grupos de SQL dedicados en Azure Synapse Analytics, puede crear bases de datos que sean capaces de hospedar y consultar grandes volúmenes de datos en tablas relacionales.
 
 Al igual que todas las bases de datos relacionales, un almacenamiento de datos contiene tablas en las que se almacenan los datos que quiere analizar. Normalmente, estas tablas se organizan en un esquema optimizado para el modelado multidimensional, en el que las medidas numéricas asociadas a eventos conocidos como hechos se pueden agregar mediante los atributos de las entidades asociadas en varias dimensiones. 
 
