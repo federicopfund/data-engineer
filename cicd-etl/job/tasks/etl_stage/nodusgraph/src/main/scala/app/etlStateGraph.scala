@@ -1,7 +1,5 @@
 package main
 
-
-
 object etlStateGraph extends App {
   val dag = new com.vortex.etl.core.DAG[String]
 
