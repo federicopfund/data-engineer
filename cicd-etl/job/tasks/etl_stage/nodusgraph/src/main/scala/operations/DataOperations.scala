@@ -1,5 +1,6 @@
 package com.Vortex.etl.operations
 
+
 abstract class DataOperation {
   def description: String
   def execute(): scala.util.Try[String]
