@@ -80,14 +80,48 @@ directorio que el archivo .ipynb. En caso de integrar data externa, adjuntar y e
 qué consiste.
 
 
-### Resolucion.
+#### Proceso de Desarrollo en Microsoft Fabric
+1. Creación de Data Warehouse
+El proceso comienza con la configuración de un almacén de datos en Microsoft Fabric. Esto implica la definición de esquemas de datos, tablas y relaciones que serán fundamentales para almacenar y gestionar los datos de manera eficiente. La arquitectura del almacén se diseña para soportar consultas complejas y análisis de datos a gran escala.
 
-Se crea un data warehouse en Microsoft Fabric, se acciona un proceso de migracion, cargandos los archivos mencionados en el data Warehousing.
+2. Migración de Datos
+Una vez establecido el data warehouse, se inicia un proceso de migración para transferir datos existentes al nuevo sistema. Este proceso incluye:
+
+### Carga de Archivos:
+ Los datos se extraen de diversas fuentes, como bases de datos operacionales o archivos externos.
+### Transformación:
+ Los datos se transforman para alinearlos con el esquema del almacén de datos. Esto puede incluir la normalización de formatos, la limpieza de datos y la resolución de inconsistencias.
+### Carga en el Data Warehouse:
+ Finalmente, los datos transformados se cargan en el almacén de datos.
+
 ![Tablas](img/tablas.png)
 
-Se desarrollan Vistas temporeales dimencionales que desprende de la tabla de Echo Listings.
+El estado del proceso de migración se puede visualizar en la siguiente imagen:
+
+### Tablas de Migración
+
+Desarrollo de Vistas Temporales Dimensionales
+Parte del proceso incluye el desarrollo de vistas dimensionales basadas en la tabla Echo Listings. Estas vistas permiten simplificar y agilizar el acceso a los datos para análisis específicos. Por ejemplo, se crean vistas para dimensiones como Host, Ubicación y Propiedades, facilitando así consultas analíticas y de reporting.
+
 ![Tablas](img/Vistas%20dismencioneles.png)
 
-Como podran ver un ejemplo del Modelo ER:
+
+### Modelado ER
+El modelo entidad-relación (ER) se desarrolla para representar las interacciones entre las entidades en el almacén de datos. Este modelo es crucial para entender la estructura del data warehouse y para guiar el desarrollo de consultas y aplicaciones que interactúan con la base de datos.
 
 ![Tablas](img/modelo.png)
+
+
+### Resumen
+Este proceso integral asegura que el data warehouse en Microsoft Fabric no solo sea robusto y escalable, sino también adaptado a las necesidades específicas del análisis de datos. Con la ayuda de herramientas avanzadas y un enfoque sistemático para el diseño de bases de datos, Microsoft Fabric proporciona una plataforma potente para el manejo y análisis de grandes volúmenes de datos.
+
+
+### Informe: 
+
+![Pantalla 1](img/Pantalla%201.png)
+
+
+![Pantalla 2](img/Pantalla2.png)
+
+
+![Pantalla 3](img/Pantalla3.png)
