@@ -1,4 +1,5 @@
-Airbnb es la plataforma líder de alquiler de alojamientos del mundo. Habiendo comenzado 
+
+>Airbnb es la plataforma líder de alquiler de alojamientos del mundo. Habiendo comenzado 
 sus operaciones en el año 2007, hoy ya cuenta con más de 4 millones de huéspedes, 6 
 millones de alojamientos disponibles y ha sido usado por más de 150 millones de personas 
 en más de 100,000 ciudades del mundo.
