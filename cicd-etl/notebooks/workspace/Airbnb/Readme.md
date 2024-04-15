@@ -103,6 +103,66 @@ El estado del proceso de migración se puede visualizar en la siguiente imagen:
 Desarrollo de Vistas Temporales Dimensionales
 Parte del proceso incluye el desarrollo de vistas dimensionales basadas en la tabla Echo Listings. Estas vistas permiten simplificar y agilizar el acceso a los datos para análisis específicos. Por ejemplo, se crean vistas para dimensiones como Host, Ubicación y Propiedades, facilitando así consultas analíticas y de reporting.
 
+>Vista TempView_DimHost
+##
+```sql
+CREATE VIEW TempView_DimHost AS
+SELECT
+    host_id,
+    host_url,
+    host_name,
+    CONVERT(DATE, host_since) AS host_since,  -- Asegurarse de que la fecha esté en el formato correcto
+    host_location,
+    host_about,
+    host_response_time,
+    TRY_CAST(host_response_rate AS FLOAT) AS host_response_rate, -- Convertir a float, manejar valores no numéricos
+    TRY_CAST(host_acceptance_rate AS FLOAT) AS host_acceptance_rate, -- Convertir a float, manejar valores no numéricos
+    CASE WHEN host_is_superhost = 't' THEN 'Y' ELSE 'N' END AS host_is_superhost,  -- Convertir valores booleanos a Y/N si es necesario
+    host_thumbnail_url,
+    host_picture_url,
+    host_neighbourhood,
+    host_listings_count,
+    host_total_listings_count,
+    host_verifications,
+    CASE WHEN host_has_profile_pic = 't' THEN 'Y' ELSE 'N' END AS host_has_profile_pic, -- Convertir valores booleanos a Y/N si es necesario
+    CASE WHEN host_identity_verified = 't' THEN 'Y' ELSE 'N' END AS host_identity_verified -- Convertir valores booleanos a Y/N si es necesario
+FROM
+    [DataflowakehouseMerovingian].[dbo].[listings];
+```
+>Vista TempView_DimLocation:
+##
+```sql
+CREATE VIEW TempView_DimLocation AS
+SELECT
+    id AS location_id,  -- Suponiendo que `listing_id` es una columna existente que puede actuar como clave única para la ubicación
+    neighbourhood,
+    neighbourhood_cleansed,
+    neighbourhood_group_cleansed,
+    latitude,
+    longitude
+FROM [DataflowakehouseMerovingian].[dbo].[listings];
+```
+>Vista TempView_DimProperty:
+##
+```sql
+CREATE VIEW TempView_DimProperty AS
+SELECT
+    id AS property_id,  -- Suponiendo que `listing_id` es una columna existente que puede actuar como clave única para la propiedad
+    property_type,
+    room_type,
+    accommodates,
+    bathrooms,
+    bathrooms_text,
+    bedrooms,
+    beds,
+    amenities
+FROM
+    [DataflowakehouseMerovingian].[dbo].[listings];
+
+```
+
+> Vista Temporal Para WordCount
+
 ![Tablas](img/Vistas%20dismencioneles.png)
 
 
