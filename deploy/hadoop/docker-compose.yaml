@@ -2,7 +2,7 @@ version: "3"
 
 services:
   namenode:
-    image: sequenceiq/hadoop-docker:new
+    image: sequenceiq/hadoop-docker:fede
     container_name: namenode
     expose:
       - "50070"
@@ -13,7 +13,7 @@ services:
       - hadoop-net
 
   datanode:
-    image: sequenceiq/hadoop-docker:new
+    image: sequenceiq/hadoop-docker:fede
     container_name: datanode
     expose:
       - "50075"
@@ -26,7 +26,7 @@ services:
       - hadoop-net
 
   resourcemanager:
-    image: sequenceiq/hadoop-docker:new
+    image: sequenceiq/hadoop-docker:fede
     container_name: resourcemanager
     expose:
       - "8088"
@@ -39,7 +39,7 @@ services:
       - hadoop-net
 
   nodemanager:
-    image: sequenceiq/hadoop-docker:new
+    image: sequenceiq/hadoop-docker:fede
     container_name: nodemanager
     expose:
       - "8042"
