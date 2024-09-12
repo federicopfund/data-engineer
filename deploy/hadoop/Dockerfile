@@ -23,7 +23,7 @@ COPY conf/mapred-site.xml $HADOOP_HOME/share/hadoop/mapreduce/templates/mapred-s
 COPY conf/yarn-site.xml $HADOOP_HOME/share/hadoop/yarn/templates/yarn-site.xml
 
 # Formatea el sistema de archivos HDFS
-RUN $HADOOP_HOME/bin/hdfs namenode -format
+# RUN $HADOOP_HOME/bin/hdfs namenode -format
 
 # Agrega volúmenes de persistencia para los datos de Hadoop
 VOLUME /usr/local/hadoop-data
