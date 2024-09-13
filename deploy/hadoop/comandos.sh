@@ -1,5 +1,6 @@
 docker build -t sequenceiq/hadoop-docker:fede .
 sudo docker network create hadoop-net
+sudo docker-compose up
 docker exec -it namenode hadoop fs -mkdir /user
 docker exec -it namenode hadoop fs -mkdir /user/fede
 docker exec -it namenode hadoop fs -mkdir /user/fede/spark-events
