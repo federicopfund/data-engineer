@@ -2,7 +2,7 @@ version: "3"
 
 services:
   namenode:
-    image: sequenceiq/hadoop-docker:fede
+    image: sequenceiq/hadoop-docker:latest
     container_name: namenode
     expose:
       - "50070"
@@ -11,9 +11,11 @@ services:
     command: /etc/bootstrap.sh -d -namenode
     networks:
       - hadoop-net
+    volumes:
+      - /home/fede/data-engineer/cicd-etl/job/tasks/ScalaETL/src/main/resources/csv:/mnt/volumen  # Montar directorio de Documentos en Ubuntu al contenedor
 
   datanode:
-    image: sequenceiq/hadoop-docker:fede
+    image: sequenceiq/hadoop-docker:latest
     container_name: datanode
     expose:
       - "50075"
@@ -26,7 +28,7 @@ services:
       - hadoop-net
 
   resourcemanager:
-    image: sequenceiq/hadoop-docker:fede
+    image: sequenceiq/hadoop-docker:latest
     container_name: resourcemanager
     expose:
       - "8088"
@@ -39,7 +41,7 @@ services:
       - hadoop-net
 
   nodemanager:
-    image: sequenceiq/hadoop-docker:fede
+    image: sequenceiq/hadoop-docker:latest
     container_name: nodemanager
     expose:
       - "8042"
