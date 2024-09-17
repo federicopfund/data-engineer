@@ -7,7 +7,7 @@ Al igual que todas las bases de datos relacionales, un almacenamiento de datos c
 
 ### Descripción del proyecto:
 >
-En mi último cargo,  lidere un proyecto integral orientado a la modernización de la infraestructura de Business Intelligence (BI). El objetivo principal del proyecto era construir un data warehouse a través de una tabla de hechos proporcionada por el cliente. Dicha tabla contenía toda la lógica de negocio integrada, lo que nos llevó a desarrollar ingeniería inversa para descubrir las dimensiones subyacentes.
+ Proyecto integral orientado a la modernización de la infraestructura de Business Intelligence (BI). El objetivo principal del proyecto era construir un data warehouse a través de una tabla de hechos proporcionada por el cliente. Dicha tabla contenía toda la lógica de negocio integrada, lo que nos llevó a desarrollar ingeniería inversa para descubrir las dimensiones subyacentes.
 
 Como resultado, se desarrollaron tablas multidimensionales centradas en eventos específicos del negocio, lo que nos permitió identificar nuevas oportunidades en logística y distribución de productos. A través de este análisis, logramos desarrollar una nueva algoritmia que permitía distribuir los productos en función de la demanda sectorial. Gracias a esto, la empresa experimentó una mejora significativa en la calidad del servicio de distribución.
 
