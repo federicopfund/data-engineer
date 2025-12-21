@@ -11,23 +11,44 @@ import scala.concurrent.duration._
 import org.apache.spark.storage.StorageLevel
 import scala.collection.JavaConverters._
 import org.apache.spark.sql.SparkSession
-import java.nio.file.{Paths, Files}
+import java.nio.file.{Files, Path, Paths}
+import java.util.stream.Collectors
+import org.apache.hadoop.conf.Configuration
+import org.apache.hadoop.fs.{FileSystem}
 
 
 object funcTransform {
  
-  def processFile(spark: SparkSession, patterns: Array[String]): Unit = {
-    val outputPath = "./src/main/resources/csv/transformed"
-    deleteDirectory(outputPath)
-    createDirectory(outputPath)
+ 
+
+  // Variables globales
+  var raw: String = _
+  var bronze: String = _
+  var silver: String = _
+  var gold: String = _
+  
+
+  def processFile(spark: SparkSession, patterns: Array[String], hdfsUriRoot: String): Unit = {
+    // Resources Local
+    //val outputPath = "./src/main/resources/csv/transformed"
+    //deleteDirectory(outputPath)
+    //createDirectory(outputPath)
+    // Resouce HDFS
+    val hdfsUrlRoot = "hdfs://localhost:9001/hive/warehouse"
+    val hdfsUrl = s"$hdfsUrlRoot/datalake"
+    val raw     = s"$hdfsUrl/raw"
+    val bronze  = s"$hdfsUrl/bronze"
+    val silver  = s"$hdfsUrl/silver"
+    val gold    = s"$hdfsUrl/gold"
+    
     val futures = patterns.map { pattern =>
       Future {
         pattern match {
-          case "Categoria.csv" => transformCategoria(spark, pattern, outputPath)
-          case "FactMine.csv" => transformFactMine(spark, pattern, outputPath)
-          case "Mine.csv" => transformMine(spark, pattern, outputPath)
-          case "Producto.csv" => transformProduct(spark, pattern, outputPath)
-          case "VentasInternet.csv" => transformVentasInternet(spark, pattern, outputPath)
+          case "Categoria.csv" => transformCategoria(spark, pattern, raw, bronze)
+          case "FactMine.csv" => transformFactMine(spark, pattern, raw, bronze)
+          case "Mine.csv" => transformMine(spark, pattern, raw, bronze)
+          case "Producto.csv" => transformProduct(spark, pattern, raw, bronze)
+          case "VentasInternet.csv" => transformVentasInternet(spark, pattern, raw, bronze)
           case _ => throw new IllegalArgumentException(s"Archivo no reconocido: $pattern")
         }
       }
@@ -37,10 +58,10 @@ object funcTransform {
   }
 
 
-  def transformCategoria(spark: SparkSession, pattern: String, outputPath: String): Unit = {
-    val transformedFilePath = s"$outputPath/$pattern"
-    if (!fileExists(transformedFilePath)) {
-      val filePath = s"./src/main/resources/csv/$pattern"
+  def transformCategoria(spark: SparkSession, pattern: String, loadFile: String, outputPath: String): Unit = {
+    val WirteFileTransformPath = s"$outputPath/${pattern.stripSuffix(".csv")}"
+    if (!fileExists(WirteFileTransformPath)) {
+      val filePath = s"$loadFile/$pattern"
       val dfCategoria = spark.read.option("header", "true").option("inferSchema", "true").csv(filePath)
       val dfFilteredCategoria = dfCategoria.na.drop().repartition(5) 
       val isCached: Boolean = isDataFrameCached(dfFilteredCategoria)
@@ -53,7 +74,7 @@ object funcTransform {
         for ((transformation, index) <- transformations.zipWithIndex) {
           println(s"Aplicando transformación ${index + 1}: $transformation")
           val consulta: DataFrame = spark.sql(transformation).as("consulta")
-          saveAndShow(consulta, outputPath, s"${pattern.stripSuffix(".csv")}_${index}")
+          saveAndShow(consulta, WirteFileTransformPath, s"${pattern.stripSuffix(".csv")}_${index}")
         }
       }
       dfFilteredCategoria.unpersist()
@@ -63,10 +84,10 @@ object funcTransform {
   }
   
     
-  def transformFactMine(spark: SparkSession, pattern: String, outputPath: String): Unit = {
-    val transformedFilePath = s"$outputPath/$pattern"
-    if (!fileExists(transformedFilePath)) {
-      val filePath = s"./src/main/resources/csv/$pattern"
+  def transformFactMine(spark: SparkSession, pattern: String,loadFile: String, outputPath: String): Unit = {
+    val WirteFileTransformPath =  s"$outputPath/${pattern.stripSuffix(".csv")}"
+    if (!fileExists(WirteFileTransformPath)) {
+      val filePath = s"$loadFile/$pattern"
       val dfFactMine = spark.read.format("csv").option("header", "true").option("inferSchema", "true").load(filePath)
       val dfFilteredFactMine = dfFactMine.na.drop().repartition(5) 
       val isCached: Boolean = isDataFrameCached(dfFilteredFactMine) 
@@ -79,7 +100,7 @@ object funcTransform {
         for ((transformation, index) <- transformations.zipWithIndex) {
             println(s"Aplicando transformación ${index + 1}: $transformation")
             val consulta: DataFrame = spark.sql(transformation).as("consulta")
-            saveAndShow(consulta, outputPath, s"${pattern.stripSuffix(".csv")}_${index}")
+            saveAndShow(consulta, WirteFileTransformPath, s"${pattern.stripSuffix(".csv")}_${index}")
         }
         dfFilteredFactMine.unpersist()
         }
@@ -89,10 +110,10 @@ object funcTransform {
   }
     
 
-  def transformMine(spark: SparkSession, pattern: String, outputPath: String): Unit = {
-    val transformedFilePath = s"$outputPath/$pattern"
-    if (!fileExists(transformedFilePath)) {
-      val filePath = s"./src/main/resources/csv/$pattern"
+  def transformMine(spark: SparkSession, pattern: String, loadFile: String, outputPath: String): Unit = {
+    val WirteFileTransformPath =  s"$outputPath/${pattern.stripSuffix(".csv")}"
+    if (!fileExists(WirteFileTransformPath)) {
+      val filePath = s"$loadFile/$pattern"
       val dfMine = spark.read.format("csv").option("header", "true").option("inferSchema", "true").load(filePath)
       val dfFilteredMine = dfMine.na.drop().repartition(5)
       val isCached: Boolean = isDataFrameCached(dfMine)
@@ -107,7 +128,7 @@ object funcTransform {
         for ((transformation, index) <- transformations.zipWithIndex) {
           println(s"Aplicando transformación ${index + 1}: $transformation")
           val consulta: DataFrame = spark.sql(transformation).as("consulta")
-          saveAndShow(consulta, outputPath, s"${pattern.stripSuffix(".csv")}_${index}")
+          saveAndShow(consulta, WirteFileTransformPath, s"${pattern.stripSuffix(".csv")}_${index}")
         }
         dfFilteredMine.unpersist()
         }
@@ -117,10 +138,10 @@ object funcTransform {
   }
   
 
-  def transformProduct(spark: SparkSession, pattern: String, outputPath: String): Unit = {
-    val transformedFilePath = s"$outputPath/$pattern"
-    if (!fileExists(transformedFilePath)) {
-      val filePath = s"./src/main/resources/csv/$pattern"
+  def transformProduct(spark: SparkSession, pattern: String, loadFile: String, outputPath: String): Unit = {
+    val WirteFileTransformPath =  s"$outputPath/${pattern.stripSuffix(".csv")}"
+    if (!fileExists(WirteFileTransformPath)) {
+      val filePath = s"$loadFile/$pattern"
       val dfProductos = spark.read.format("csv").option("header", "true").option("inferSchema", "true").load(filePath)
       val dfFilteredProductos = dfProductos.na.drop().repartition(5) 
       val isCached: Boolean = isDataFrameCached(dfFilteredProductos)
@@ -134,7 +155,7 @@ object funcTransform {
         for ((transformation, index) <- transformations.zipWithIndex) {
           println(s"Aplicando transformación ${index + 1}: $transformation")
           val consulta: DataFrame = spark.sql(transformation).as("consulta")
-          saveAndShow(consulta, outputPath, s"${pattern.stripSuffix(".csv")}_${index}")
+          saveAndShow(consulta, WirteFileTransformPath, s"${pattern.stripSuffix(".csv")}_${index}")
         }
         dfFilteredProductos.unpersist()
       }
@@ -143,10 +164,10 @@ object funcTransform {
     }
   }
   
-  def transformVentasInternet(spark: SparkSession, pattern: String, outputPath: String): Unit = {
-    val transformedFilePath = s"$outputPath/$pattern"
-    if (!fileExists(transformedFilePath)) {
-      val filePath = s"./src/main/resources/csv/$pattern"
+  def transformVentasInternet(spark: SparkSession, pattern: String, loadFile: String, outputPath: String): Unit = {
+    val WirteFileTransformPath =  s"$outputPath/${pattern.stripSuffix(".csv")}"
+    if (!fileExists(WirteFileTransformPath)) {
+      val filePath = s"$loadFile/$pattern"
       val dfVentasInternet = spark.read.format("csv").option("header", "true").option("inferSchema", "true").load(filePath)
       val dfFilteredVentasInternet = dfVentasInternet.na.drop().repartition(5) 
       val isCached: Boolean = isDataFrameCached(dfFilteredVentasInternet)
@@ -160,7 +181,7 @@ object funcTransform {
         for ((transformation, index) <- transformations.zipWithIndex) {
           println(s"Aplicando transformación ${index + 1}: $transformation")
           val consulta: DataFrame = spark.sql(transformation).as("consulta")
-          saveAndShow(consulta, outputPath, s"${pattern.stripSuffix(".csv")}_${index}")
+          saveAndShow(consulta, WirteFileTransformPath, s"${pattern.stripSuffix(".csv")}_${index}")
         }
         dfFilteredVentasInternet.unpersist()
       }
@@ -170,7 +191,7 @@ object funcTransform {
   }  
 
   def saveAndShow(df: DataFrame, outputPath: String, fileName: String): Unit = {
-    df.coalesce(1).write.option("header", "true").csv(s"$outputPath/$fileName")
+    df.write.mode("overwrite").parquet(s"$outputPath/$fileName")
     df.show()
   }
 
@@ -183,11 +204,17 @@ object funcTransform {
   
   def createDirectory(directoryPath: String): Unit = {
     val path = Paths.get(directoryPath)
+
+    if (Files.exists(path) && !Files.isDirectory(path)) {
+      Files.delete(path)
+    }
+
     if (!Files.exists(path)) {
       Files.createDirectories(path)
       println(s"Directorio creado: $directoryPath")
     }
   }
+
 
   def isDataFrameCached(df: DataFrame): Boolean = {
     try {
@@ -196,25 +223,52 @@ object funcTransform {
       case _: Throwable => false
     }
   }
+  def readCsv(spark: SparkSession, fullPath: String): DataFrame = {
+    spark.read.format("csv").option("header", "true").option("inferSchema", "true").load(fullPath)
+  }
 
+ 
   def deleteDirectory(directoryPath: String): Unit = {
-    val path = Paths.get(directoryPath)
-    if (Files.exists(path)) {
-      val files = Files.walk(path).iterator().asScala.toSeq.reverse
-      files.foreach { filePath =>
-        // Filtra la carpeta "transformed" del proceso de eliminación
-        if (!filePath.toString.endsWith("transformed")) {
-          Files.deleteIfExists(filePath)
-          println(s"Archivo eliminado: $filePath")
-        }
-      }
+    val root: Path = Paths.get(directoryPath)
 
-      println(s"Directorio eliminado: $directoryPath")
-      } else {
+    if (!Files.exists(root)) {
       println(s"El directorio $directoryPath no existe.")
       createDirectory(directoryPath)
+      return
     }
+
+    val transformedDir: Path = root.resolve("transformed").toAbsolutePath
+
+    // Obtener todos los paths usando solo APIs Java
+    val stream = Files.walk(root)
+    val allPaths = try {
+      stream.collect(Collectors.toList[Path])
+    } finally {
+      stream.close()
+    }
+
+    // Ordenar de mayor a menor longitud → archivos primero, luego carpetas
+    val sortedPaths = allPaths.toArray(new Array[Path](allPaths.size()))
+      .sortWith(_.toString.length > _.toString.length)
+
+    sortedPaths.foreach { filePath =>
+      val abs = filePath.toAbsolutePath
+
+      // Evitar eliminar la carpeta "transformed" y su contenido
+      if (!abs.startsWith(transformedDir)) {
+        try {
+          Files.deleteIfExists(filePath)
+          println(s"Eliminado: $filePath")
+        } catch {
+          case ex: Exception =>
+            println(s"ERROR eliminando $filePath: ${ex.getMessage}")
+        }
+      }
+    }
+
+    println(s"Directorio procesado (excepto 'transformed'): $directoryPath")
   }
 }
+
 
 
