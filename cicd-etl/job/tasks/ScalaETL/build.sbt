@@ -1,8 +1,7 @@
 import sbt._
 import sbtassembly.AssemblyPlugin.autoImport._
 
-val sparkVersion = "2.4.8"
-val hadoopVersion = "3.0.0"
+val sparkVersion = "3.3.1"
 
 lazy val commonSettings = Seq(
   organization := "Vortex",
@@ -11,10 +10,9 @@ lazy val commonSettings = Seq(
 )
 
 lazy val libraryDeps = Seq(
-  "org.apache.spark" %% "spark-core" % sparkVersion,
-  "org.apache.spark" %% "spark-sql" % sparkVersion,
-  "org.scalatest" %% "scalatest" % "3.2.9" % Test,
-  "org.apache.hadoop" % "hadoop-client" % "2.2.0",
+  "org.apache.spark" %% "spark-core" % sparkVersion ,
+  "org.apache.spark" %% "spark-sql"  % sparkVersion ,
+  "io.delta" %% "delta-core" % "2.2.0",
   "log4j" % "log4j" % "1.2.17"
 )
 
@@ -22,16 +20,9 @@ lazy val root = (project in file("."))
   .settings(
     commonSettings,
     libraryDependencies ++= libraryDeps,
-    assembly / parallelExecution := true,
-    assemblyExcludedJars := assemblyExcludedJars.value
+    assembly / assemblyMergeStrategy := {
+      case PathList("META-INF", xs @ _*) => MergeStrategy.discard
+      case x => MergeStrategy.first
+    }
   )
   .enablePlugins(AssemblyPlugin)
-  .settings(
-    assembly / parallelExecution := true
-  )
-
-lazy val transform = (project in file("src/main/scala/transform")).settings(name := "scala.transform")
-
-lazy val sparksession = (project in file("src/main/scala/sparksession")).settings(name := "scala.sparkSession")
-
-Global / excludeLintKeys += root / assembly / parallelExecution
