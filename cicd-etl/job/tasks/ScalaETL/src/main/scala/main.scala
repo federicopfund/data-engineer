@@ -16,7 +16,6 @@ object MainETL {
     val hdfsUriRoot = "hdfs://localhost:9001"
     val localCsvPath = "/home/fede/Documentos/data-engineer/cicd-etl/job/tasks/ScalaETL/src/main/resources/csv"
     
-
     // 1. Crear arquitectura del datalake
     hdfs.createDatalakeStructure(hdfsUriRoot)
 
